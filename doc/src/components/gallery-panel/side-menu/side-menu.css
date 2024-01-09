@@ -1,0 +1,182 @@
+.sideMenu {
+  /* Auto Layout */
+
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding: 0px;
+  padding-left: 20px;
+
+  position: fixed;
+  width: 220px;
+
+  height: 216px;
+  left: 0px;
+  right: 0px;
+  top: 110px;
+  overflow: visible !important;
+  background-color: #fff !important;
+}
+
+.appTitle {
+  /* Auto Layout */
+
+  color: rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px 16px 0px 24px;
+
+  position: static;
+  width: 220px;
+  height: 36px;
+  left: 0px;
+  top: 0px;
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  margin: 0px 0px;
+}
+
+.appTitle > a {
+  position: static;
+  width: 166px;
+  left: calc(50% - 166px / 2 + 11px);
+  top: 22.22%;
+  bottom: 22.22%;
+
+  /* Size L Semibold */
+
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+
+  /* identical to box height, or 143% */
+
+  display: flex;
+  align-items: center;
+
+  /* 文本/2 */
+
+  color: rgba(0, 0, 0, 0.74);
+  text-decoration: none;
+}
+
+.groupTitle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px 0px 0px 51px;
+
+  position: static;
+  width: 220px;
+  height: 36px;
+  left: 0px;
+  top: 108px;
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 3;
+  flex-grow: 0;
+  margin: 0px 0px;
+}
+
+.groupTitle > a {
+  /* Title */
+
+  position: static;
+  width: 153px;
+  left: calc(50% - 153px / 2 + 17.5px);
+  top: 22.22%;
+  bottom: 22.22%;
+
+  /* 桌面端/文本/Size L */
+
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+
+  /* identical to box height, or 143% */
+
+  display: flex;
+  align-items: center;
+
+  /* 文本/3 */
+
+  color: rgba(0, 0, 0, 0.5);
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 1;
+  margin: 0px 14px;
+  text-decoration: none;
+}
+
+.ant-anchor-link-active.groupTitle > a {
+  /* Title */
+
+  position: static;
+  width: 153px;
+  left: calc(50% - 153px / 2 + 17.5px);
+  top: 22.22%;
+  bottom: 22.22%;
+
+  /* Size L Semibold */
+
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+
+  /* identical to box height, or 143% */
+
+  display: flex;
+  align-items: center;
+
+  /* 文本/1 */
+
+  color: rgba(0, 0, 0, 0.9);
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 1;
+  margin: 0px 14px;
+  text-decoration: none;
+}
+
+.ant-anchor-ink {
+  right: 0px;
+  left: auto;
+}
+
+.ant-anchor-ink-ball.visible {
+  position: absolute;
+  height: 36px;
+  width: 2px;
+  right: 0%;
+  transform: translateY(-14px);
+
+  /* 文本/1 */
+
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.9);
+  border-radius: 0px;
+}
+
+/* a.ant-anchor-link-title:hover {
+  color: unset;
+}
+
+.ant-anchor-ink::before {
+  background-color: #f5f6f7;
+} */

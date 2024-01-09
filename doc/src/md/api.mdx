@@ -1,0 +1,99 @@
+import { SingleColorExample24, NonSingleColorExample16, BinaryColorExample24 } from '@univerjs/icons';
+
+# API
+
+## 使用指南
+
+### 安装
+
+通过 yarn 或者 npm 安装：
+
+```bash
+yarn add @univerjs/icons
+```
+
+### 渲染图标
+
+使用图标就像渲染一个 React 组件一样简单：
+
+```tsx
+import { SingleColorExample24 } from '@univerjs/icons';
+
+function App() {
+    return <SingleColorExample24 />;
+}
+```
+
+你就会得到：
+
+<SingleColorExample24 />
+
+因为图标就是 React 组件，你可以给他传递任何 SVGElement 的属性，例如 style 属性：
+
+```tsx
+function App() {
+    return <SingleColorExample24 style={{ color: 'red', fontSize: '22px' }} />;
+}
+```
+
+<SingleColorExample24 style={{ color: 'red', fontSize: '22px' }} />
+
+### 规范使用
+
+相比于给图标增加各种奇奇怪怪的 props，我们更愿意遵守 web 已有的行为，这样能够利用人们熟知且已经实践检验过的方案
+
+-   所有的图标的高度和宽度均为 1em，这样你就能通过调整 fontSize 来调整图标的大小
+-   所有的单色图标均可以通过 color 来调整整体图标颜色
+
+此外：我们也提供了一些多色图标，这些图标的颜色是固定的：
+
+<p align="center">
+    <NonSingleColorExample16 style={{ fontSize: '48px' }} />{' '}
+</p>
+
+对于一些复杂情况，比如调整图标局部的颜色，我们增加了一个颜色通道作为组件的参数，与单色图标类似，这需要与设计师提前沟通好是控制局部的哪些部分：
+
+```tsx
+function App() {
+    return 
+    <>
+        <BinaryColorExample24 style={{ fontSize: '48px' }} extend={{ colorChannel1: 'red'}}/>
+        <BinaryColorExample24 style={{ fontSize: '48px' }} extend={{ colorChannel1: 'blue'}}/>
+    </>
+}
+```
+<p align="center">
+    <BinaryColorExample24 style={{ fontSize: '48px' }} extend={{ colorChannel1: 'red'}}/>{' '}
+    <BinaryColorExample24 style={{ fontSize: '48px' }} extend={{ colorChannel1: 'blue'}}/>{' '}
+</p>
+
+### icon 源文件
+
+设计师交付的图标资源，全部放置在根目录的 svg 文件夹下，将它们放在不同的子目录中以区分出类别。
+
+注意源文件的名称，应该使用 kebab case，即全小写加短横线分词的形式。
+
+### 图标优化和组件生成
+
+我们使用 gulp 建立了一条流水线，以优化初始图标资源，并根据这些资源生成对应的 React 组件。
+
+优化 SVG 体积：设计师提交的 SVG 文件一般均由 Figma Sketch 等编辑器生成，含有大量的脏属性（id 等），元素属性也不是最简的。直接渲染这样的 SVG 文件会导致 icon 的体积较大。因此，我们使用了 SVGO 来优化 SVG 文件的内容，尽可能减小体积的同时不影响渲染效果。
+
+规范图标属性：原始 SVG 的宽高一般与设计师的画布大小一致·，因此不能适应不同大小的使用场合；颜色也一般是设计师选定的颜色，不能换成任意的颜色。在这一步中，我们会规范 SVG 标签中的属性，例如 `width` `height` `strokeColor` 等等。
+
+图标组件生成：最终，我们会为每一个 SVG 源文件生成一个对应的 React 组件。
+
+
+## FAQ
+
+### 为什么不使用 SVG sprite / iconfont / base64 + css background-img 等技术方案？
+
+React 组件方案在以下两个方面有突出优势：
+
+按需使用。有一些技术方案，包括 SVG sprite 和 iconfont，会导致图标不能按需使用，这意味着被打包进最终资源的图标，并非你实际用到的图标，而是图标库所提供的全部图标。虽然可以通过一些技术手段生成仅包含你所使用的图标的 sprite 或者是 iconfont，但这个过程相当麻烦。相比之下，@univerjs/icons 是一个 tree-shakable 的工具库，你未使用到的图标不会进入最终产物，而且打包工具会自动帮你完成这个过程。
+
+渲染效果。iconfont 在 webkit 内核浏览器上，放大时会显得模糊。而 SVG 由于其是矢量图形，所以并不会模糊。另外，由于 iconfont 一般是异步加载的，很有可能出现图标一开始未被渲染，然后突然出现的问题。
+
+运行时修改。由于 React 组件的动态特性，我们可以在运行时去修改图标的渲染效果。
+
+不使用 base64 方案的原因则是因为体积：base64 编码方法会导致编码后的代码体积比原来还大，这似乎不是一个优雅的方案。

@@ -1,0 +1,20 @@
+.DS_Store
+
+# auto generated icons
+**/src/components/*.tsx
+**/src/manifest/*.ts
+**/src/icons.ts
+**/src/manifest.ts
+
+# build
+dist/
+esm/
+
+# node_modules
+**/node_modules
+
+# yarn
+yarn-error.log
+
+# eslint
+.eslintcache

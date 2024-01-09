@@ -1,0 +1,542 @@
+.block-container {
+  position: absolute;
+  left: 220px;
+  right: 260px;
+  top: 92px;
+}
+
+.block-list {
+  padding: 0px 40px;
+
+  left: 220px;
+  right: 260px;
+  top: 85px;
+}
+
+.iconGroup {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  margin-right: -36px;
+}
+
+.iconContainer {
+  width: 48px;
+  height: 48px;
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  left: calc(50% - 48px / 2);
+  top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttonContainer {
+  position: absolute;
+  height: 56px;
+  left: 8px;
+  right: 8px;
+  top: 80px;
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.buttonContainer > button {
+  position: static;
+  width: 102px;
+  height: 28px;
+  left: 0px;
+  border-width: 0px;
+  background: #fff;
+
+  /* 桌面端/按钮标签/Size M */
+
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 20px;
+
+  /* identical to box height, or 154% */
+
+  text-align: center;
+  letter-spacing: 0.03em;
+
+  /* 文本/2 */
+
+  color: rgba(0, 0, 0, 0.74);
+  outline: none;
+}
+
+.buttonContainer > button:hover {
+  left: 0px;
+  right: 0px;
+
+  /* 交互/Drk */
+
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+}
+
+.buttonContainer > button:active {
+  border: 0px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.textContainer {
+  position: absolute;
+  height: 56px;
+  left: 8px;
+  right: 8px;
+  top: 80px;
+}
+
+.iconName {
+  position: absolute;
+  height: 20px;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+
+  /* 桌面端/文本/Size L */
+
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+
+  /* identical to box height, or 143% */
+
+  text-align: center;
+
+  /* 文本/1 */
+
+  color: rgba(0, 0, 0, 0.9);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.iconName-en {
+  position: absolute;
+  height: 32px;
+  left: 0px;
+  right: 0px;
+  top: 24px;
+
+  /* 桌面端/文本/Size S */
+
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+
+  /* or 133% */
+
+  text-align: center;
+
+  /* 文本/3 */
+
+  color: rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.boxWrapper {
+  height: 148px;
+  width: 118px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  flex: 1, 0;
+  margin: 12px 36px 18px 0px;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.boxWrapper:hover {
+  /* border: 1px solid rgba(0, 0, 0, .2); */
+  transform: scale(1.1);
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* .boxWrapper:active {
+  border: 1px solid rgba(0, 0, 0, .74); 
+} */
+
+.blockName {
+  position: static;
+  top: 40%;
+  bottom: 26.67%;
+
+  /* 桌面端/文本/Size L */
+
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+
+  /* identical to box height, or 143% */
+
+  display: flex;
+  align-items: center;
+
+  /* 文本/4 */
+
+  color: rgba(0, 0, 0, 0.35);
+  padding: 24px 10px 16px 8px;
+}
+
+.blockName::after {
+  content: '';
+  height: 1px;
+  position: static;
+  left: calc(50% - 780px / 2 + 50px);
+  top: 55.83%;
+  bottom: 42.5%;
+
+  /* 描边/1 */
+
+  background: rgba(0, 0, 0, 0.07);
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 1;
+  flex-grow: 1;
+  margin: 0px 8px;
+}
+
+.inputWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px 0px 8px 0px;
+  position: fixed;
+  top: 0px;
+  left: 225px;
+  right: 0px;
+  background-color: #fff;
+  z-index: 1000;
+  border-bottom: 1px #eee solid;
+}
+
+.inputContainer {
+  display: flex;
+}
+
+.search {
+  position: static;
+  width: 840px;
+  height: 38px;
+  left: calc(50% - 840px / 2 + 20px);
+  top: calc(50% - 28px / 2 + 8px);
+  border-width: 0px;
+
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 28px;
+
+  /* identical to box height, or 140% */
+
+  display: flex;
+  align-items: center;
+
+  /* 文本/4 */
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.search::placeholder {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+#fakeForCopy {
+  opacity: 0;
+  position: absolute;
+  left: -100000px;
+}
+
+.controlPanel {
+  position: fixed;
+  width: 260px;
+  height: 835px;
+  right: 0px;
+  top: 90px;
+
+  background: #fff;
+}
+
+.controlContent {
+  /* Content/Options */
+
+  /* Auto Layout */
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px 0px 0px 32px;
+
+  position: absolute;
+  width: 232px;
+  height: 224px;
+  left: 0px;
+  top: 15px;
+
+  background: #fff;
+  box-shadow: inset 1px 0px 0px rgba(0, 0, 0, 0.07);
+
+  /* border-left : 1px solid rgba(0, 0, 0, .15);
+    padding-left   : 32px; */
+}
+
+.sliderWrapper {
+  /* Slider */
+
+  /* Auto Layout */
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px 0px 24px;
+
+  position: static;
+  width: 200px;
+  height: 40px;
+  left: 32px;
+  top: 108px;
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 0px 0px;
+}
+
+.colorPicker {
+  /* Color */
+
+  /* Auto Layout */
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px 0px 24px;
+
+  position: static;
+  width: 200px;
+  height: 56px;
+  left: 32px;
+  top: 148px;
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 3;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 0px 0px;
+}
+
+.slider {
+  width: 200px;
+  height: 16px;
+  margin-left: 0px !important;
+}
+
+.titleWrapper {
+  /* Title */
+
+  /* Auto Layout */
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 0px 2px;
+
+  position: static;
+  width: 200px;
+  left: calc(50% - 200px / 2 + 16px);
+  top: 40px;
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 0px 0px;
+}
+
+.titleWrapper > .title {
+  /* Title */
+
+  position: static;
+  width: 200px;
+  height: 20px;
+  left: 0px;
+  top: 32px;
+
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 20px;
+
+  /* identical to box height, or 154% */
+
+  display: flex;
+  align-items: center;
+  text-align: right;
+
+  /* 文本/3 */
+
+  color: rgba(0, 0, 0, 0.5);
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+
+.colorPickerContainer {
+  /* Auto Layout */
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px 0px 24px;
+
+  position: static;
+  width: 200px;
+  height: 56px;
+  left: 32px;
+  top: 148px;
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 0px 0px;
+}
+
+.colorPickerWrapper {
+  position: relative;
+  width: 200px;
+  height: 32px;
+  left: calc(50% - 200px / 2);
+  top: 0px;
+
+  /* Inside Auto Layout */
+
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 10px 0px;
+}
+
+.colorShower {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  left: 0px;
+  top: calc(50% - 26px / 2);
+
+  /* 描边/2 */
+
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.colorInput {
+  /* Input */
+
+  /* Auto Layout */
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px 8px;
+
+  position: absolute;
+  height: 32px;
+  left: 38px;
+  right: 0px;
+  top: calc(50% - 32px / 2);
+
+  /* WT */
+
+  background: #fff;
+
+  /* 描边/2 */
+
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+
+.colorBlock {
+  width: 24px;
+  height: 24px;
+}
+
+.colorPanel {
+  position: absolute;
+  top: 40px;
+}
+
+.ant-slider-step {
+  background: rgba(0, 0, 0, 0.74) !important;
+  border-radius: 3.5px;
+  height: 4px !important;
+}
+
+.ant-slider-handle {
+  background: #fff;
+
+  /* 描边/2 */
+
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  box-sizing: border-box;
+}
+
+.iconWrapper {
+  width: 24px;
+  height: 24px;
+}
+
+.siderbar-menu {
+  width: 220px;
+  position: absolute;
+  left: 0px;
+  top: 76px;
+  bottom: 150px;
+}
+
+.appNameText {
+  padding-left: 8px !important;
+}
+
+input.search {
+  margin-left: 18px;
+}
+
+input.search:focus {
+  outline-width: 0px;
+}
+
+.copied-code {
+  padding: 2px 4px;
+  font-size: 12px;
+  color: #18a0fb;
+  border-radius: 2px;
+}
