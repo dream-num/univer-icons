@@ -24,14 +24,16 @@ export default class ColorShower extends React.Component<IColorPicker> {
 
   render = () => {
     const { color, visible } = this.props;
-    
+
     return (
       <div className="colorShower">
         {!!color ? (
           <div
             className="colorBlock"
             onClick={this.handleClick}
-            style={{ background: color.indexOf('#') === 0 ? color : `#${color}` }}
+            style={{
+              background: color.indexOf('#') === 0 ? color : `#${color}`,
+            }}
           ></div>
         ) : (
           <svg

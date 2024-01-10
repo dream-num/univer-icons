@@ -27,7 +27,9 @@ export function Layout(props: PropsWithChildren<{}>) {
               <Link to="/api">API 文档</Link>
             </li>
           </ul>
-          <div className="note">如有任何问题或建议，请联系 yuhong</div>
+          <div className="note">
+            如有任何问题或建议，请联系 zhangyuhong@univer.ai
+          </div>
         </div>
       </div>
       <div className="main">{props.children}</div>

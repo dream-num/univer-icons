@@ -1,4 +1,4 @@
-import { SingleColorExample24, NonSingleColorExample16, BinaryColorExample24 } from '@univerjs/icons';
+import { SmileSingle, PaintBucket, Loading } from '@univerjs/icons';
 
 # API
 
@@ -17,26 +17,26 @@ yarn add @univerjs/icons
 使用图标就像渲染一个 React 组件一样简单：
 
 ```tsx
-import { SingleColorExample24 } from '@univerjs/icons';
+import { SmileSingle } from '@univerjs/icons';
 
 function App() {
-    return <SingleColorExample24 />;
+    return <SmileSingle />;
 }
 ```
 
 你就会得到：
 
-<SingleColorExample24 />
+<SmileSingle />
 
 因为图标就是 React 组件，你可以给他传递任何 SVGElement 的属性，例如 style 属性：
 
 ```tsx
 function App() {
-    return <SingleColorExample24 style={{ color: 'red', fontSize: '22px' }} />;
+    return <SmileSingle style={{ color: '#3526de', fontSize: '48px' }} />;
 }
 ```
 
-<SingleColorExample24 style={{ color: 'red', fontSize: '22px' }} />
+<SmileSingle style={{ color: '#3526de', fontSize: '48px' }} />
 
 ### 规范使用
 
@@ -48,7 +48,7 @@ function App() {
 此外：我们也提供了一些多色图标，这些图标的颜色是固定的：
 
 <p align="center">
-    <NonSingleColorExample16 style={{ fontSize: '48px' }} />{' '}
+    <Loading style={{ fontSize: '48px' }} />{' '}
 </p>
 
 对于一些复杂情况，比如调整图标局部的颜色，我们增加了一个颜色通道作为组件的参数，与单色图标类似，这需要与设计师提前沟通好是控制局部的哪些部分：
@@ -57,14 +57,14 @@ function App() {
 function App() {
     return 
     <>
-        <BinaryColorExample24 style={{ fontSize: '48px' }} extend={{ colorChannel1: 'red'}}/>
-        <BinaryColorExample24 style={{ fontSize: '48px' }} extend={{ colorChannel1: 'blue'}}/>
+        <PaintBucket style={{ fontSize: '48px' }} extend={{ colorChannel1: 'red'}}/>
+        <PaintBucket style={{ fontSize: '48px' }} extend={{ colorChannel1: 'blue'}}/>
     </>
 }
 ```
 <p align="center">
-    <BinaryColorExample24 style={{ fontSize: '48px' }} extend={{ colorChannel1: 'red'}}/>{' '}
-    <BinaryColorExample24 style={{ fontSize: '48px' }} extend={{ colorChannel1: 'blue'}}/>{' '}
+    <PaintBucket style={{ fontSize: '48px' }} extend={{ colorChannel1: 'red'}}/>{' '}
+    <PaintBucket style={{ fontSize: '48px' }} extend={{ colorChannel1: 'blue'}}/>{' '}
 </p>
 
 ### icon 源文件

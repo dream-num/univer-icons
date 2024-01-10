@@ -42,7 +42,6 @@ export function Controller(props: IController) {
           className={'colorPicker'}
           handleColorChange={handleSecondColorChange}
           defaultColor={'E5E5E5'}
-
         />
       </div>
     </div>
