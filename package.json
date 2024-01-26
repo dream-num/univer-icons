@@ -1,6 +1,7 @@
 {
   "name": "@univerjs/icons-workspace",
   "version": "0.0.0-NOT-VALID",
+  "private": true,
   "description": "Icons used by Univer",
   "main": "index.js",
   "repository": "https://github.com/dream-num/univer-icons.git",

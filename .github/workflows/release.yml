@@ -1,0 +1,96 @@
+name: 🎉 Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version
+        required: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  release-verdaccio:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+         echo "release: ${{ github.event.inputs.version }}"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          registry-url: ${{ secrets.VERDACCIO_URL }}
+          scope: '@univerjs'
+
+      - name: 🔏 Set all monorepo's package version
+        run: |
+          for package in $(ls packages); do
+            node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./packages/$package/package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./packages/$package/package.json', JSON.stringify(package, null, 4));"
+          done
+
+      - name: 🚚 Install & Build & Publish
+        run: |
+          npm install -g yarn
+          yarn && yarn go
+          cd ./packages/react && yarn && yarn build && npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.VERDACCIO_TOKEN }}
+
+  release-npm:
+    if: ${{ github.event.inputs.version != '' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org
+
+      - name: 🔏 Set all monorepo's package version
+        run: |
+          for package in $(ls packages); do
+            node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./packages/$package/package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./packages/$package/package.json', JSON.stringify(package, null, 4));"
+          done
+
+      - name: 🚚 Install & Build & Publish
+        run: |
+          npm install -g yarn
+          yarn && yarn go
+          cd ./packages/react && yarn && yarn build && npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  notify:
+    needs: [release-verdaccio, release-npm]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Invoke deployment hook
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
+          data: >
+            {
+              "type": "release",
+              "version": "${{ github.ref_name }}",
+              "workflow": {
+                "id": "${{ github.run_id }}"
+              },
+              "preview": {
+                "📑 Docs": "https://univer.ai/icons"
+              }
+            }
