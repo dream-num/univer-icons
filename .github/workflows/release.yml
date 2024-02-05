@@ -12,10 +12,34 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔏 Set all monorepo's package version
+        run: |
+          for package in $(ls packages); do
+            node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./packages/$package/package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./packages/$package/package.json', JSON.stringify(package, null, 4));"
+          done
+
+      - name: 📝 Commit and push changes
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add -A
+          git commit -m "chore(release): v${{ github.event.inputs.version }}" || exit 0
+          git push
+          git tag -a v${{ github.event.inputs.version }} -m "v${{ github.event.inputs.version }}"
+          git push origin v${{ github.event.inputs.version }}
+
   release-verdaccio:
+    needs: [prepare]
     runs-on: ubuntu-latest
 
     steps:
@@ -24,6 +48,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: v${{ github.event.inputs.version }}
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -31,12 +57,6 @@ jobs:
           node-version: 16
           registry-url: ${{ secrets.VERDACCIO_URL }}
           scope: '@univerjs'
-
-      - name: 🔏 Set all monorepo's package version
-        run: |
-          for package in $(ls packages); do
-            node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./packages/$package/package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./packages/$package/package.json', JSON.stringify(package, null, 4));"
-          done
 
       - name: 🚚 Install & Build & Publish
         run: |
@@ -53,18 +73,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: v${{ github.event.inputs.version }}
 
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org
-
-      - name: 🔏 Set all monorepo's package version
-        run: |
-          for package in $(ls packages); do
-            node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./packages/$package/package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./packages/$package/package.json', JSON.stringify(package, null, 4));"
-          done
 
       - name: 🚚 Install & Build & Publish
         run: |
@@ -86,7 +102,7 @@ jobs:
           data: >
             {
               "type": "release",
-              "version": "${{ github.ref_name }}",
+              "version": "v${{ github.event.inputs.version }}",
               "workflow": {
                 "id": "${{ github.run_id }}"
               },
