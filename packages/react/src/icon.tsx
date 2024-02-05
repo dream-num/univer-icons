@@ -32,6 +32,7 @@ export interface Attrs {
 export interface IconElement {
   tag: string;
   attrs: Attrs;
+  style?: React.CSSProperties;
   children?: IconElement[];
   defIds?: string[];
 }

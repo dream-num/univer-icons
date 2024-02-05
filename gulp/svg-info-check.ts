@@ -20,6 +20,7 @@ export interface IconNode {
 export interface IconElement {
   tag: string;
   attrs: Attrs;
+  style?: React.CSSProperties;
   children?: IconElement[];
   defIds?: string[];
 }
@@ -156,7 +157,7 @@ function normalizeStyle(node: IconElement) {
     const styles = attrs.style.split(';');
     styles.forEach((chunk) => {
       const [key, value] = chunk.split(':');
-      styleMap[key] = value;
+      styleMap[camelCase(key)] = value;
     });
     attrs.style = styleMap;
   }
