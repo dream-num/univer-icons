@@ -90,6 +90,18 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+  dispatch-docs:
+    needs: [release-verdaccio, release-npm]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Invoke deployment hook
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          repository: dream-num/univer-docs
+          event-type: deploy
+
   notify:
     needs: [release-verdaccio, release-npm]
     runs-on: ubuntu-latest
