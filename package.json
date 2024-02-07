@@ -7,6 +7,11 @@
   "repository": "https://github.com/dream-num/univer-icons.git",
   "license": "MIT",
   "sideEffects": false,
+  "packageManager": "yarn@1.22.21",
+  "engines": {
+    "node": ">=18",
+    "yarn": "1.22.21"
+  },
   "lint-staged": {
     "*.{js,ts,tsx,jsx}": [
       "eslint --fix",

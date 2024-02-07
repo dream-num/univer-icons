@@ -21,7 +21,7 @@
   },
   "devDependencies": {
       "@types/react": "^17.0.0",
-      "@vercel/ncc": "^0.27.0",
+      "@vercel/ncc": "^0.38.1",
       "camelcase": "^7.0.1",
       "cross-env": "^7.0.3",
       "gulp": "^4.0.2",
