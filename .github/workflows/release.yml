@@ -62,6 +62,8 @@ jobs:
         run: |
           npm install -g yarn
           yarn && yarn go
+          cp README.md packages/react/README.md
+          cp LICENSE packages/react/LICENSE
           cd ./packages/react && yarn && yarn build && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.VERDACCIO_TOKEN }}
