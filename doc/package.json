@@ -1,6 +1,6 @@
 {
     "name": "gallery",
-    "version": "0.1.35",
+    "version": "0.1.36",
     "private": true,
     "dependencies": {
         "@babel/core": "^7.12.3",
