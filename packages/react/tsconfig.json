@@ -17,12 +17,6 @@
     "experimentalDecorators": true,
     "noUnusedLocals": true,
     "esModuleInterop": true,
-    "types": [
-      "node"
-    ],
-    "typeRoots": [
-      "./node_modules/@types"
-    ]
   },
   "include": [
     "src"

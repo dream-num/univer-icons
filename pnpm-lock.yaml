@@ -334,6 +334,9 @@ importers:
         specifier: '*'
         version: 17.0.2(react@17.0.2)
     devDependencies:
+      '@types/node':
+        specifier: ^20.11.24
+        version: 20.11.24
       '@types/react':
         specifier: ^17.0.0
         version: 17.0.75
@@ -2832,6 +2835,12 @@ packages:
 
   /@types/node@20.11.19:
     resolution: {integrity: sha512-7xMnVEcZFu0DikYjWOlRq7NTPETrm7teqUT2WkQjrTIkEgUyyGdWsj/Zg8bEJt5TNklzbPD1X3fqfsHw3SpapQ==}
+    dependencies:
+      undici-types: 5.26.5
+    dev: true
+
+  /@types/node@20.11.24:
+    resolution: {integrity: sha512-Kza43ewS3xoLgCEpQrsT+xRo/EJej1y0kVYGiLFE1NEODXGzTfwiC6tXTLMQskn1X4/Rjlh0MQUvx9W+L9long==}
     dependencies:
       undici-types: 5.26.5
     dev: true
