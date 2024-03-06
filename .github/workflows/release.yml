@@ -16,6 +16,7 @@ permissions:
 
 jobs:
   prepare:
+    if: ${{ github.event.inputs.version != '' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -64,18 +65,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+
+      - name: 🚚 Install & Build & Publish
+        run: |
+          pnpm generate && pnpm build
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
           registry-url: ${{ secrets.VERDACCIO_URL }}
           scope: '@univerjs'
 
       - name: 🚚 Install & Build & Publish
         run: |
-          pnpm generate && pnpm build
           pnpm publish --access public -r --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.VERDACCIO_TOKEN }}
 
   release-npm:
-    if: ${{ github.event.inputs.version != '' }}
+    needs: [prepare]
     runs-on: ubuntu-latest
 
     steps:
