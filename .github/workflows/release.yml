@@ -65,9 +65,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          registry-url: https://registry.npmjs.org
 
       - name: 🚚 Install & Build & Publish
         run: |
+          pnpm i
           pnpm generate && pnpm build
 
       - name: Install Node.js
@@ -107,6 +109,7 @@ jobs:
 
       - name: 🚚 Install & Build & Publish
         run: |
+          pnpm i
           pnpm generate && pnpm build
           pnpm publish --access public -r --no-git-checks
         env:
