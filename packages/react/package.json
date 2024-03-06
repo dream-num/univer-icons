@@ -19,8 +19,8 @@
         "icons"
     ],
     "files": [
-        "dist/",
-        "esm/"
+        "dist",
+        "esm"
     ],
     "main": "dist/index.js",
     "module": "esm/index.js",
