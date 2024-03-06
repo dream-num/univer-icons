@@ -24,6 +24,8 @@ jobs:
 
       - name: 🔏 Set all monorepo's package version
         run: |
+          node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./package.json', JSON.stringify(package, null, 4));"
+          node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./doc/package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./doc/package.json', JSON.stringify(package, null, 4));"
           node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./svg/package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./svg/package.json', JSON.stringify(package, null, 4));"
           for package in $(ls packages); do
             node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./packages/$package/package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./packages/$package/package.json', JSON.stringify(package, null, 4));"
@@ -52,6 +54,12 @@ jobs:
         with:
           ref: v${{ github.event.inputs.version }}
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
@@ -61,13 +69,8 @@ jobs:
 
       - name: 🚚 Install & Build & Publish
         run: |
-          npm install -g yarn
-          yarn && yarn go
-          cp README.md packages/react/README.md
-          cp LICENSE packages/react/LICENSE
-          cp LICENSE svg/LICENSE
-          cd ./svg && npm publish --access public && cd ..
-          cd ./packages/react && yarn && yarn build && npm publish --access public
+          pnpm generate && pnpm build
+          pnpm publish --access public -r --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.VERDACCIO_TOKEN }}
 
@@ -81,6 +84,12 @@ jobs:
         with:
           ref: v${{ github.event.inputs.version }}
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
@@ -89,13 +98,8 @@ jobs:
 
       - name: 🚚 Install & Build & Publish
         run: |
-          npm install -g yarn
-          yarn && yarn go
-          cp README.md packages/react/README.md
-          cp LICENSE packages/react/LICENSE
-          cp LICENSE svg/LICENSE
-          cd ./svg && npm publish --access public && cd ..
-          cd ./packages/react && yarn && yarn build && npm publish --access public
+          pnpm generate && pnpm build
+          pnpm publish --access public -r --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

@@ -1,10 +1,13 @@
 {
     "name": "@univerjs/icons-svg",
-    "version": "0.1.32",
+    "version": "0.1.33",
     "description": "SVG icons for Univer",
     "author": "DreamNum <developer@univer.ai>",
     "license": "MIT",
     "homepage": "https://univer.ai/icons",
+    "publishConfig": {
+        "access": "public"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/dream-num/univer-icons"
