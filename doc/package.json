@@ -69,9 +69,6 @@
         "webpack-manifest-plugin": "2.2.0",
         "workbox-webpack-plugin": "5.1.4"
     },
-    "resolutions": {
-        "@types/react": "17.0.44"
-    },
     "scripts": {
         "generate-install": "bash ./vercel.sh",
         "start": "node scripts/start.js",
