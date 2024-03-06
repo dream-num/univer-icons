@@ -5,6 +5,9 @@
     "author": "DreamNum <developer@univer.ai>",
     "license": "MIT",
     "homepage": "https://univer.ai/icons",
+    "publishConfig": {
+        "access": "public"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/dream-num/univer-icons"
