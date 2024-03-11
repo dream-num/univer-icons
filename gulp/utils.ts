@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import path from 'path';
+import path, { sep } from 'path';
 import camelCase from 'camelcase';
 import del from 'del';
 
@@ -31,7 +31,7 @@ export function upperCamelCase(str: string): string {
 }
 
 export function svgFilesUnder(path: string): string {
-    return path + '/*.svg';
+    return path + sep + '*.svg';
 }
 
 export const clearDir = (dirs: string[]) => () => del(dirs);
