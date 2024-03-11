@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { Anchor } from 'antd';
 import './side-menu.css';
 import { APP_GROUP } from '../app-infos';

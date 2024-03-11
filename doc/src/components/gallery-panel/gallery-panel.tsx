@@ -98,14 +98,13 @@ export default class GalleryPanel extends React.Component {
         />
         <div className="block-container">
           {filteredAppGroups.map((filteredGroups, index) => (
-            <>
+            <div key={APP_LIST[index]}>
               <div className="appTitle" id={APP_LIST[index]}>
                 {' '}
                 {translate(APP_LIST[index])}{' '}
               </div>
               <div
                 id={`${APP_LIST[index]}${filteredGroups.groupName}`}
-                key={APP_LIST[index]}
                 className="block-list"
               >
                 {filteredGroups.map(
@@ -139,7 +138,7 @@ export default class GalleryPanel extends React.Component {
                   )
                 )}
               </div>
-            </>
+            </div>
           ))}
         </div>
 
