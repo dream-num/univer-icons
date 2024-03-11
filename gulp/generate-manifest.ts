@@ -24,7 +24,7 @@ export const generateManifest = ({ from, to }) =>
 
     return merge(
       ...dirs.map((dir) => {
-        const nameArr = dir.split('/');
+        const nameArr = dir.split(path.sep);
         const name = nameArr
           .slice(nameArr.length - 3, nameArr.length - 1)
           .join('-');

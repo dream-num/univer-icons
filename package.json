@@ -14,7 +14,8 @@
     },
     "scripts": {
         "generate": "cross-env gulp --require ts-node/register/transpile-only",
-        "build": "pnpm --filter @univerjs/icons build"
+        "build": "pnpm --filter @univerjs/icons build",
+        "build:site": "pnpm --filter gallery build"
     },
     "devDependencies": {
         "@types/gulp": "^4.0.6",
