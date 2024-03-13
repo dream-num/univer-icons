@@ -1,6 +1,6 @@
 {
     "name": "gallery",
-    "version": "0.1.40",
+    "version": "0.1.41",
     "private": true,
     "peerDependencies": {
         "react": "*",
