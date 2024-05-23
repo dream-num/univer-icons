@@ -1,6 +1,6 @@
 {
     "name": "@univerjs/icons-workspace",
-    "version": "0.1.51",
+    "version": "0.1.52",
     "private": true,
     "description": "Icons used by Univer",
     "main": "index.js",
