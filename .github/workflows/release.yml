@@ -124,7 +124,7 @@ jobs:
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.GH_TOKEN }}
-          repository: dream-num/univer-docs
+          repository: dream-num/univer-workspace
           event-type: deploy
 
   notify:
