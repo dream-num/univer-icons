@@ -21,3 +21,30 @@ module.exports = {
     },
     // sourceType: 'unambiguous'
 };
+{
+    "menu": {
+        "id": "file",
+        "label": "File",
+        "submenu": [
+            {
+                "label": "New",
+                "accelerator": "CmdOrCtrl+N",
+                "click": "createNew"
+            },
+            {
+                "label": "Open",
+                "accelerator": "CmdOrCtrl+O",
+                "click": "openFile"
+            },
+            {
+                "type": "separator"
+            },
+            {
+                "label": "Save",
+                "accelerator": "CmdOrCtrl+S",
+                "click": "saveFile"
+            }
+        ]
+    }
+}
+
