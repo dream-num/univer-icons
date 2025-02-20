@@ -113,7 +113,7 @@ function replaceRuntimeIdsAndExtInAttrs(
     attrs['fill'] = extend.colorChannel1;
   }
 
-  if (node.tag === 'mask' && attrs['mask']) {
+  if (node.tag === 'mask' && attrs['id']) {
     attrs['id'] = attrs['id'] + runtimeProps.idSuffix;
   }
 
