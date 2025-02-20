@@ -113,6 +113,21 @@ function replaceRuntimeIdsAndExtInAttrs(
     attrs['fill'] = extend.colorChannel1;
   }
 
+  if (node.tag === 'mask' && attrs['mask']) {
+    attrs['id'] = attrs['id'] + runtimeProps.idSuffix;
+  }
+
+  Object.entries(attrs).forEach(([key, value]) => {
+    if (key === 'mask' && typeof value === 'string') {
+      attrs[key] = value.replace(
+        /url\(#(.*)\)/,
+        `url(#$1${runtimeProps.idSuffix})`
+      );
+    }
+  });
+
+
+
   // If `defIds` is empty, do nothing
   const { defIds } = runtimeProps;
   if (!defIds || defIds.length === 0) {
