@@ -42,48 +42,6 @@ jobs:
           git tag -a v${{ github.event.inputs.version }} -m "v${{ github.event.inputs.version }}"
           git push origin v${{ github.event.inputs.version }}
 
-  release-verdaccio:
-    needs: [prepare]
-    runs-on: ubuntu-latest
-
-    steps:
-      - run: |
-         echo "release: ${{ github.event.inputs.version }}"
-
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: v${{ github.event.inputs.version }}
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          run_install: false
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          registry-url: https://registry.npmjs.org
-
-      - name: 🚚 Install & Build & Publish
-        run: |
-          pnpm i
-          pnpm generate && pnpm build
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          registry-url: ${{ secrets.VERDACCIO_URL }}
-          scope: '@univerjs'
-
-      - name: 🚚 Install & Build & Publish
-        run: |
-          pnpm publish --access public -r --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.VERDACCIO_TOKEN }}
-
   release-npm:
     needs: [prepare]
     runs-on: ubuntu-latest
