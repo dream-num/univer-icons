@@ -72,7 +72,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   dispatch-docs:
-    needs: [release-verdaccio, release-npm]
+    needs: [release-npm]
     runs-on: ubuntu-latest
 
     steps:
@@ -84,7 +84,7 @@ jobs:
           event-type: deploy
 
   notify:
-    needs: [release-verdaccio, release-npm]
+    needs: [release-npm]
     runs-on: ubuntu-latest
 
     steps:
