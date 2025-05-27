@@ -182,11 +182,11 @@ function normalizeColor(node: IconElement, options: NormalizationOptions) {
   const { attrs } = node;
 
   if (options.replaceColor) {
-    if (attrs.fill === '#000') {
+    if (attrs.fill === '#000' || attrs.fill === '#000000' || attrs.fill === 'black') {
       attrs.fill = 'currentColor';
     }
   
-    if (attrs.stroke === '#000') {
+    if (attrs.stroke === '#000' || attrs.stroke === '#000000' || attrs.stroke === 'black') {
       attrs.stroke = 'currentColor';
     }
   }
