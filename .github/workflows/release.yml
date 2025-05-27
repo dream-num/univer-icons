@@ -26,7 +26,6 @@ jobs:
       - name: 🔏 Set all monorepo's package version
         run: |
           node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./package.json', JSON.stringify(package, null, 4));"
-          node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./doc/package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./doc/package.json', JSON.stringify(package, null, 4));"
           node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./svg/package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./svg/package.json', JSON.stringify(package, null, 4));"
           for package in $(ls packages); do
             node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./packages/$package/package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./packages/$package/package.json', JSON.stringify(package, null, 4));"
