@@ -15,7 +15,12 @@ export const generateEntry = ({ from, to, extName = '' }) =>
 const template = `export { default as $ICON_NAME } from './components/$FILE_NAME`;
 const useEntryTemplate = (extName) =>
   createTransformStream((_, { stem: name }) => {
-    const templateWithExt = template + extName + `';`;
+    let templateWithExt = template + extName + `';`;
+
+    if (!name.endsWith('-icon')) {
+      templateWithExt = `/** @deprecated */\n${templateWithExt}`;
+    }
+
     return templateWithExt
       .replace(/\$ICON_NAME/g, upperCamelCase(name))
       .replace(/\$FILE_NAME/g, name);
