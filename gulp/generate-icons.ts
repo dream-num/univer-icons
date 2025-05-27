@@ -1,6 +1,6 @@
 import { dest, src } from "gulp";
 import rename from "gulp-rename";
-import { svgo, SVGOConfig } from "./svgo";
+import { svgo } from "./svgo";
 import { svgToElement, NormalizationOptions } from "./svg-info-check";
 import { useTemplate, IconFileContentGenerator } from "./useTemplate";
 
@@ -10,7 +10,6 @@ interface IGenerateIconOptions {
     iconGenerator: IconFileContentGenerator;
     options?: NormalizationOptions;
     extName?: string;
-    config?: SVGOConfig;
 }
 
 export const generateIcons = ({
@@ -19,10 +18,9 @@ export const generateIcons = ({
     iconGenerator,
     options,
     extName = '.tsx',
-    config,
 }: IGenerateIconOptions) => function generateIcons() {
     return src(from)
-    .pipe(svgo(config))
+    .pipe(svgo())
     .pipe(svgToElement(options))
     .pipe(useTemplate(iconGenerator))
     .pipe(rename((file) => {

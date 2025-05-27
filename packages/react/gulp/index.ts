@@ -10,7 +10,10 @@ import { reactGetIconFileContent } from './react-use-template';
 export function reactTask(
   singleColorIconDirs,
   customizedIconDirs,
-  otherIconDirs
+  otherIconDirs,
+  v4SingleIconDirs,
+  v4DoubleIconDirs,
+  v4OtherIconDirs
 ) {
   return series(
     clearDir([
@@ -21,7 +24,7 @@ export function reactTask(
 
     parallel(
       generateIcons({
-        from: [...singleColorIconDirs],
+        from: [...singleColorIconDirs, ...v4SingleIconDirs],
         to: 'packages/react/src/components',
         iconGenerator: reactGetIconFileContent,
         options: {
@@ -29,7 +32,7 @@ export function reactTask(
         },
       }),
       generateIcons({
-        from: [...customizedIconDirs],
+        from: [...customizedIconDirs, ...v4DoubleIconDirs],
         to: 'packages/react/src/components',
         iconGenerator: reactGetIconFileContent,
         options: {
@@ -39,7 +42,7 @@ export function reactTask(
       }),
 
       generateIcons({
-        from: [...otherIconDirs],
+        from: [...otherIconDirs, ...v4OtherIconDirs],
         to: 'packages/react/src/components',
         iconGenerator: reactGetIconFileContent,
       }),
