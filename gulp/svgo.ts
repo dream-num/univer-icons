@@ -1,7 +1,7 @@
-import { optimize } from 'svgo';
-import { createTransformStreamAsync } from './transform';
+import { optimize } from 'svgo'
+import { createTransformStreamAsync } from './transform'
 
-export const svgo = () => {
+export function svgo() {
   return createTransformStreamAsync(async (raw: string) => {
     return optimize(raw, {
       floatPrecision: 2,
@@ -34,10 +34,10 @@ export const svgo = () => {
         {
           name: 'removeAttrs',
           params: {
-            attrs: ['class', 'style']
-          }
-        }
-      ]
-    }).data;
-  });
-};
+            attrs: ['class', 'style'],
+          },
+        },
+      ],
+    }).data
+  })
+}

@@ -1,23 +1,23 @@
 {
-    "name": "@univerjs/icons-svg",
-    "version": "0.4.3",
-    "description": "SVG icons for Univer",
-    "author": "DreamNum <developer@univer.ai>",
-    "license": "MIT",
-    "homepage": "https://univer.ai/icons",
-    "publishConfig": {
-        "access": "public"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/dream-num/univer-icons"
-    },
-    "bugs": {
-        "url": "https://github.com/dream-num/univer-icons/issues"
-    },
-    "keywords": [
-        "icons",
-        "svg"
-    ],
-    "sideEffects": false
+  "name": "@univerjs/icons-svg",
+  "version": "0.4.3",
+  "description": "SVG icons for Univer",
+  "author": "DreamNum Co., Ltd. <developer@univer.ai>",
+  "license": "MIT",
+  "homepage": "https://univer.ai/icons",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dream-num/univer-icons"
+  },
+  "bugs": {
+    "url": "https://github.com/dream-num/univer-icons/issues"
+  },
+  "keywords": [
+    "icons",
+    "svg"
+  ],
+  "sideEffects": false
 }

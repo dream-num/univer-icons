@@ -1,24 +1,27 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
+    "target": "es5",
     "jsx": "react",
     "lib": [
       "esnext",
       "dom"
     ],
-    "sourceMap": true,
-    "target": "es5",
-    "outDir": "dist",
+    "experimentalDecorators": true,
+    "baseUrl": "./",
     "module": "commonjs",
     "moduleResolution": "node",
     "strict": true,
-    "declaration": true,
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
     "noUnusedLocals": true,
-    "esModuleInterop": true,
+    "declaration": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "gulp/template/**/*"
   ]
 }

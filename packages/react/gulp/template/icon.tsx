@@ -1,9 +1,11 @@
 // This file is generated automatically by `useTemplate.ts`. DO NOT EDIT IT.
 
-import { createElement, forwardRef, Ref } from 'react';
-import { IconBase, IconProps } from '../icon';
+import type { Ref } from 'react'
+import type { IconProps } from '../icon'
+import { createElement, forwardRef } from 'react'
+import { IconBase } from '../icon'
 
-const element = $ELEMENT;
+const element = $ELEMENT
 
 export const $ICON_NAME = forwardRef<SVGElement, IconProps>(
   (props: IconProps, ref: Ref<SVGElement>) =>
@@ -13,10 +15,10 @@ export const $ICON_NAME = forwardRef<SVGElement, IconProps>(
         id: '$KEY',
         ref,
         icon: element,
-      })
-    )
-);
+      }),
+    ),
+)
 
-$ICON_NAME.displayName = '$ICON_NAME';
+$ICON_NAME.displayName = '$ICON_NAME'
 
-export default $ICON_NAME;
+export default $ICON_NAME

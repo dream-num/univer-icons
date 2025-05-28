@@ -108,7 +108,7 @@ jobs:
         uses: ./.github/actions/setup-node
 
       - name: 📦 Build @univerjs/icons
-        run:  pnpm generate && pnpm build
+        run: pnpm generate && pnpm build
 
       #  ================= Deploy Demo =================
       - name: 📦 Build site

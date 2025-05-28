@@ -24,10 +24,10 @@ yarn add @univerjs/icons
 Use icons just like render a React component:
 
 ```tsx
-import { SaveSingle } from '@univerjs/icons';
+import { SaveSingle } from '@univerjs/icons'
 
 function App() {
-  return <SaveSingle />;
+  return <SaveSingle />
 }
 ```
 
@@ -35,7 +35,7 @@ Because icons are React components, you can pass any SVGElement attributes to th
 
 ```tsx
 function App() {
-  return <SaveSingle style={{ color: '#3526de', fontSize: '48px' }} />;
+  return <SaveSingle style={{ color: '#3526de', fontSize: '48px' }} />
 }
 ```
 
@@ -62,8 +62,8 @@ For some complex situations, such as adjusting the color of specific parts of an
 function App() {
   return (
     <>
-      <PaintBucket style={{ fontSize: '48px' }} extend={{ colorChannel1: 'red'}}/>
-      <PaintBucket style={{ fontSize: '48px' }} extend={{ colorChannel1: 'blue'}}/>
+      <PaintBucket style={{ fontSize: '48px' }} extend={{ colorChannel1: 'red' }} />
+      <PaintBucket style={{ fontSize: '48px' }} extend={{ colorChannel1: 'blue' }} />
     </>
   )
 }

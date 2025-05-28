@@ -1,39 +1,42 @@
-import through from 'through2';
-import File from 'vinyl';
+import type File from 'vinyl'
+import through from 'through2'
 
-export const createTransformStream = (
-  fn: (raw: string, file: File) => string
-) =>
-  through.obj((file: File, encoding, done) => {
+export function createTransformStream(fn: (raw: string, file: File) => string) {
+  return through.obj((file: File, encoding, done) => {
     if (file.isBuffer()) {
-      const before = file.contents.toString(encoding);
+      const before = file.contents.toString(encoding)
       try {
-        const after = fn(before, file);
-        file.contents = Buffer.from(after);
-        done(null, file);
-      } catch (err) {
-        done(err, null);
+        const after = fn(before, file)
+        // eslint-disable-next-line node/prefer-global/buffer
+        file.contents = Buffer.from(after)
+        done(null, file)
       }
-    } else {
-      done(null, file);
+      catch (err) {
+        done(err, null)
+      }
     }
-  });
+    else {
+      done(null, file)
+    }
+  })
+}
 
-export const createTransformStreamAsync = (
-  fn: (raw: string, file: File) => Promise<string>
-) =>
-  through.obj((file: File, encoding, done) => {
+export function createTransformStreamAsync(fn: (raw: string, file: File) => Promise<string>) {
+  return through.obj((file: File, encoding, done) => {
     if (file.isBuffer()) {
-      const before = file.contents.toString(encoding);
+      const before = file.contents.toString(encoding)
       fn(before, file)
         .then((after) => {
-          file.contents = Buffer.from(after);
-          done(null, file);
+          // eslint-disable-next-line node/prefer-global/buffer
+          file.contents = Buffer.from(after)
+          done(null, file)
         })
         .catch((err) => {
-          done(err, null);
-        });
-    } else {
-      done(null, file);
+          done(err, null)
+        })
     }
-  });
+    else {
+      done(null, file)
+    }
+  })
+}

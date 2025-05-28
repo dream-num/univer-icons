@@ -1,11 +1,11 @@
-import { parallel, series } from 'gulp';
+import { parallel, series } from 'gulp'
 
-import { generateEntry } from '../../../gulp/generate-entry';
-import { generateManifest } from '../../../gulp/generate-manifest';
-import { generateIcons } from '../../../gulp/generate-icons';
-import { clearDir } from '../../../gulp/utils';
+import { generateEntry } from '../../../gulp/generate-entry'
+import { generateIcons } from '../../../gulp/generate-icons'
+import { generateManifest } from '../../../gulp/generate-manifest'
+import { clearDir } from '../../../gulp/utils'
 
-import { reactGetIconFileContent } from './react-use-template';
+import { reactGetIconFileContent } from './react-use-template'
 
 export function reactTask(
   singleColorIconDirs,
@@ -13,9 +13,11 @@ export function reactTask(
   otherIconDirs,
   v4SingleIconDirs,
   v4DoubleIconDirs,
-  v4OtherIconDirs
+  v4OtherIconDirs,
 ) {
   return series(
+    // eslint-disable-next-line ts/ban-ts-comment
+    // @ts-expect-error
     clearDir([
       'packages/react/dist',
       'packages/react/src/components',
@@ -50,12 +52,12 @@ export function reactTask(
       generateManifest({
         from: ['svg'],
         to: `packages/react/src`,
-      })
+      }),
     ),
 
     generateEntry({
       from: `packages/react/src/components/*`,
       to: `packages/react/src`,
-    })
-  );
+    }),
+  )
 }
