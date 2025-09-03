@@ -4,7 +4,7 @@
   "description": "SVG icons for Univer",
   "author": "DreamNum Co., Ltd. <developer@univer.ai>",
   "license": "MIT",
-  "homepage": "https://univer.ai/icons",
+  "homepage": "https://docs.univer.ai/icons",
   "publishConfig": {
     "access": "public"
   },
