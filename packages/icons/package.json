@@ -20,11 +20,15 @@
     "univer"
   ],
   "sideEffects": false,
-  "main": "dist/cjs/index.cjs",
-  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "main": "dist/esm/index.js",
   "files": [
-    "dist",
-    "esm"
+    "dist"
   ],
   "scripts": {
     "build": "tsx ./scripts/build/index.ts"
