@@ -9,9 +9,10 @@ export function getIconComponent({
 }) {
   return `/* eslint-disable */
 import { createElement, forwardRef } from 'react';
+import type { IconProps } from './base';
 import { IconBase } from './base';
 const element = ${element};
-export const ${componentName} = forwardRef(function ${componentName}(props, ref) {
+export const ${componentName} = forwardRef<SVGElement, IconProps>(function ${componentName}(props, ref) {
   return createElement(IconBase, Object.assign({}, props, {
     id: '${name}',
     ref: ref,
