@@ -4,6 +4,16 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "./dist/esm",
     "esModuleInterop": true
-  }
+  },
+  "include": [
+    "./ts"
+  ],
+  "exclude": [
+    "**/dist/**",
+    "**/node_modules/**"
+  ]
 }

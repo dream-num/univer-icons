@@ -1,6 +1,6 @@
 {
   "name": "@univerjs/icons",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "React icons for Univer.",
   "author": "DreamNum Co., Ltd. <developer@univer.ai>",
   "license": "MIT",
@@ -31,7 +31,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsx ./scripts/build/index.ts"
+    "build": "tsx ./scripts/build/index.ts && tsc"
   },
   "peerDependencies": {
     "react": "*",
