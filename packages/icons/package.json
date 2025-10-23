@@ -1,0 +1,44 @@
+{
+  "name": "@univerjs/icons",
+  "version": "1.0.0-alpha.0",
+  "description": "React icons for Univer.",
+  "author": "DreamNum Co., Ltd. <developer@univer.ai>",
+  "license": "MIT",
+  "homepage": "https://docs.univer.ai/icons",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dream-num/univer-icons"
+  },
+  "bugs": {
+    "url": "https://github.com/dream-num/univer-icons/issues"
+  },
+  "keywords": [
+    "icons",
+    "univer"
+  ],
+  "sideEffects": false,
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.js",
+  "files": [
+    "dist",
+    "esm"
+  ],
+  "scripts": {
+    "build": "tsx ./scripts/build/index.ts"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*"
+  },
+  "devDependencies": {
+    "@types/svg-parser": "^2.0.6",
+    "@univerjs/icons-svg": "workspace:*",
+    "rolldown": "1.0.0-beta.44",
+    "svg-parser": "^2.0.4",
+    "svgo": "^4.0.0",
+    "typescript": "^5.9.3"
+  }
+}

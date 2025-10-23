@@ -1,0 +1,29 @@
+{
+  "name": "@univerjs/icons-svg",
+  "version": "1.0.0-alpha.0",
+  "description": "SVG icons for Univer",
+  "author": "DreamNum Co., Ltd. <developer@univer.ai>",
+  "license": "MIT",
+  "homepage": "https://docs.univer.ai/icons",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dream-num/univer-icons"
+  },
+  "bugs": {
+    "url": "https://github.com/dream-num/univer-icons/issues"
+  },
+  "keywords": [
+    "icons",
+    "svg"
+  ],
+  "sideEffects": false,
+  "exports": {
+    "./manifest.json": "./manifest.json"
+  },
+  "scripts": {
+    "prepare": "tsx ./scripts/generate-manifest.ts"
+  }
+}
