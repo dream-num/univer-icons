@@ -31,12 +31,6 @@ export function parseSvg(svgString: string) {
       'sortAttrs',
       'removeDimensions',
       {
-        name: 'convertColors',
-        params: {
-          currentColor: true,
-        },
-      },
-      {
         name: 'removeAttrs',
         params: {
           attrs: ['class', 'style'],

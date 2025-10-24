@@ -51,6 +51,7 @@ function normalizeAttrs(node: IconElement) {
 
   normalizeStyle(node)
   normalizeClassName(node)
+  normalizeColor(node)
 }
 
 function createNormalizationContext(): NormalizationContext {
@@ -150,4 +151,30 @@ export function normalizeAST(
   return normalizedRoots.map(root =>
     replaceIds(name, JSON.stringify(root), context.idReplacementSet),
   )
+}
+
+/**
+ * for single colored icons, we assume that #000 is placeholder for 'currentColor'
+ * for multi colored icons, we assume that #E5E5E5 is placeholder for 'colorChannel1'
+ */
+function normalizeColor(node: IconElement) {
+  const { attrs } = node
+
+  // replace black with currentColor
+  if (attrs.fill === '#000' || attrs.fill === '#000000' || attrs.fill === 'black') {
+    attrs.fill = 'currentColor'
+  }
+
+  if (attrs.stroke === '#000' || attrs.stroke === '#000000' || attrs.stroke === 'black') {
+    attrs.stroke = 'currentColor'
+  }
+
+  // replace colorChannel1 with customized color
+  if (attrs.fill === '#E5E5E5') {
+    attrs.fill = 'colorChannel1'
+  }
+
+  if (attrs.stroke === '#E5E5E5') {
+    attrs.stroke = 'colorChannel1'
+  }
 }

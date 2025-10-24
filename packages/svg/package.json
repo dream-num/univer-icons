@@ -21,8 +21,13 @@
   ],
   "sideEffects": false,
   "exports": {
-    "./manifest.json": "./manifest.json"
+    "./manifest": "./manifest.json"
   },
+  "files": [
+    "double",
+    "other",
+    "single"
+  ],
   "scripts": {
     "prepare": "tsx ./scripts/generate-manifest.ts"
   }

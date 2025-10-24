@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
+    "target": "ESNext",
     "jsx": "react-jsx",
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "resolveJsonModule": true,
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./dist/esm",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": [
     "./ts"
