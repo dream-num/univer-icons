@@ -1,0 +1,3 @@
+ts/*
+!ts/base.tsx
+dist

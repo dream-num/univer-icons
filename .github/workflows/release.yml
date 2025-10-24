@@ -59,13 +59,13 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 24
           registry-url: https://registry.npmjs.org
 
       - name: 🚚 Install & Build & Publish
         run: |
           pnpm i
-          pnpm generate && pnpm build
+          pnpm build
           pnpm publish --access public -r --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
