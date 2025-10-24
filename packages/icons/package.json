@@ -1,6 +1,6 @@
 {
   "name": "@univerjs/icons",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0",
   "description": "React icons for Univer.",
   "author": "DreamNum Co., Ltd. <developer@univer.ai>",
   "license": "MIT",
