@@ -21,11 +21,9 @@ function createComponentFiles() {
   for (const icons of groups) {
     for (const icon of icons) {
       const raw = readFileSync(icon.path, 'utf-8')
-
       const ast = parseSvg(raw)
       const element = normalizeAST(icon.name, ast.children as unknown as IconNode[])[0]
-
-      const tsx = getIconComponent({
+      const source = getIconComponent({
         element,
         name: icon.name,
         componentName: icon.componentName,
@@ -33,11 +31,11 @@ function createComponentFiles() {
 
       exportsFileLines.push(`export { ${icon.componentName} } from './${icon.name}';`)
 
-      writeFileSync(`${tsDir}/${icon.name}.tsx`, tsx)
+      writeFileSync(`${tsDir}/${icon.name}.ts`, source)
     }
   }
 
-  writeFileSync(`${tsDir}/index.tsx`, exportsFileLines.join('\n'), 'utf-8')
+  writeFileSync(`${tsDir}/index.ts`, exportsFileLines.join('\n'), 'utf-8')
 }
 
 function main() {

@@ -14,7 +14,7 @@
     "pnpm": ">=10"
   },
   "scripts": {
-    "build": "pnpm --filter ./packages/icons run build",
+    "build": "pnpm -r --filter ./packages/icons --filter ./packages/icons-vue run build",
     "lint": "eslint"
   },
   "dependencies": {
