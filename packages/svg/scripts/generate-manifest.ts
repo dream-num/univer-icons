@@ -8,12 +8,15 @@ function main() {
     cwd: currentPath,
   })
 
-  const manifest: Map<string, {
-    name: string
-    componentName: string
-    group: string
-    path: string
-  }[]> = new Map()
+  const manifest: Map<
+    string,
+    {
+      name: string
+      componentName: string
+      group: string
+      path: string
+    }[]
+  > = new Map()
 
   for (const filePath of svgFiles) {
     const key = filePath.split('/')[0]
@@ -28,7 +31,7 @@ function main() {
       name: iconName,
       componentName: iconName
         .split('-')
-        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
         .join(''),
       group: key,
       path: `${currentPath}/${filePath}`,

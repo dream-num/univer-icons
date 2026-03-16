@@ -1,12 +1,12 @@
-import type { IconNode } from './normalize-ast'
+import type { IconNode } from '#build/normalize-ast'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import manifest from '@univerjs/icons-svg/manifest'
+import manifest from '@univerjs/icons-svg/manifest' with { type: 'json' }
 import { rolldown } from 'rolldown'
-import { normalizeAST } from './normalize-ast'
-import { parseSvg } from './parse-svg'
-import { getIconComponent } from './templates'
+import { normalizeAST } from '#build/normalize-ast'
+import { parseSvg } from '#build/parse-svg'
+import { getIconComponent } from '#build/templates'
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
@@ -45,10 +45,7 @@ async function compileTsFile() {
   for (const icon of [{ name: 'base' }, ...Object.values(manifest).flat(), { name: 'index' }]) {
     const bundle = await rolldown({
       input: `ts/${icon.name}.tsx`,
-      external: [
-        /^react/,
-        /^.\//,
-      ],
+      external: [/^react/, /^.\//],
     })
 
     await bundle.write({

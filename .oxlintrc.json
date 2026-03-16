@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "oxc", "typescript", "unicorn", "react", "import"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error"
+  },
+  "ignorePatterns": ["dist/**", "coverage/**", "node_modules/**"],
+  "options": {
+    "reportUnusedDisableDirectives": "error"
+  },
+  "overrides": [
+    {
+      "files": ["packages/icons/scripts/**/*.ts", "packages/svg/scripts/**/*.ts"],
+      "env": {
+        "node": true
+      }
+    },
+    {
+      "files": ["packages/icons/ts/**/*.ts", "packages/icons/ts/**/*.tsx"],
+      "env": {
+        "browser": true
+      }
+    }
+  ]
+}
