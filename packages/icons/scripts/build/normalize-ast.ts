@@ -1,4 +1,4 @@
-import { camelCase } from './camel-case'
+import { camelCase } from '#build/camel-case'
 
 interface Attrs {
   style: object | string
@@ -26,10 +26,7 @@ interface NormalizationContext {
   idReplacementSet: Set<string>
 }
 
-function normalizeDefinitions(
-  node: IconElement,
-  context: NormalizationContext,
-) {
+function normalizeDefinitions(node: IconElement, context: NormalizationContext) {
   if (node.tag === 'defs') {
     node.children?.forEach((def) => {
       if (typeof def.attrs.id === 'string') {
@@ -63,12 +60,9 @@ function createNormalizationContext(): NormalizationContext {
 /**
  * map svg-parser ast to React element, so it would be convenient to render
  */
-function doNormalize(
-  roots: IconNode[],
-  context: NormalizationContext,
-): IconElement[] {
+function doNormalize(roots: IconNode[], context: NormalizationContext): IconElement[] {
   return roots
-    .map(node => ({
+    .map((node) => ({
       tag: node.tagName,
       attrs: node.properties,
       children: doNormalize(node.children, context),
@@ -95,17 +89,13 @@ function normalizeChildren(node: IconElement) {
 
 function addDefIds(root: IconElement, context: NormalizationContext) {
   const defIds = Array.from(context.idReplacementSet)
-  if (defIds.length === 0)
-    return
+  if (defIds.length === 0) return
   root.defIds = defIds
 }
 
 function replaceIds(name: string, str: string, set: Set<string>): string {
   return Array.from(set.keys()).reduce((parsed, currentToReplace) => {
-    return parsed.replace(
-      new RegExp(currentToReplace, 'g'),
-      `${name}_${currentToReplace}`,
-    )
+    return parsed.replace(new RegExp(currentToReplace, 'g'), `${name}_${currentToReplace}`)
   }, str)
 }
 
@@ -133,10 +123,7 @@ function normalizeClassName(node: IconElement) {
   }
 }
 
-export function normalizeAST(
-  name: string,
-  roots: IconNode[],
-): string[] {
+export function normalizeAST(name: string, roots: IconNode[]): string[] {
   const context = createNormalizationContext()
   const normalizedRoots = doNormalize(roots, context)
 
@@ -148,7 +135,7 @@ export function normalizeAST(
     normalizeWidthAndHeight(root)
   })
 
-  return normalizedRoots.map(root =>
+  return normalizedRoots.map((root) =>
     replaceIds(name, JSON.stringify(root), context.idReplacementSet),
   )
 }

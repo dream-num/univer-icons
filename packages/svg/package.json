@@ -29,6 +29,6 @@
     "single"
   ],
   "scripts": {
-    "prepare": "tsx ./scripts/generate-manifest.ts"
+    "prepare": "node --experimental-strip-types ./scripts/generate-manifest.ts"
   }
 }

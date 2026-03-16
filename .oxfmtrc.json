@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "semi": false,
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "trailingComma": "all",
+  "printWidth": 100,
+  "tabWidth": 2,
+  "insertFinalNewline": true,
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "coverage/**",
+    "dist/**",
+    "node_modules/**",
+    "pnpm-lock.yaml",
+    "packages/icons/ts/**"
+  ]
+}

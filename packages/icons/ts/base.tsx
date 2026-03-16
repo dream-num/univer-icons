@@ -44,9 +44,7 @@ export function IconBase({ ref, ...props }) {
   return render(
     icon,
     `${id}`,
-    // eslint-disable-next-line react-hooks/refs
     { defIds: icon.defIds, idSuffix: idSuffix.current },
-    // eslint-disable-next-line react-hooks/refs
     {
       ref,
       className: cls,
@@ -73,15 +71,8 @@ function render(
       ...replaceRuntimeIdsAndExtInAttrs(node, runtimeProps, extend),
       ...rootProps,
     },
-    (replaceRuntimeIdsInDefs(node, runtimeProps).children || []).map(
-      (child, index) =>
-        render(
-          child,
-          `${id}-${node.tag}-${index}`,
-          runtimeProps,
-          undefined,
-          extend,
-        ),
+    (replaceRuntimeIdsInDefs(node, runtimeProps).children || []).map((child, index) =>
+      render(child, `${id}-${node.tag}-${index}`, runtimeProps, undefined, extend),
     ),
   )
 }
@@ -104,10 +95,7 @@ function replaceRuntimeIdsAndExtInAttrs(
 
   Object.entries(attrs).forEach(([key, value]) => {
     if (key === 'mask' && typeof value === 'string') {
-      attrs[key] = value.replace(
-        /url\(#(.*)\)/,
-        `url(#$1${runtimeProps.idSuffix})`,
-      )
+      attrs[key] = value.replace(/url\(#(.*)\)/, `url(#$1${runtimeProps.idSuffix})`)
     }
   })
 
@@ -123,20 +111,14 @@ function replaceRuntimeIdsAndExtInAttrs(
   }
   Object.entries(attrs).forEach(([key, value]) => {
     if (typeof value === 'string') {
-      attrs[key] = value.replace(
-        /url\(#(.*)\)/,
-        `url(#$1${runtimeProps.idSuffix})`,
-      )
+      attrs[key] = value.replace(/url\(#(.*)\)/, `url(#$1${runtimeProps.idSuffix})`)
     }
   })
   return attrs
 }
 
 // Adds id-suffix to definitions, returns new node.
-function replaceRuntimeIdsInDefs(
-  node: IconElement,
-  runtimeProps: RuntimeProps,
-): IconElement {
+function replaceRuntimeIdsInDefs(node: IconElement, runtimeProps: RuntimeProps): IconElement {
   // If `defIds` is empty, do nothing
   const { defIds } = runtimeProps
   if (!defIds || defIds.length === 0) {
