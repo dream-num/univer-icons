@@ -1,4 +1,4 @@
-import type { CSSProperties, MouseEventHandler, ReactElement } from 'react'
+import type { CSSProperties, MouseEventHandler, ReactElement, Ref } from 'react'
 import { createElement, useRef } from 'react'
 
 export interface IconProps {
@@ -35,7 +35,7 @@ interface RuntimeProps {
   idSuffix: string
 }
 
-export function IconBase({ ref, ...props }) {
+export function IconBase({ ref, ...props }: { ref: Ref<SVGElement> } & IconFulfilledProps) {
   const { icon, id, className, extend, ...restProps } = props
   const cls = `univerjs-icon univerjs-icon-${id} ${className || ''}`.trim()
 

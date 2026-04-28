@@ -8,8 +8,8 @@ export function getIconComponent({
   componentName: string
 }) {
   return `import { createElement, forwardRef } from 'react'
-import type { IconProps } from './base'
-import { IconBase } from './base'
+import type { IconProps } from './base.js'
+import { IconBase } from './base.js'
 
 const element = ${element}
 

@@ -8,11 +8,11 @@ import { normalizeAST } from '#build/normalize-ast'
 import { parseSvg } from '#build/parse-svg'
 import { getIconComponent } from '#build/templates'
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url))
+const dirname = fileURLToPath(new URL('.', import.meta.url))
 
 function createComponentFiles() {
   const groups = Object.values(manifest)
-  const tsDir = resolve(__dirname, '../../ts')
+  const tsDir = resolve(dirname, '../../ts')
 
   if (!existsSync(tsDir)) {
     mkdirSync(tsDir)
@@ -32,7 +32,7 @@ function createComponentFiles() {
         componentName: icon.componentName,
       })
 
-      exportsFileLines.push(`export { ${icon.componentName} } from './${icon.name}';`)
+      exportsFileLines.push(`export { ${icon.componentName} } from './${icon.name}.js';`)
 
       writeFileSync(`${tsDir}/${icon.name}.tsx`, tsx)
     }

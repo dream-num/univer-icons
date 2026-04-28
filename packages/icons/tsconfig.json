@@ -7,6 +7,7 @@
     "resolveJsonModule": true,
     "declaration": true,
     "emitDeclarationOnly": true,
+    "rootDir": "./ts",
     "outDir": "./dist/esm",
     "esModuleInterop": true,
     "skipLibCheck": true

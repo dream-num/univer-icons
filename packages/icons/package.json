@@ -19,6 +19,7 @@
     "icons",
     "univer"
   ],
+  "type": "module",
   "sideEffects": false,
   "imports": {
     "#build/*": "./scripts/build/*.ts"
@@ -43,9 +44,9 @@
   "devDependencies": {
     "@types/svg-parser": "^2.0.6",
     "@univerjs/icons-svg": "workspace:*",
-    "rolldown": "1.0.0-rc.9",
+    "rolldown": "1.0.0-rc.17",
     "svg-parser": "^2.0.4",
     "svgo": "^4.0.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   }
 }
