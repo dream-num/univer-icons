@@ -23,6 +23,7 @@
   },
   "scripts": {
     "build": "pnpm --filter ./packages/icons run build",
+    "dev": "pnpm --filter ./packages/app run dev",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
     "lint": "oxlint .",

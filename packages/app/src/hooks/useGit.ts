@@ -63,7 +63,7 @@ export function useGit() {
         setCommitting(false)
       }
     },
-    [fetchStatus]
+    [fetchStatus],
   )
 
   useEffect(() => {

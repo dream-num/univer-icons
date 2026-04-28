@@ -1,9 +1,14 @@
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { Hono } from 'hono'
 import { simpleGit } from 'simple-git'
 
+const currentDir = dirname(fileURLToPath(import.meta.url))
+const repoRoot = resolve(currentDir, '../../../..')
+
 const gitRoutes = new Hono()
 
-const git = simpleGit()
+const git = simpleGit(repoRoot)
 
 gitRoutes.get('/status', async (c) => {
   const status = await git.status()
@@ -52,10 +57,13 @@ gitRoutes.post('/commit', async (c) => {
       remoteMessages: pushResult.remoteMessages.all,
     })
   } catch (error: any) {
-    return c.json({
-      error: 'Git operation failed',
-      details: error?.message || String(error),
-    }, 500)
+    return c.json(
+      {
+        error: 'Git operation failed',
+        details: error?.message || String(error),
+      },
+      500,
+    )
   }
 })
 

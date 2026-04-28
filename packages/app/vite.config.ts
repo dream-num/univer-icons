@@ -46,6 +46,9 @@ async function webToNodeResponse(webRes: Response, nodeRes: ServerResponse) {
 }
 
 export default defineConfig({
+  server: {
+    host: true,
+  },
   plugins: [
     react(),
     tailwindcss(),

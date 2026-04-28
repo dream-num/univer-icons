@@ -21,6 +21,23 @@
       "env": {
         "browser": true
       }
+    },
+    {
+      "files": ["packages/app/src/**/*.ts", "packages/app/src/**/*.tsx"],
+      "env": {
+        "browser": true,
+        "node": true
+      },
+      "rules": {
+        "react-in-jsx-scope": "off",
+        "import/no-unassigned-import": "off"
+      }
+    },
+    {
+      "files": ["packages/app/server/**/*.ts"],
+      "env": {
+        "node": true
+      }
     }
   ]
 }
