@@ -10,7 +10,8 @@
     "rootDir": "./ts",
     "outDir": "./dist/esm",
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node"]
   },
   "include": ["./ts"],
   "exclude": ["**/dist/**", "**/node_modules/**"]

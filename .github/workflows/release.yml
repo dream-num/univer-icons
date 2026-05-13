@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 🔏 Set all monorepo's package version
         run: |
@@ -46,17 +46,17 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: v${{ github.event.inputs.version }}
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           run_install: false
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
@@ -80,24 +80,3 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           repository: dream-num/univer.ai
           event-type: deploy
-
-  notify:
-    needs: [release-npm]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Invoke deployment hook
-        uses: distributhor/workflow-webhook@v3
-        with:
-          webhook_url: ${{ secrets.WEBHOOK_URL }}
-          data: >
-            {
-              "type": "release",
-              "version": "v${{ github.event.inputs.version }}",
-              "workflow": {
-                "id": "${{ github.run_id }}"
-              },
-              "preview": {
-                "📑 Docs": "https://univer.ai/icons"
-              }
-            }

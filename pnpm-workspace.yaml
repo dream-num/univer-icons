@@ -1,3 +1,5 @@
 packages:
   - packages/*
   - svg
+allowBuilds:
+  esbuild: true
