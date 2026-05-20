@@ -3,3 +3,6 @@ packages:
   - svg
 allowBuilds:
   esbuild: true
+  simple-git-hooks: true
+minimumReleaseAgeExclude:
+  - '@types/node@25.9.1'

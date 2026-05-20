@@ -44,8 +44,8 @@
   "devDependencies": {
     "@types/svg-parser": "^2.0.6",
     "@univerjs/icons-svg": "workspace:*",
-    "rolldown": "1.0.0",
-    "@types/node": "^25.7.0",
+    "rolldown": "1.0.1",
+    "@types/node": "^25.9.1",
     "svg-parser": "^2.0.4",
     "svgo": "^4.0.1",
     "typescript": "^6.0.3"

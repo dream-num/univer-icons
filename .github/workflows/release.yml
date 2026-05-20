@@ -12,12 +12,14 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   prepare:
     if: ${{ github.event.inputs.version != '' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -43,6 +45,9 @@ jobs:
   release-npm:
     needs: [prepare]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - name: Checkout
@@ -65,18 +70,6 @@ jobs:
         run: |
           pnpm i
           pnpm build
-          pnpm publish --access public -r --no-git-checks
+          pnpm publish --access public -r --no-git-checks --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  dispatch-docs:
-    needs: [release-npm]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Invoke deployment hook
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-          repository: dream-num/univer.ai
-          event-type: deploy
