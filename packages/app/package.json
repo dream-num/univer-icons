@@ -1,0 +1,19 @@
+{
+  "name": "@univerjs/icons-demo",
+  "version": "1.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@univerjs/icons": "workspace:*",
+    "@univerjs/icons-vue": "workspace:*",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "vue": "^3.5.35"
+  },
+  "devDependencies": {
+    "vite": "^7.2.7"
+  }
+}
