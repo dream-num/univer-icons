@@ -19,6 +19,19 @@ pnpm add @univerjs/icons
 yarn add @univerjs/icons
 ```
 
+For Vue 3 projects, install the Vue package:
+
+```bash
+# npm
+npm install @univerjs/icons-vue
+
+# pnpm
+pnpm add @univerjs/icons-vue
+
+# yarn
+yarn add @univerjs/icons-vue
+```
+
 ## Usage
 
 Use icons just like render a React component:
@@ -67,6 +80,33 @@ function App() {
     </>
   )
 }
+```
+
+## Vue 3 Usage
+
+Use icons as Vue components:
+
+```vue
+<script setup lang="ts">
+import { CopyIcon } from '@univerjs/icons-vue'
+</script>
+
+<template>
+  <CopyIcon class="toolbar-icon" style="font-size: 20px" />
+</template>
+```
+
+Vue icons follow the same sizing and color conventions:
+
+```vue
+<script setup lang="ts">
+import { PaintBucketDoubleIcon, SmileDoubleIcon } from '@univerjs/icons-vue'
+</script>
+
+<template>
+  <SmileDoubleIcon style="color: #3526de; font-size: 48px" />
+  <PaintBucketDoubleIcon style="font-size: 48px" :extend="{ colorChannel1: 'red' }" />
+</template>
 ```
 
 ### Icon source file

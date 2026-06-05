@@ -22,7 +22,7 @@
     ]
   },
   "scripts": {
-    "build": "pnpm --filter ./packages/icons run build",
+    "build": "pnpm --filter ./packages/icons run build && pnpm --filter ./packages/icons-vue run build",
     "dev": "pnpm build && pnpm --filter ./packages/app dev",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
@@ -36,7 +36,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "lint-staged": "^17.0.5",
-    "oxfmt": "^0.51.0",
+    "oxfmt": "^0.53.0",
     "oxlint": "^1.66.0",
     "simple-git-hooks": "^2.13.1",
     "typescript": "^6.0.3"
