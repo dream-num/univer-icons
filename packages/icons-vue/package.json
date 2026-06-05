@@ -1,7 +1,7 @@
 {
-  "name": "@univerjs/icons",
+  "name": "@univerjs/icons-vue",
   "version": "1.4.0",
-  "description": "React icons for Univer.",
+  "description": "Vue icons for Univer.",
   "author": "DreamNum Co., Ltd. <developer@univer.ai>",
   "license": "MIT",
   "homepage": "https://docs.univer.ai/icons",
@@ -17,7 +17,8 @@
   },
   "keywords": [
     "icons",
-    "univer"
+    "univer",
+    "vue"
   ],
   "type": "module",
   "sideEffects": false,
@@ -26,8 +27,9 @@
   },
   "exports": {
     ".": {
+      "types": "./dist/esm/index.d.ts",
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "require": "./dist/cjs/index.cjs"
     }
   },
   "main": "dist/esm/index.js",
@@ -38,8 +40,7 @@
     "build": "node --experimental-strip-types ./scripts/build/index.ts && tsc"
   },
   "peerDependencies": {
-    "react": "*",
-    "react-dom": "*"
+    "vue": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.9.1",
@@ -48,6 +49,7 @@
     "rolldown": "1.1.0",
     "svg-parser": "^2.0.4",
     "svgo": "^4.0.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vue": "^3.5.35"
   }
 }
