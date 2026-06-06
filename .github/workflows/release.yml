@@ -4,8 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Version
+        description: Version bump
         required: true
+        type: choice
+        default: patch
+        options:
+          - major
+          - minor
+          - patch
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,27 +26,81 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      version: ${{ steps.version.outputs.version }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: 🔏 Set all monorepo's package version
+      - name: 🔢 Compute release version
+        id: version
         run: |
-          node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./package.json', JSON.stringify(package, null, 2) + '\n');"
-          for package in $(ls packages); do
-            node -e "const fs = require('fs'); const package = JSON.parse(fs.readFileSync('./packages/$package/package.json')); package.version = '${{ github.event.inputs.version }}'; fs.writeFileSync('./packages/$package/package.json', JSON.stringify(package, null, 2) + '\n');"
-          done
+          node <<'NODE'
+          const fs = require('fs');
+          const bump = process.env.VERSION_BUMP;
+          const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+          const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(pkg.version);
+
+          if (!match) {
+            throw new Error(`Invalid package version: ${pkg.version}`);
+          }
+
+          let [, major, minor, patch] = match.map(Number);
+
+          if (bump === 'major') {
+            major += 1;
+            minor = 0;
+            patch = 0;
+          } else if (bump === 'minor') {
+            minor += 1;
+            patch = 0;
+          } else if (bump === 'patch') {
+            patch += 1;
+          } else {
+            throw new Error(`Invalid version bump: ${bump}`);
+          }
+
+          const version = `${major}.${minor}.${patch}`;
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\n`);
+          NODE
+        env:
+          VERSION_BUMP: ${{ github.event.inputs.version }}
+
+      - name: 🔏 Set all monorepo's package version
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          const version = process.env.RELEASE_VERSION;
+          const packagePaths = [
+            './package.json',
+            ...fs.readdirSync('./packages')
+              .map((dir) => `./packages/${dir}/package.json`)
+              .filter((filePath) => fs.existsSync(filePath)),
+          ];
+
+          for (const packagePath of packagePaths) {
+            const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+            pkg.version = version;
+            fs.writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`);
+            console.log(`${path.dirname(packagePath)} -> ${version}`);
+          }
+          NODE
 
       - name: 📝 Commit and push changes
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
           git add -A
-          git commit -m "chore(release): v${{ github.event.inputs.version }}" || exit 0
+          git commit -m "chore(release): v${RELEASE_VERSION}" || exit 0
           git push
-          git tag -a v${{ github.event.inputs.version }} -m "v${{ github.event.inputs.version }}"
-          git push origin v${{ github.event.inputs.version }}
+          git tag -a v${RELEASE_VERSION} -m "v${RELEASE_VERSION}"
+          git push origin v${RELEASE_VERSION}
 
   release-npm:
     needs: [prepare]
@@ -53,7 +113,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          ref: v${{ github.event.inputs.version }}
+          ref: v${{ needs.prepare.outputs.version }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
