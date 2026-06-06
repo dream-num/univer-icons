@@ -186,7 +186,7 @@ h1 {
   align-items: center;
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(4, auto);
+  grid-template-columns: minmax(220px, 1fr) repeat(4, auto);
 }
 
 .control-field {
@@ -210,6 +210,30 @@ h1 {
 
 .control-value {
   min-width: 58px;
+}
+
+.search-control {
+  grid-template-columns: auto minmax(120px, 1fr) auto;
+  min-width: 240px;
+}
+
+.search-control input[type='search'] {
+  appearance: none;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--foreground);
+  height: 28px;
+  min-width: 0;
+  padding: 0 9px;
+}
+
+.search-control input[type='search']::placeholder {
+  color: var(--muted-foreground);
+}
+
+.search-count {
+  text-align: right;
 }
 
 .control-field input[type='color'] {
@@ -336,6 +360,29 @@ h1 {
   grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
 }
 
+.empty-state {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+}
+
+.empty-state h2 {
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.empty-state p {
+  color: var(--muted-foreground);
+  font-size: 0.86rem;
+  margin: 6px 0 0;
+  overflow-wrap: anywhere;
+}
+
 .icon-card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -396,6 +443,10 @@ h1 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .search-control {
+    grid-column: 1 / -1;
+  }
+
   .reset-button {
     width: 100%;
   }
@@ -432,6 +483,10 @@ h1 {
   .control-field,
   .size-control {
     grid-template-columns: auto 1fr auto;
+  }
+
+  .search-control {
+    min-width: 0;
   }
 
   .icon-grid {

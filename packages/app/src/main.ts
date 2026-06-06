@@ -1,81 +1,28 @@
 import * as ReactIcons from '@univerjs/icons'
 import * as VueIcons from '@univerjs/icons-vue'
-import { createElement, type CSSProperties, type ReactNode } from 'react'
+import { createElement, type CSSProperties, type ReactNode, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createApp, h, type VNode } from 'vue'
+import { computed, createApp, h, ref, type VNode } from 'vue'
+import {
+  createIconGroups,
+  filterIconGroups,
+  getGroupIconCount,
+  getTotalIconCount,
+  type IconEntry,
+  type IconGroup,
+  type IconSubgroup,
+  type IconSubgroupId,
+} from './catalogue.ts'
+// @ts-expect-error - CSS modules with bundler resolution
 import styles from './styles.css?inline'
 
 type Framework = 'react' | 'vue'
-
-type IconEntry = {
-  component: unknown
-  name: string
-}
-
-type IconGroup = {
-  description: string
-  id: IconGroupId
-  subgroups: IconSubgroup[]
-  title: string
-}
-
-type IconGroupId = 'double' | 'multi' | 'single'
-
-type IconSubgroup = {
-  description: string
-  id: IconSubgroupId
-  items: IconEntry[]
-  title: string
-}
-
-type IconSubgroupId = 'double' | 'general' | 'multi' | 'shape'
 
 const defaultSettings = {
   color: '#18181b',
   colorChannel1: '#facc15',
   size: 32,
 }
-
-const groupMeta: Array<Omit<IconGroup, 'subgroups'>> = [
-  {
-    id: 'single',
-    title: 'Single',
-    description: 'Single-color icons driven by currentColor, including shape icons.',
-  },
-  {
-    id: 'double',
-    title: 'Double',
-    description: 'Icons that expose colorChannel1 for secondary fills.',
-  },
-  {
-    id: 'multi',
-    title: 'Multi',
-    description: 'Document and product-style multi-color icons.',
-  },
-]
-
-const subgroupMeta = {
-  double: {
-    id: 'double',
-    title: 'Double',
-    description: 'Icons with a secondary color channel.',
-  },
-  general: {
-    id: 'general',
-    title: 'General',
-    description: 'Single-color utility, toolbar, document, and progress icons.',
-  },
-  multi: {
-    id: 'multi',
-    title: 'Multi',
-    description: 'Multi-color document and product icons.',
-  },
-  shape: {
-    id: 'shape',
-    title: 'Shape',
-    description: 'Drawing, connector, callout, arrow, and chart shape icons.',
-  },
-} satisfies Record<IconSubgroupId, Omit<IconSubgroup, 'items'>>
 
 const root = document.querySelector<HTMLElement>('#app')
 
@@ -91,59 +38,6 @@ if (location.pathname === '/') {
   renderVueDemo(root)
 } else {
   renderReactDemo(root)
-}
-
-function createIconGroups(iconModule: Record<string, unknown>): IconGroup[] {
-  const groupedEntries = new Map<IconSubgroupId, IconEntry[]>()
-
-  Object.keys(subgroupMeta).forEach((id) => groupedEntries.set(id as IconSubgroupId, []))
-
-  Object.entries(iconModule)
-    .filter(([name, component]) => name.endsWith('Icon') && Boolean(component))
-    .toSorted(([nameA], [nameB]) => nameA.localeCompare(nameB))
-    .forEach(([name, component]) => {
-      groupedEntries.get(getIconSubgroupId(name))?.push({ component, name })
-    })
-
-  return groupMeta.map((group) => ({
-    ...group,
-    subgroups: getSubgroupIds(group.id).map((id) => ({
-      ...subgroupMeta[id],
-      items: groupedEntries.get(id) ?? [],
-    })),
-  }))
-}
-
-function getIconSubgroupId(name: string): IconSubgroupId {
-  if (name.endsWith('DoubleIcon')) {
-    return 'double'
-  }
-
-  if (name.endsWith('MultiIcon')) {
-    return 'multi'
-  }
-
-  if (name.startsWith('Shape')) {
-    return 'shape'
-  }
-
-  return 'general'
-}
-
-function getSubgroupIds(groupId: IconGroupId): IconSubgroupId[] {
-  if (groupId === 'single') {
-    return ['general', 'shape']
-  }
-
-  return [groupId]
-}
-
-function getTotalIconCount(groups: IconGroup[]) {
-  return groups.reduce((count, group) => count + getGroupIconCount(group), 0)
-}
-
-function getGroupIconCount(group: IconGroup) {
-  return group.subgroups.reduce((count, subgroup) => count + subgroup.items.length, 0)
 }
 
 function getDemoStyle() {
@@ -182,21 +76,31 @@ function ReactDemoShell({
   packageName: string
   totalCount: number
 }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const searchResult = useMemo(() => filterIconGroups(groups, searchTerm), [groups, searchTerm])
+
   return createElement(
     'main',
     { className: 'demo-shell', style: getDemoStyle() },
     createElement(Header, { active }),
     createElement(Hero, { active, packageName, totalCount }),
-    createElement(ReactToolbar),
+    createElement(ReactToolbar, {
+      matchCount: searchResult.matchCount,
+      onSearchTermChange: setSearchTerm,
+      searchTerm,
+      totalCount,
+    }),
     createElement(
       'section',
       { className: 'catalogue', 'aria-label': 'Icon groups' },
-      groups.map((group) =>
-        createElement(ReactIconGroupSection, {
-          group,
-          key: group.id,
-        }),
-      ),
+      searchResult.groups.length === 0
+        ? createElement(EmptyState, { searchTerm })
+        : searchResult.groups.map((group) =>
+            createElement(ReactIconGroupSection, {
+              group,
+              key: group.id,
+            }),
+          ),
     ),
   )
 }
@@ -241,15 +145,28 @@ function Hero({
   )
 }
 
-function ReactToolbar() {
+function ReactToolbar({
+  matchCount,
+  onSearchTermChange,
+  searchTerm,
+  totalCount,
+}: {
+  matchCount: number
+  onSearchTermChange: (value: string) => void
+  searchTerm: string
+  totalCount: number
+}) {
   return createElement(
     'section',
     { className: 'toolbar', 'aria-label': 'Icon preview controls' },
-    createElement('div', { className: 'toolbar-copy' }, [
-      createElement('h2', { key: 'title' }, 'Preview controls'),
-      createElement('p', { key: 'copy' }, 'Tune shared icon rendering without changing imports.'),
-    ]),
     createElement('div', { className: 'control-grid' }, [
+      createElement(SearchControl, {
+        key: 'search',
+        matchCount,
+        onSearchTermChange,
+        searchTerm,
+        totalCount,
+      }),
       createElement(ColorControl, {
         key: 'color',
         defaultValue: defaultSettings.color,
@@ -274,6 +191,39 @@ function ReactToolbar() {
         'Reset',
       ),
     ]),
+  )
+}
+
+function SearchControl({
+  matchCount,
+  onSearchTermChange,
+  searchTerm,
+  totalCount,
+}: {
+  matchCount: number
+  onSearchTermChange: (value: string) => void
+  searchTerm: string
+  totalCount: number
+}) {
+  return createElement(
+    'label',
+    { className: 'control-field search-control' },
+    createElement('span', { className: 'control-label' }, 'Search'),
+    createElement('input', {
+      autoCapitalize: 'none',
+      autoComplete: 'off',
+      onInput: (event: { currentTarget: HTMLInputElement }) =>
+        onSearchTermChange(event.currentTarget.value),
+      placeholder: 'Icon name',
+      spellCheck: false,
+      type: 'search',
+      value: searchTerm,
+    }),
+    createElement(
+      'span',
+      { className: 'control-value search-count' },
+      `${matchCount}/${totalCount}`,
+    ),
   )
 }
 
@@ -404,10 +354,28 @@ function createReactIconCard(icon: IconEntry, subgroupId: IconSubgroupId): React
   )
 }
 
+function EmptyState({ searchTerm }: { searchTerm: string }) {
+  return createElement(
+    'div',
+    { className: 'empty-state' },
+    createElement('h2', null, 'No icons found'),
+    createElement('p', null, searchTerm.trim() || 'Search'),
+  )
+}
+
 function renderVueDemo(container: HTMLElement) {
   const groups = createIconGroups(VueIcons)
 
   createApp({
+    setup() {
+      const searchTerm = ref('')
+      const searchResult = computed(() => filterIconGroups(groups, searchTerm.value))
+
+      return {
+        searchResult,
+        searchTerm,
+      }
+    },
     render() {
       return h('main', { class: 'demo-shell', style: getDemoStyle() }, [
         h(VueHeader, { active: 'vue' }),
@@ -416,11 +384,22 @@ function renderVueDemo(container: HTMLElement) {
           packageName: '@univerjs/icons-vue',
           totalCount: getTotalIconCount(groups),
         }),
-        h(VueToolbar),
+        h(VueToolbar, {
+          matchCount: this.searchResult.matchCount,
+          onSearchTermChange: (value: string) => {
+            this.searchTerm = value
+          },
+          searchTerm: this.searchTerm,
+          totalCount: getTotalIconCount(groups),
+        }),
         h(
           'section',
           { class: 'catalogue', 'aria-label': 'Icon groups' },
-          groups.map((group) => h(VueIconGroupSection, { group, key: group.id })),
+          this.searchResult.groups.length === 0
+            ? h(VueEmptyState, { searchTerm: this.searchTerm })
+            : this.searchResult.groups.map((group) =>
+                h(VueIconGroupSection, { group, key: group.id }),
+              ),
         ),
       ])
     },
@@ -449,13 +428,15 @@ function VueHero(props: { active: Framework; packageName: string; totalCount: nu
   ])
 }
 
-function VueToolbar(): VNode {
+function VueToolbar(props: {
+  matchCount: number
+  onSearchTermChange: (value: string) => void
+  searchTerm: string
+  totalCount: number
+}): VNode {
   return h('section', { class: 'toolbar', 'aria-label': 'Icon preview controls' }, [
-    h('div', { class: 'toolbar-copy' }, [
-      h('h2', null, 'Preview controls'),
-      h('p', null, 'Tune shared icon rendering without changing imports.'),
-    ]),
     h('div', { class: 'control-grid' }, [
+      createVueSearchControl(props),
       createVueColorControl('color', 'Color', defaultSettings.color),
       createVueColorControl('colorChannel1', 'colorChannel1', defaultSettings.colorChannel1),
       createVueSizeControl(),
@@ -469,6 +450,33 @@ function VueToolbar(): VNode {
         'Reset',
       ),
     ]),
+  ])
+}
+
+function createVueSearchControl({
+  matchCount,
+  onSearchTermChange,
+  searchTerm,
+  totalCount,
+}: {
+  matchCount: number
+  onSearchTermChange: (value: string) => void
+  searchTerm: string
+  totalCount: number
+}): VNode {
+  return h('label', { class: 'control-field search-control' }, [
+    h('span', { class: 'control-label' }, 'Search'),
+    h('input', {
+      autocapitalize: 'none',
+      autocomplete: 'off',
+      onInput: (event: Event) =>
+        onSearchTermChange((event.currentTarget as HTMLInputElement).value),
+      placeholder: 'Icon name',
+      spellcheck: 'false',
+      type: 'search',
+      value: searchTerm,
+    }),
+    h('span', { class: 'control-value search-count' }, `${matchCount}/${totalCount}`),
   ])
 }
 
@@ -559,6 +567,13 @@ function createVueIconCard(icon: IconEntry, subgroupId: IconSubgroupId): VNode {
       }),
     ]),
     h('div', { class: 'icon-copy' }, [h('h3', null, icon.name), h('p', null, subgroupId)]),
+  ])
+}
+
+function VueEmptyState(props: { searchTerm: string }): VNode {
+  return h('div', { class: 'empty-state' }, [
+    h('h2', null, 'No icons found'),
+    h('p', null, props.searchTerm.trim() || 'Search'),
   ])
 }
 
