@@ -53,7 +53,7 @@ export const subgroupMeta = {
   general: {
     id: 'general',
     title: 'General',
-    description: 'Single-color utility, toolbar, document, and progress icons.',
+    description: 'Single-color utility, toolbar, and document icons.',
   },
   multi: {
     id: 'multi',
