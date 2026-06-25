@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.14.0](https://github.com/dream-num/univer-icons/compare/v1.13.0...v1.14.0) (2026-06-25)
+
+### Features
+
+* update single icon set ([9beb1b3](https://github.com/dream-num/univer-icons/commit/9beb1b35317ed3e0ab813c5f5ad43ff3c950d68f))
+
 ## [1.13.0](https://github.com/dream-num/univer-icons/compare/v1.12.0...v1.13.0) (2026-06-25)
 
 ### Features
