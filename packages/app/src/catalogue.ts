@@ -1,6 +1,8 @@
 export type IconEntry = {
-  component: unknown
+  group: IconGroupId
   name: string
+  sourcePath: string
+  svg: string
 }
 
 export type IconGroup = {
@@ -67,27 +69,6 @@ export const subgroupMeta = {
   },
 } satisfies Record<IconSubgroupId, Omit<IconSubgroup, 'items'>>
 
-export function createIconGroups(iconModule: Record<string, unknown>): IconGroup[] {
-  const groupedEntries = new Map<IconSubgroupId, IconEntry[]>()
-
-  Object.keys(subgroupMeta).forEach((id) => groupedEntries.set(id as IconSubgroupId, []))
-
-  Object.entries(iconModule)
-    .filter(([name, component]) => name.endsWith('Icon') && Boolean(component))
-    .toSorted(([nameA], [nameB]) => nameA.localeCompare(nameB))
-    .forEach(([name, component]) => {
-      groupedEntries.get(getIconSubgroupId(name))?.push({ component, name })
-    })
-
-  return groupMeta.map((group) => ({
-    ...group,
-    subgroups: getSubgroupIds(group.id).map((id) => ({
-      ...subgroupMeta[id],
-      items: groupedEntries.get(id) ?? [],
-    })),
-  }))
-}
-
 export function filterIconGroups(groups: IconGroup[], searchTerm: string): IconSearchResult {
   const terms = normalizeSearchTerm(searchTerm)
 
@@ -128,30 +109,6 @@ export function getTotalIconCount(groups: IconGroup[]) {
 
 export function getGroupIconCount(group: IconGroup) {
   return group.subgroups.reduce((count, subgroup) => count + subgroup.items.length, 0)
-}
-
-function getIconSubgroupId(name: string): IconSubgroupId {
-  if (name.endsWith('DoubleIcon')) {
-    return 'double'
-  }
-
-  if (name.endsWith('MultiIcon')) {
-    return 'multi'
-  }
-
-  if (name.startsWith('Shape')) {
-    return 'shape'
-  }
-
-  return 'general'
-}
-
-function getSubgroupIds(groupId: IconGroupId): IconSubgroupId[] {
-  if (groupId === 'single') {
-    return ['general', 'shape']
-  }
-
-  return [groupId]
 }
 
 function normalizeSearchTerm(searchTerm: string) {

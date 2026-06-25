@@ -22,7 +22,7 @@
   "type": "module",
   "sideEffects": false,
   "imports": {
-    "#build/*": "./scripts/build/*.ts"
+    "#build/*": "./scripts/build/*.mts"
   },
   "exports": {
     ".": {
@@ -36,7 +36,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "node --experimental-strip-types ./scripts/build/index.ts && tsc"
+    "build": "node --experimental-strip-types ./scripts/build/index.mts && tsc"
   },
   "peerDependencies": {
     "react": "*",
@@ -46,7 +46,7 @@
     "@types/node": "^26.0.0",
     "@types/svg-parser": "^2.0.6",
     "@univerjs/icons-svg": "workspace:*",
-    "rolldown": "1.1.0",
+    "rolldown": "1.1.2",
     "svg-parser": "^2.0.4",
     "svgo": "^4.0.1",
     "typescript": "^6.0.3"

@@ -4,16 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1"
+    "dev": "vite --host 127.0.0.1",
+    "test:svg-catalogue": "node --experimental-strip-types src/svg-catalogue.test.ts"
   },
   "dependencies": {
-    "@univerjs/icons": "workspace:*",
-    "@univerjs/icons-vue": "workspace:*",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "vue": "^3.5.35"
+    "react-dom": "^19.2.6"
   },
   "devDependencies": {
-    "vite": "^7.2.7"
+    "@tailwindcss/vite": "^4.3.1",
+    "tailwindcss": "^4.3.1",
+    "vite": "^8.1.0"
   }
 }

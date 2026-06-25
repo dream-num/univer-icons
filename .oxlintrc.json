@@ -11,7 +11,11 @@
   },
   "overrides": [
     {
-      "files": ["packages/icons/scripts/**/*.ts", "packages/svg/scripts/**/*.ts"],
+      "files": [
+        "packages/icons/scripts/**/*.mts",
+        "packages/icons-vue/scripts/**/*.mts",
+        "packages/svg/scripts/**/*.mts"
+      ],
       "env": {
         "node": true
       }
