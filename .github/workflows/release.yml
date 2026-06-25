@@ -32,6 +32,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
 
       - name: 🔢 Compute release version
         id: version
@@ -67,40 +72,15 @@ jobs:
         env:
           VERSION_BUMP: ${{ github.event.inputs.version }}
 
-      - name: 🔏 Set all monorepo's package version
+      - name: Configure git author
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: 📝 Create release commit and tag
         env:
           RELEASE_VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          node <<'NODE'
-          const fs = require('fs');
-          const path = require('path');
-          const version = process.env.RELEASE_VERSION;
-          const packagePaths = [
-            './package.json',
-            ...fs.readdirSync('./packages')
-              .map((dir) => `./packages/${dir}/package.json`)
-              .filter((filePath) => fs.existsSync(filePath)),
-          ];
-
-          for (const packagePath of packagePaths) {
-            const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-            pkg.version = version;
-            fs.writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`);
-            console.log(`${path.dirname(packagePath)} -> ${version}`);
-          }
-          NODE
-
-      - name: 📝 Commit and push changes
-        env:
-          RELEASE_VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git add -A
-          git commit -m "chore(release): v${RELEASE_VERSION}" || exit 0
-          git push
-          git tag -a v${RELEASE_VERSION} -m "v${RELEASE_VERSION}"
-          git push origin v${RELEASE_VERSION}
+        run: pnpm release -- --version "${RELEASE_VERSION}" --yes
 
   release-npm:
     needs: [prepare]

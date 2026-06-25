@@ -2,7 +2,7 @@
   "name": "@univerjs/icons-workspace",
   "version": "1.12.0",
   "private": true,
-  "packageManager": "pnpm@11.5.1",
+  "packageManager": "pnpm@11.9.0",
   "description": "Icons used by Univer",
   "author": "DreamNum Co., Ltd. <developer@univer.ai>",
   "license": "MIT",
@@ -29,15 +29,17 @@
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
     "lint:staged": "lint-staged",
-    "prepare": "simple-git-hooks"
+    "prepare": "simple-git-hooks",
+    "release": "verso"
   },
   "devDependencies": {
-    "@types/node": "^25.9.0",
-    "@types/react": "^19.2.14",
+    "@types/node": "^26.0.0",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "lint-staged": "^17.0.5",
-    "oxfmt": "^0.53.0",
-    "oxlint": "^1.66.0",
+    "@univerkit/verso": "1.0.0-alpha.2",
+    "lint-staged": "^17.0.8",
+    "oxfmt": "^0.56.0",
+    "oxlint": "^1.71.0",
     "simple-git-hooks": "^2.13.1",
     "typescript": "^6.0.3"
   },
