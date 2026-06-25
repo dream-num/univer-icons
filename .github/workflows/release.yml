@@ -4,11 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Version bump
+        description: Version bump or current version
         required: true
         type: choice
         default: patch
         options:
+          - current
           - major
           - minor
           - patch
@@ -45,29 +46,35 @@ jobs:
           const fs = require('fs');
           const bump = process.env.VERSION_BUMP;
           const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
-          const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(pkg.version);
+          let version = pkg.version;
 
-          if (!match) {
-            throw new Error(`Invalid package version: ${pkg.version}`);
-          }
-
-          let [, major, minor, patch] = match.map(Number);
-
-          if (bump === 'major') {
-            major += 1;
-            minor = 0;
-            patch = 0;
-          } else if (bump === 'minor') {
-            minor += 1;
-            patch = 0;
-          } else if (bump === 'patch') {
-            patch += 1;
+          if (bump === 'current') {
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\n`);
           } else {
-            throw new Error(`Invalid version bump: ${bump}`);
-          }
+            const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(version);
 
-          const version = `${major}.${minor}.${patch}`;
-          fs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\n`);
+            if (!match) {
+              throw new Error(`Invalid package version for ${bump} bump: ${version}`);
+            }
+
+            let [, major, minor, patch] = match.map(Number);
+
+            if (bump === 'major') {
+              major += 1;
+              minor = 0;
+              patch = 0;
+            } else if (bump === 'minor') {
+              minor += 1;
+              patch = 0;
+            } else if (bump === 'patch') {
+              patch += 1;
+            } else {
+              throw new Error(`Invalid version bump: ${bump}`);
+            }
+
+            version = `${major}.${minor}.${patch}`;
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\n`);
+          }
           NODE
         env:
           VERSION_BUMP: ${{ github.event.inputs.version }}
