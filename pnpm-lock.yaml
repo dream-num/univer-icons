@@ -18,8 +18,8 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@univerkit/verso':
-        specifier: 1.0.0-alpha.2
-        version: 1.0.0-alpha.2
+        specifier: 1.0.0-beta.0
+        version: 1.0.0-beta.0
       lint-staged:
         specifier: ^17.0.8
         version: 17.0.8
@@ -777,33 +777,33 @@ packages:
   '@types/svg-parser@2.0.6':
     resolution: {integrity: sha512-xrXwOltwMcLrKy79rv4MoalnD82oYLyXAVeeSyrkvR7XdCH4i7YqLNQWxyZ8KPpawtQShiKOse+pmtLeSLtCfQ==}
 
-  '@univerkit/verso-darwin-arm64@1.0.0-alpha.2':
-    resolution: {integrity: sha512-OWqSykhFFytbWC8cyFFgI+0Ji2DTBpbTkszDuu+OSBuXja7i56XgLgu+IAbnwvgkpK0w8fBVTD2+46FF+EuFvQ==}
+  '@univerkit/verso-darwin-arm64@1.0.0-beta.0':
+    resolution: {integrity: sha512-Rs7G7h02cu7ksL6798Fpxm2FTlaiaw+jYH2NVLSNWjnTBBAVFWl0BAD8BhI/e1H23qoTdx2jsjDlzTZhsZMSKw==}
     cpu: [arm64]
     os: [darwin]
 
-  '@univerkit/verso-darwin-x64@1.0.0-alpha.2':
-    resolution: {integrity: sha512-BPMPzVzrGKVre8Rbu1Hasm0Dp0nHlxR+OkfFZhglJPHxURh2rrMFKvv+af7jsYvGi+rwfBauOOuibUDUaBhljw==}
+  '@univerkit/verso-darwin-x64@1.0.0-beta.0':
+    resolution: {integrity: sha512-P0nsAoyhs12eKxPV71hc9IO5mBq/dfZN8zJKEYk+lvXOZ1v5s6AKjHQksPG3jUkZUMLBYkgIsFQkins77A9qUQ==}
     cpu: [x64]
     os: [darwin]
 
-  '@univerkit/verso-linux-arm64@1.0.0-alpha.2':
-    resolution: {integrity: sha512-AW+854poSx6H0+XHRLM9p2k1JclD6Vng8lrwOB+Q6Xk0umo9x0aC8DtDspy86Mh4U6+j26Ztte8sQtodjzOALg==}
+  '@univerkit/verso-linux-arm64@1.0.0-beta.0':
+    resolution: {integrity: sha512-T1B5dhKSlmRHyqFfhk+CbdQNAYPd4sLHP63OjVS+2mT4t/3TAK8B7NpJDG79erLRBg3WXAhJ2u1szCJKxsj7KQ==}
     cpu: [arm64]
     os: [linux]
 
-  '@univerkit/verso-linux-x64@1.0.0-alpha.2':
-    resolution: {integrity: sha512-plTIhzCE+FDO/SORYSXHGUJZ8cxBCFZjdxdGvq5JL0ZKLoOXa3ZD7yqVQFXREj33JFw5fozoXjhM5z3GB5Fbqg==}
+  '@univerkit/verso-linux-x64@1.0.0-beta.0':
+    resolution: {integrity: sha512-MpvIWleWHKoM7bXGBVBHebBmR5p0/0poJn944GdDXwkz5oJeSDQkYlArF6sukxPrSOv7O37dqtrf4wQt5+yTdg==}
     cpu: [x64]
     os: [linux]
 
-  '@univerkit/verso-win32-x64@1.0.0-alpha.2':
-    resolution: {integrity: sha512-VEwGnC5MaOAX2i4vcQdRYY65HfIHXo6ag7uPRr81xCBwsbKsXwi70RM8SdZpE+dRXEbUOwsYFS+wHKZVOAba2w==}
+  '@univerkit/verso-win32-x64@1.0.0-beta.0':
+    resolution: {integrity: sha512-zhvO09oalUamgF+7jpxSGuymtCY1NaZ6mNKSYcUEbJhvNf9r9lFu/61nnd71uXoRZbPzjEU34fq+iK9E3l7k4w==}
     cpu: [x64]
     os: [win32]
 
-  '@univerkit/verso@1.0.0-alpha.2':
-    resolution: {integrity: sha512-zAd9wRi5d8KKW3O0OqUi4aWrF4O5q5rAMQIqJ7BlUyDv/Su8rr3ccMl37m/YOD6lHIMeOUZyqa/BEPIPGdsp0g==}
+  '@univerkit/verso@1.0.0-beta.0':
+    resolution: {integrity: sha512-p7GUHRUIlE4vw5Tfi9dQkFzESgtIk2VbD5RGI6p4nm6wgvVvc6HxSPUUByOT4f8MCc8EbBRyIEM8AeHryT3OHQ==}
     engines: {node: '>=22.18.0'}
     hasBin: true
 
@@ -1665,28 +1665,28 @@ snapshots:
 
   '@types/svg-parser@2.0.6': {}
 
-  '@univerkit/verso-darwin-arm64@1.0.0-alpha.2':
+  '@univerkit/verso-darwin-arm64@1.0.0-beta.0':
     optional: true
 
-  '@univerkit/verso-darwin-x64@1.0.0-alpha.2':
+  '@univerkit/verso-darwin-x64@1.0.0-beta.0':
     optional: true
 
-  '@univerkit/verso-linux-arm64@1.0.0-alpha.2':
+  '@univerkit/verso-linux-arm64@1.0.0-beta.0':
     optional: true
 
-  '@univerkit/verso-linux-x64@1.0.0-alpha.2':
+  '@univerkit/verso-linux-x64@1.0.0-beta.0':
     optional: true
 
-  '@univerkit/verso-win32-x64@1.0.0-alpha.2':
+  '@univerkit/verso-win32-x64@1.0.0-beta.0':
     optional: true
 
-  '@univerkit/verso@1.0.0-alpha.2':
+  '@univerkit/verso@1.0.0-beta.0':
     optionalDependencies:
-      '@univerkit/verso-darwin-arm64': 1.0.0-alpha.2
-      '@univerkit/verso-darwin-x64': 1.0.0-alpha.2
-      '@univerkit/verso-linux-arm64': 1.0.0-alpha.2
-      '@univerkit/verso-linux-x64': 1.0.0-alpha.2
-      '@univerkit/verso-win32-x64': 1.0.0-alpha.2
+      '@univerkit/verso-darwin-arm64': 1.0.0-beta.0
+      '@univerkit/verso-darwin-x64': 1.0.0-beta.0
+      '@univerkit/verso-linux-arm64': 1.0.0-beta.0
+      '@univerkit/verso-linux-x64': 1.0.0-beta.0
+      '@univerkit/verso-win32-x64': 1.0.0-beta.0
 
   '@vue/compiler-core@3.5.38':
     dependencies:
