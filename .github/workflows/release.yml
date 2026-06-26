@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -98,7 +98,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: v${{ needs.prepare.outputs.version }}
 
@@ -120,3 +120,15 @@ jobs:
           pnpm publish --access public -r --no-git-checks --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  deploy-demo:
+    needs: [prepare, release-npm]
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: 🚀 Trigger demo deployment
+        run: gh workflow run deploy-demo.yml --ref "v$RELEASE_VERSION"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
