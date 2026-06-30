@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.15.0](https://github.com/dream-num/univer-icons/compare/v1.14.0...v1.15.0) (2026-06-30)
+
+### Features
+
+* add Univer product icons ([c880cf9](https://github.com/dream-num/univer-icons/commit/c880cf9d2dbdc0d7226977f0415421d1d5d569a6))
+
+### Other Changes (chore)
+
+* update dependencies ([7924d49](https://github.com/dream-num/univer-icons/commit/7924d49f22727531a42179a0fb9a1580a5c7b3cf))
+
+### Other Changes (ci)
+
+* deploy demo after release ([b655618](https://github.com/dream-num/univer-icons/commit/b6556180bb06805d435d65eb549a254f93440cd6))
+
 ## [1.14.0](https://github.com/dream-num/univer-icons/compare/v1.13.0...v1.14.0) (2026-06-25)
 
 ### Features
