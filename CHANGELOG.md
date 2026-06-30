@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.15.1](https://github.com/dream-num/univer-icons/compare/v1.15.0...v1.15.1) (2026-06-30)
+
+### Other Changes (chore)
+
+* **svg:** remove legacy singular multi icons ([13198d9](https://github.com/dream-num/univer-icons/commit/13198d961de65225e7d3fd5cf6d4177140746072))
+
+### Other Changes (ci)
+
+* fix deploy demo workflow trigger repo context ([e42b460](https://github.com/dream-num/univer-icons/commit/e42b46046614669fba3119f11d47a01b3d841d80))
+
 ## [1.15.0](https://github.com/dream-num/univer-icons/compare/v1.14.0...v1.15.0) (2026-06-30)
 
 ### Features
