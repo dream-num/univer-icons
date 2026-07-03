@@ -21,12 +21,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
 
       - name: Test demo catalogue
-        run: pnpm --filter ./packages/app test:svg-catalogue
+        run: pnpm --filter ./packages/app test
 
       - name: Build demo
         run: pnpm --filter ./packages/app exec vite build --base=/univer-icons/

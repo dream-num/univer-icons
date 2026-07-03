@@ -6,29 +6,32 @@ import {
   type IconGroupId,
   type IconSubgroupId,
 } from './catalogue.ts'
+import { createIconMetadata } from '../../svg/icon-metadata.mts'
 
 type SvgGroupId = 'double' | 'other' | 'single'
 
 const svgPathPattern = /(?:^|\/)(double|other|single)\/([^/]+)\.svg$/
 
 export function createSvgIconGroups(svgModules: Record<string, string>): IconGroup[] {
-  const groupedEntries = new Map<IconSubgroupId, IconEntry[]>()
+  const groupedEntries = new Map<IconGroupId, Map<IconSubgroupId, IconEntry[]>>()
 
-  Object.keys(subgroupMeta).forEach((id) => groupedEntries.set(id as IconSubgroupId, []))
+  groupMeta.forEach((group) => {
+    groupedEntries.set(group.id, new Map(getSubgroupIds(group.id).map((id) => [id, []])))
+  })
 
   Object.entries(svgModules)
     .map(([sourcePath, svg]) => createSvgIconEntry(sourcePath, svg))
     .filter((entry): entry is IconEntry => Boolean(entry))
     .toSorted((iconA, iconB) => iconA.name.localeCompare(iconB.name))
     .forEach((icon) => {
-      groupedEntries.get(getIconSubgroupId(icon.name, icon.group))?.push(icon)
+      groupedEntries.get(icon.group)?.get(getIconSubgroupId(icon))?.push(icon)
     })
 
   return groupMeta.map((group) => ({
     ...group,
     subgroups: getSubgroupIds(group.id).map((id) => ({
       ...subgroupMeta[id],
-      items: groupedEntries.get(id) ?? [],
+      items: groupedEntries.get(group.id)?.get(id) ?? [],
     })),
   }))
 }
@@ -40,13 +43,18 @@ function createSvgIconEntry(sourcePath: string, svg: string): IconEntry | null {
     return null
   }
 
-  const [, rawGroup, fileName] = match as [string, SvgGroupId, string]
+  const [, rawGroup, fileName] = match
+
+  if (!isSvgGroupId(rawGroup) || !fileName) {
+    return null
+  }
 
   return {
     group: getIconGroupId(rawGroup),
     name: getComponentName(fileName),
     sourcePath,
     svg: normalizeSvg(svg),
+    ...createIconMetadata(fileName, rawGroup),
   }
 }
 
@@ -61,16 +69,28 @@ function getIconGroupId(group: SvgGroupId): IconGroupId {
   return group === 'other' ? 'multi' : group
 }
 
-function getIconSubgroupId(name: string, group: IconGroupId): IconSubgroupId {
-  if (group === 'double') {
+function isSvgGroupId(group: string | undefined): group is SvgGroupId {
+  return group === 'double' || group === 'other' || group === 'single'
+}
+
+function getIconSubgroupId(icon: IconEntry): IconSubgroupId {
+  if (icon.group === 'double') {
     return 'double'
   }
 
-  if (group === 'multi') {
+  if (icon.category === 'brand') {
+    return 'brand'
+  }
+
+  if (icon.group === 'multi') {
     return 'multi'
   }
 
-  if (name.startsWith('Shape')) {
+  if (icon.category === 'chart') {
+    return 'chart'
+  }
+
+  if (icon.category === 'shape') {
     return 'shape'
   }
 
@@ -79,7 +99,11 @@ function getIconSubgroupId(name: string, group: IconGroupId): IconSubgroupId {
 
 function getSubgroupIds(groupId: IconGroupId): IconSubgroupId[] {
   if (groupId === 'single') {
-    return ['general', 'shape']
+    return ['general', 'brand', 'chart', 'shape']
+  }
+
+  if (groupId === 'multi') {
+    return ['brand', 'multi']
   }
 
   return [groupId]

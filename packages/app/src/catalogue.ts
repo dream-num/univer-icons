@@ -1,8 +1,15 @@
 export type IconEntry = {
+  aliases: string[]
+  category: string
+  description: string
   group: IconGroupId
+  keywords: string[]
   name: string
+  products: string[]
+  role: string
   sourcePath: string
   svg: string
+  updatedVer?: string
 }
 
 export type IconGroup = {
@@ -21,7 +28,7 @@ export type IconSubgroup = {
   title: string
 }
 
-export type IconSubgroupId = 'double' | 'general' | 'multi' | 'shape'
+export type IconSubgroupId = 'brand' | 'chart' | 'double' | 'general' | 'multi' | 'shape'
 
 export type IconSearchResult = {
   groups: IconGroup[]
@@ -47,6 +54,16 @@ export const groupMeta: Array<Omit<IconGroup, 'subgroups'>> = [
 ]
 
 export const subgroupMeta = {
+  brand: {
+    id: 'brand',
+    title: 'Brand',
+    description: 'Product brand and application icons.',
+  },
+  chart: {
+    id: 'chart',
+    title: 'Chart',
+    description: 'Chart type, trendline, and chart feature icons.',
+  },
   double: {
     id: 'double',
     title: 'Double',
@@ -81,7 +98,7 @@ export function filterIconGroups(groups: IconGroup[], searchTerm: string): IconS
 
   const filteredGroups = groups.flatMap((group) => {
     const subgroups = group.subgroups.flatMap((subgroup) => {
-      const items = subgroup.items.filter((icon) => matchesIconName(icon.name, terms))
+      const items = subgroup.items.filter((icon) => matchesIcon(icon, terms))
 
       if (items.length === 0) {
         return []
@@ -115,8 +132,21 @@ function normalizeSearchTerm(searchTerm: string) {
   return searchTerm.trim().toLowerCase().split(/\s+/).filter(Boolean)
 }
 
-function matchesIconName(name: string, terms: string[]) {
-  const normalizedName = name.toLowerCase()
+function matchesIcon(icon: IconEntry, terms: string[]) {
+  const searchableText = [
+    icon.name,
+    icon.category,
+    icon.description,
+    icon.group,
+    icon.role,
+    icon.sourcePath,
+    icon.updatedVer ?? '',
+    ...icon.aliases,
+    ...icon.keywords,
+    ...icon.products,
+  ]
+    .join(' ')
+    .toLowerCase()
 
-  return terms.every((term) => normalizedName.includes(term))
+  return terms.every((term) => searchableText.includes(term))
 }

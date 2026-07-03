@@ -4,8 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
-    "test:svg-catalogue": "node --experimental-strip-types src/svg-catalogue.test.ts"
+    "dev": "vite --host 127.0.0.1"
   },
   "dependencies": {
     "react": "^19.2.7",
