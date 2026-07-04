@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.16.0](https://github.com/dream-num/univer-icons/compare/v1.15.1...v1.16.0) (2026-07-04)
+
+### Bug Fixes
+
+* **svg:** refine shape icon geometry ([0dcd6ca](https://github.com/dream-num/univer-icons/commit/0dcd6ca8bc39f2a4b48f75bc813a39a558811e8d))
+
+### Features
+
+* **svg:** add icon metadata to manifest and demo catalogue ([0b0f860](https://github.com/dream-num/univer-icons/commit/0b0f8604523d82f0f97936c20be118e9c4cc71f5))
+
+### Other Changes (chore)
+
+* update TypeScript toolchain config ([c7bafcf](https://github.com/dream-num/univer-icons/commit/c7bafcfc5d9995f3b9a10301edf7c95d465f568a))
+
 ## [1.15.1](https://github.com/dream-num/univer-icons/compare/v1.15.0...v1.15.1) (2026-06-30)
 
 ### Other Changes (chore)
