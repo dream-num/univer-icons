@@ -1,3 +1,5 @@
 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M19 19H1V1H19V19ZM6.24219 15L4.24219 17H15.5859L13.5859 15H6.24219ZM15 6.24219V13.5859L17 15.5859V4.24219L15 6.24219ZM3 15.4141L5 13.4141V6.41406L3 4.41406V15.4141ZM7 13H13V7H7V13ZM6.41406 5H13.4141L15.4141 3H4.41406L6.41406 5Z" fill="black"/>
+<rect x="1.8" y="1.8" width="16.4" height="16.4" stroke="black" stroke-width="1.6"/>
+<rect x="5.8" y="5.8" width="8.4" height="8.4" stroke="black" stroke-width="1.6"/>
+<path d="M1.8 1.8L5.8 5.8M18.2 1.8L14.2 5.8M18.2 18.2L14.2 14.2M1.8 18.2L5.8 14.2" stroke="black" stroke-width="1.6"/>
 </svg>

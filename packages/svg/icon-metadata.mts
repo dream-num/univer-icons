@@ -75,6 +75,14 @@ const explicitIconMetadata = {
     description: 'Open shape insertion tools.',
     products: ['common'],
   },
+  'shape-format-setting-icon': {
+    category: 'formatting',
+    role: 'formatting',
+    keywords: ['shape', 'format', 'setting', 'style', 'appearance'],
+    aliases: ['format-settings', 'shape-settings'],
+    description: 'Open shape format settings.',
+    products: ['common'],
+  },
   'sheets-multi-icon': productMetadata('sheets', 'Sheets product icon.'),
   'slides-multi-icon': productMetadata('slides', 'Slides product icon.'),
   'univer-cli-icon': {
