@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.18.0](https://github.com/dream-num/univer-icons/compare/v1.17.0...v1.18.0) (2026-07-06)
+
+### Features
+
+* add new icons ([27761b1](https://github.com/dream-num/univer-icons/commit/27761b1bd2a75c71de71469f80033dd57fa63579))
+
 ## [1.17.0](https://github.com/dream-num/univer-icons/compare/v1.16.0...v1.17.0) (2026-07-06)
 
 ### Features
