@@ -28,7 +28,14 @@ export type IconSubgroup = {
   title: string
 }
 
-export type IconSubgroupId = 'brand' | 'chart' | 'double' | 'general' | 'multi' | 'shape'
+export type IconSubgroupId =
+  | 'brand'
+  | 'chart'
+  | 'diagram'
+  | 'double'
+  | 'general'
+  | 'multi'
+  | 'shape'
 
 export type IconSearchResult = {
   groups: IconGroup[]
@@ -73,6 +80,11 @@ export const subgroupMeta = {
     id: 'general',
     title: 'General',
     description: 'Single-color utility, toolbar, and document icons.',
+  },
+  diagram: {
+    id: 'diagram',
+    title: 'Diagram',
+    description: 'Diagram shapes, connectors, lifelines, and marker icons.',
   },
   multi: {
     id: 'multi',

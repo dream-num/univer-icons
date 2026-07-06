@@ -50,6 +50,59 @@ const explicitIconMetadata = {
     description: 'Open chart insertion tools.',
     products: ['common'],
   },
+  'class-diagram-class-icon': boardDiagramMetadata('UML class diagram table shape.'),
+  'class-diagram-dashed-filled-arrow-connector-icon': boardConnectorMetadata(
+    'UML dashed connector with filled arrow marker.',
+  ),
+  'class-diagram-dashed-open-arrow-connector-icon': boardConnectorMetadata(
+    'UML dashed connector with open arrow marker.',
+  ),
+  'class-diagram-filled-arrow-connector-icon': boardConnectorMetadata(
+    'UML connector with filled arrow marker.',
+  ),
+  'class-diagram-filled-diamond-connector-icon': boardConnectorMetadata(
+    'UML connector with filled diamond marker.',
+  ),
+  'class-diagram-hollow-diamond-connector-icon': boardConnectorMetadata(
+    'UML connector with hollow diamond marker.',
+  ),
+  'class-diagram-interface-icon': boardDiagramMetadata('UML interface diagram table shape.'),
+  'component-diagram-assembly-connector-icon': boardDiagramMetadata(
+    'UML component assembly connector shape.',
+  ),
+  'component-diagram-component-box-icon': boardDiagramMetadata('UML component box shape.'),
+  'component-diagram-component-icon': boardDiagramMetadata('UML component shape.'),
+  'component-diagram-provided-interface-icon': boardDiagramMetadata(
+    'UML provided interface shape.',
+  ),
+  'component-diagram-required-interface-icon': boardDiagramMetadata(
+    'UML required interface shape.',
+  ),
+  'connector-bar-crows-foot-marker-icon': boardConnectorMetadata('Connector bar crow foot marker.'),
+  'connector-bar-marker-icon': boardConnectorMetadata('Connector bar marker.'),
+  'connector-circle-bar-marker-icon': boardConnectorMetadata('Connector circle bar marker.'),
+  'connector-circle-crows-foot-marker-icon': boardConnectorMetadata(
+    'Connector circle crow foot marker.',
+  ),
+  'connector-circle-marker-icon': boardConnectorMetadata('Connector circle marker.'),
+  'connector-cross-marker-icon': boardConnectorMetadata('Connector cross marker.'),
+  'connector-crows-foot-marker-icon': boardConnectorMetadata('Connector crow foot marker.'),
+  'connector-filled-arrow-marker-icon': boardConnectorMetadata('Connector filled arrow marker.'),
+  'connector-filled-circle-marker-icon': boardConnectorMetadata('Connector filled circle marker.'),
+  'connector-filled-diamond-marker-icon': boardConnectorMetadata(
+    'Connector filled diamond marker.',
+  ),
+  'connector-hollow-diamond-marker-icon': boardConnectorMetadata(
+    'Connector hollow diamond marker.',
+  ),
+  'connector-hollow-triangle-marker-icon': boardConnectorMetadata(
+    'Connector hollow triangle marker.',
+  ),
+  'connector-none-marker-icon': boardConnectorMetadata('Connector without marker.'),
+  'connector-open-arrow-marker-icon': boardConnectorMetadata('Connector open arrow marker.'),
+  'connector-rounded-elbow-icon': boardConnectorMetadata('Rounded elbow connector.'),
+  'connector-swap-markers-icon': boardConnectorMetadata('Swap connector start and end markers.'),
+  'connector-x-marker-icon': boardConnectorMetadata('Connector X marker.'),
   'copy-icon': {
     category: 'editing',
     role: 'action',
@@ -58,7 +111,21 @@ const explicitIconMetadata = {
     description: 'Copy selected content to the clipboard.',
     products: ['common'],
   },
+  'data-flow-circle-icon': boardDiagramMetadata('Data flow circle shape.'),
+  'data-flow-data-storage1-icon': boardDiagramMetadata('Data flow storage shape.'),
+  'data-flow-data-storage2-icon': boardDiagramMetadata('Data flow storage shape with divider.'),
+  'data-flow-data-storage3-icon': boardDiagramMetadata('Data flow storage record shape.'),
+  'data-flow-rounded-rectangle-icon': boardDiagramMetadata('Data flow rounded rectangle shape.'),
+  'data-flow-rounded-square-icon': boardDiagramMetadata('Data flow rounded square shape.'),
   'docs-multi-icon': productMetadata('docs', 'Docs product icon.'),
+  'entity-relationship-entity-icon': boardDiagramMetadata('Entity relationship entity table.'),
+  'entity-relationship-field-type-icon': boardDiagramMetadata(
+    'Entity relationship field type table.',
+  ),
+  'entity-relationship-full-icon': boardDiagramMetadata('Entity relationship full table.'),
+  'entity-relationship-key-field-icon': boardDiagramMetadata(
+    'Entity relationship key field table.',
+  ),
   'loading-multi-icon': {
     category: 'status',
     role: 'status',
@@ -67,6 +134,27 @@ const explicitIconMetadata = {
     description: 'Loading status indicator icon.',
     products: ['common'],
   },
+  'line-dashed-none-icon': lineMarkerMetadata('Dashed line without arrowheads.'),
+  'line-double-open-arrow-icon': lineMarkerMetadata('Line with open arrowheads at both ends.'),
+  'line-none-icon': lineMarkerMetadata('Line without arrowheads.'),
+  'line-open-arrow-icon': lineMarkerMetadata('Line with an open arrowhead.'),
+  'sequence-activation-bar-icon': sequenceLifelineMetadata('Sequence activation bar.'),
+  'sequence-actor-lifeline-icon': sequenceLifelineMetadata('Sequence actor lifeline.'),
+  'sequence-boundary-lifeline-icon': sequenceLifelineMetadata('Sequence boundary lifeline.'),
+  'sequence-collection-lifeline-icon': sequenceLifelineMetadata('Sequence collection lifeline.'),
+  'sequence-control-lifeline-icon': sequenceLifelineMetadata('Sequence control lifeline.'),
+  'sequence-direct-access-storage-lifeline-icon': sequenceLifelineMetadata(
+    'Sequence direct access storage lifeline.',
+  ),
+  'sequence-entity-lifeline-icon': sequenceLifelineMetadata('Sequence entity lifeline.'),
+  'sequence-fragment-icon': boardDiagramMetadata('Sequence fragment table shape.'),
+  'sequence-alternative-fragment-icon': boardDiagramMetadata(
+    'Sequence alternative fragment table shape.',
+  ),
+  'sequence-magnetic-disk-lifeline-icon': sequenceLifelineMetadata(
+    'Sequence magnetic disk lifeline.',
+  ),
+  'sequence-object-lifeline-icon': sequenceLifelineMetadata('Sequence object lifeline.'),
   'shape-icon': {
     category: 'insert',
     role: 'action',
@@ -85,6 +173,9 @@ const explicitIconMetadata = {
   },
   'sheets-multi-icon': productMetadata('sheets', 'Sheets product icon.'),
   'slides-multi-icon': productMetadata('slides', 'Slides product icon.'),
+  'status-diagram-final-state-icon': boardDiagramMetadata('Status final state shape.'),
+  'status-diagram-initial-state-icon': boardDiagramMetadata('Status initial state shape.'),
+  'status-diagram-state-bar-icon': boardDiagramMetadata('Status state bar shape.'),
   'univer-cli-icon': {
     category: 'brand',
     role: 'product',
@@ -302,6 +393,50 @@ function productMetadata(product: IconProduct, description: string): IconMetadat
     keywords: ['product', product, 'brand', 'application'],
     products: [product],
     role: 'product',
+  }
+}
+
+function lineMarkerMetadata(description: string): IconMetadata {
+  return {
+    aliases: ['connector', 'diagram-line'],
+    category: 'shape',
+    description,
+    keywords: ['diagram', 'line', 'connector', 'arrow', 'shape', 'boards', 'slides'],
+    products: ['boards', 'slides'],
+    role: 'object',
+  }
+}
+
+function boardConnectorMetadata(description: string): IconMetadata {
+  return {
+    aliases: ['line', 'connector-marker', 'diagram-connector'],
+    category: 'shape',
+    description,
+    keywords: ['diagram', 'line', 'connector', 'marker', 'arrow', 'boards', 'slides', 'shape'],
+    products: ['boards', 'slides'],
+    role: 'object',
+  }
+}
+
+function boardDiagramMetadata(description: string): IconMetadata {
+  return {
+    aliases: ['diagram', 'board-shape'],
+    category: 'shape',
+    description,
+    keywords: ['diagram', 'shape', 'boards', 'slides', 'uml', 'table', 'object'],
+    products: ['boards', 'slides'],
+    role: 'object',
+  }
+}
+
+function sequenceLifelineMetadata(description: string): IconMetadata {
+  return {
+    aliases: ['uml', 'lifeline', 'sequence-diagram'],
+    category: 'shape',
+    description,
+    keywords: ['diagram', 'sequence', 'lifeline', 'line', 'connector', 'uml', 'boards', 'slides'],
+    products: ['boards', 'slides'],
+    role: 'object',
   }
 }
 

@@ -1,0 +1,12 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g transform="scale(0.833333)">
+<g transform="translate(12 12) scale(1.18) translate(-12 -12)">
+<path
+clip-rule="evenodd"
+d="M14.25 8.025a1.1 1.1 0 0 0-1.1 1.1v5.75a2.9 2.9 0 0 1-2.9 2.9H5.16a.9.9 0 0 1 0-1.8h5.09a1.1 1.1 0 0 0 1.1-1.1v-5.75a2.9 2.9 0 0 1 2.9-2.9h5.09a.9.9 0 1 1 0 1.8z"
+fill="black"
+fill-rule="evenodd"
+/>
+</g>
+</g>
+</svg>
