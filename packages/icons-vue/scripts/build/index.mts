@@ -1,5 +1,5 @@
 import type { IconNode } from '#build/normalize-ast'
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import manifest from '@univerjs/icons-svg/manifest' with { type: 'json' }
@@ -19,6 +19,7 @@ function createComponentFiles() {
   if (!existsSync(tsDir)) {
     mkdirSync(tsDir)
   }
+  cleanupGeneratedTsFiles()
 
   const exportsFileLines: string[] = []
   for (const icons of groups) {
@@ -39,6 +40,14 @@ function createComponentFiles() {
   }
 
   writeFileSync(`${tsDir}/index.ts`, exportsFileLines.join('\n'), 'utf-8')
+}
+
+function cleanupGeneratedTsFiles() {
+  for (const file of readdirSync(tsDir)) {
+    if (file !== 'base.ts' && file.endsWith('.ts')) {
+      rmSync(resolve(tsDir, file), { force: true })
+    }
+  }
 }
 
 async function compileTsFile() {

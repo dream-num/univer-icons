@@ -7,10 +7,17 @@ import {
   type IconSubgroupId,
 } from './catalogue.ts'
 import { createIconMetadata } from '../../svg/icon-metadata.mts'
+import manifest from '../../svg/manifest.json' with { type: 'json' }
 
 type SvgGroupId = 'double' | 'other' | 'single'
+type ManifestIcon = {
+  group: string
+  name: string
+  updatedVer: string
+}
 
 const svgPathPattern = /(?:^|\/)(double|other|single)\/([^/]+)\.svg$/
+const updatedVersionBySource = createUpdatedVersionMap()
 
 export function createSvgIconGroups(svgModules: Record<string, string>): IconGroup[] {
   const groupedEntries = new Map<IconGroupId, Map<IconSubgroupId, IconEntry[]>>()
@@ -54,8 +61,17 @@ function createSvgIconEntry(sourcePath: string, svg: string): IconEntry | null {
     name: getComponentName(fileName),
     sourcePath,
     svg: normalizeSvg(svg),
+    updatedVer: updatedVersionBySource.get(`${rawGroup}/${fileName}.svg`),
     ...createIconMetadata(fileName, rawGroup),
   }
+}
+
+function createUpdatedVersionMap() {
+  const entries = Object.values(manifest as Record<string, ManifestIcon[]>).flatMap(
+    (icons) => icons,
+  )
+
+  return new Map(entries.map((icon) => [`${icon.group}/${icon.name}.svg`, icon.updatedVer]))
 }
 
 function getComponentName(fileName: string) {

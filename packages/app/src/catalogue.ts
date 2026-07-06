@@ -140,6 +140,26 @@ export function getGroupIconCount(group: IconGroup) {
   return group.subgroups.reduce((count, subgroup) => count + subgroup.items.length, 0)
 }
 
+export function getRecentIconVersions(groups: IconGroup[], limit = 3) {
+  const versions = new Set<string>()
+
+  groups.forEach((group) => {
+    group.subgroups.forEach((subgroup) => {
+      subgroup.items.forEach((icon) => {
+        if (icon.updatedVer) {
+          versions.add(icon.updatedVer)
+        }
+      })
+    })
+  })
+
+  return Array.from(versions).toSorted(compareIconVersions).slice(0, limit)
+}
+
+export function isRecentIconVersion(icon: IconEntry, recentVersions: ReadonlySet<string>) {
+  return Boolean(icon.updatedVer && recentVersions.has(icon.updatedVer))
+}
+
 function normalizeSearchTerm(searchTerm: string) {
   return searchTerm.trim().toLowerCase().split(/\s+/).filter(Boolean)
 }
@@ -161,4 +181,35 @@ function matchesIcon(icon: IconEntry, terms: string[]) {
     .toLowerCase()
 
   return terms.every((term) => searchableText.includes(term))
+}
+
+function compareIconVersions(versionA: string, versionB: string) {
+  if (versionA === versionB) {
+    return 0
+  }
+
+  if (versionA === 'unreleased') {
+    return -1
+  }
+
+  if (versionB === 'unreleased') {
+    return 1
+  }
+
+  const partsA = parseVersion(versionA)
+  const partsB = parseVersion(versionB)
+
+  for (let index = 0; index < Math.max(partsA.length, partsB.length); index++) {
+    const diff = (partsB[index] ?? 0) - (partsA[index] ?? 0)
+
+    if (diff !== 0) {
+      return diff
+    }
+  }
+
+  return versionA.localeCompare(versionB)
+}
+
+function parseVersion(version: string) {
+  return version.split('.').map((part) => Number.parseInt(part, 10) || 0)
 }

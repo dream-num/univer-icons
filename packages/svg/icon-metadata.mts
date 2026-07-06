@@ -40,6 +40,14 @@ export type IconRole =
   | 'status'
 
 const explicitIconMetadata = {
+  'ai-assistant-multi-icon': {
+    aliases: ['ai', 'assistant', 'automation'],
+    category: 'collaboration',
+    description: 'AI assistant source indicator.',
+    keywords: ['ai', 'assistant', 'history', 'origin', 'collaboration', 'automation'],
+    products: ['common'],
+    role: 'status',
+  },
   'bases-multi-icon': productMetadata('bases', 'Bases product icon.'),
   'boards-multi-icon': productMetadata('boards', 'Boards product icon.'),
   'chart-icon': {
@@ -134,10 +142,32 @@ const explicitIconMetadata = {
     description: 'Loading status indicator icon.',
     products: ['common'],
   },
+  'locate-fixed-icon': {
+    aliases: ['focus-object', 'center-selection'],
+    category: 'navigation',
+    description: 'Locate and focus a fixed object on the canvas.',
+    keywords: ['locate', 'focus', 'object', 'canvas', 'target', 'navigation'],
+    products: ['common'],
+    role: 'navigation',
+  },
   'line-dashed-none-icon': lineMarkerMetadata('Dashed line without arrowheads.'),
   'line-double-open-arrow-icon': lineMarkerMetadata('Line with open arrowheads at both ends.'),
   'line-none-icon': lineMarkerMetadata('Line without arrowheads.'),
   'line-open-arrow-icon': lineMarkerMetadata('Line with an open arrowhead.'),
+  'configure-tab-icon': tabMetadata('Configure the active view tab.', ['bases']),
+  'first-tab-icon': tabMetadata('Set a view as the first tab.', ['bases']),
+  'quick-add-icon': {
+    aliases: ['smart-add', 'insert-shape'],
+    category: 'insert',
+    description: 'Toggle quick add tools.',
+    keywords: ['quick', 'add', 'insert', 'shape', 'sparkle', 'boards'],
+    products: ['boards'],
+    role: 'action',
+  },
+  'row-height-extra-tall-icon': rowHeightMetadata('Extra tall row height preset.'),
+  'row-height-medium-icon': rowHeightMetadata('Medium row height preset.'),
+  'row-height-short-icon': rowHeightMetadata('Short row height preset.'),
+  'row-height-tall-icon': rowHeightMetadata('Tall row height preset.'),
   'sequence-activation-bar-icon': sequenceLifelineMetadata('Sequence activation bar.'),
   'sequence-actor-lifeline-icon': sequenceLifelineMetadata('Sequence actor lifeline.'),
   'sequence-boundary-lifeline-icon': sequenceLifelineMetadata('Sequence boundary lifeline.'),
@@ -176,6 +206,11 @@ const explicitIconMetadata = {
   'status-diagram-final-state-icon': boardDiagramMetadata('Status final state shape.'),
   'status-diagram-initial-state-icon': boardDiagramMetadata('Status initial state shape.'),
   'status-diagram-state-bar-icon': boardDiagramMetadata('Status state bar shape.'),
+  'table-border-style-dashed-icon': tableBorderMetadata('Table dashed border style.'),
+  'table-border-style-dotted-icon': tableBorderMetadata('Table dotted border style.'),
+  'table-border-style-icon': tableBorderMetadata('Open table border style menu.'),
+  'table-border-style-solid-icon': tableBorderMetadata('Table solid border style.'),
+  'table-border-width-icon': tableBorderMetadata('Open table border width menu.'),
   'univer-cli-icon': {
     category: 'brand',
     role: 'product',
@@ -393,6 +428,39 @@ function productMetadata(product: IconProduct, description: string): IconMetadat
     keywords: ['product', product, 'brand', 'application'],
     products: [product],
     role: 'product',
+  }
+}
+
+function tabMetadata(description: string, products: IconProduct[]): IconMetadata {
+  return {
+    aliases: ['view-tab'],
+    category: 'navigation',
+    description,
+    keywords: unique(['view', 'tab', 'navigation', 'settings', ...products]),
+    products,
+    role: 'action',
+  }
+}
+
+function rowHeightMetadata(description: string): IconMetadata {
+  return {
+    aliases: ['record-height', 'row-size'],
+    category: 'layout',
+    description,
+    keywords: ['bases', 'row', 'height', 'record', 'layout', 'size'],
+    products: ['bases'],
+    role: 'layout',
+  }
+}
+
+function tableBorderMetadata(description: string): IconMetadata {
+  return {
+    aliases: ['border-format'],
+    category: 'formatting',
+    description,
+    keywords: ['docs', 'table', 'border', 'style', 'width', 'format'],
+    products: ['docs'],
+    role: 'formatting',
   }
 }
 

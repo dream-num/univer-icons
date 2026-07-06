@@ -3,7 +3,9 @@ import { createRoot } from 'react-dom/client'
 import {
   filterIconGroups,
   getGroupIconCount,
+  getRecentIconVersions,
   getTotalIconCount,
+  isRecentIconVersion,
   type IconEntry,
   type IconGroup,
   type IconSubgroup,
@@ -24,6 +26,8 @@ const defaultSettings = {
 }
 
 const groups = createSvgIconGroups(svgModules)
+const recentVersionList = getRecentIconVersions(groups, 3)
+const recentVersions = new Set(recentVersionList)
 const root = document.querySelector<HTMLElement>('#app')
 
 const shellClass = [
@@ -316,12 +320,31 @@ function IconSubgroupSection({
 }
 
 function createIconCard(icon: IconEntry, subgroupId: IconSubgroupId) {
+  const isRecent = isRecentIconVersion(icon, recentVersions)
+
   return (
     <article
-      className='grid min-h-[158px] grid-rows-[96px_1fr] overflow-hidden rounded-lg border border-[#deded7] bg-[#fffffb] text-[#181713] shadow-[0_1px_2px_rgb(0_0_0/0.04)]'
+      className={cx(
+        'grid min-h-[158px] grid-rows-[96px_1fr] overflow-hidden rounded-lg border text-[#181713]',
+        'shadow-[0_1px_2px_rgb(0_0_0/0.04)]',
+        isRecent
+          ? 'border-[#1f6f5b] bg-[#fbfff9] ring-2 ring-[#d7eadf]'
+          : 'border-[#deded7] bg-[#fffffb]',
+      )}
+      data-recent-version={isRecent ? icon.updatedVer : undefined}
       key={icon.name}
     >
-      <div className='flex items-center justify-center border-b border-[#deded7] bg-[#efefe8] bg-[image:linear-gradient(90deg,var(--stage-grid)_1px,transparent_1px),linear-gradient(0deg,var(--stage-grid)_1px,transparent_1px)] bg-[length:20px_20px] text-[var(--icon-color)]'>
+      <div
+        className={cx(
+          'relative flex items-center justify-center border-b bg-[image:linear-gradient(90deg,var(--stage-grid)_1px,transparent_1px),linear-gradient(0deg,var(--stage-grid)_1px,transparent_1px)] bg-[length:20px_20px] text-[var(--icon-color)]',
+          isRecent ? 'border-[#b7d7c4] bg-[#eef7ee]' : 'border-[#deded7] bg-[#efefe8]',
+        )}
+      >
+        {isRecent && (
+          <span className='absolute top-2 right-2 inline-flex h-5 items-center rounded-full bg-[#1f6f5b] px-2 text-[0.68rem] leading-none font-semibold text-[#f8f8f5]'>
+            {icon.updatedVer}
+          </span>
+        )}
         <span
           aria-label={icon.name}
           className='inline-flex text-[length:var(--icon-size)] leading-none text-[var(--icon-color)] [&_svg]:block [&_svg]:h-[1em] [&_svg]:w-[1em]'
