@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.17.0](https://github.com/dream-num/univer-icons/compare/v1.16.0...v1.17.0) (2026-07-06)
+
+### Features
+
+* **svg:** add board diagram and connector icons ([710cfb1](https://github.com/dream-num/univer-icons/commit/710cfb15a554210e4b594e39e78e50e3c6ef7fa3))
+
 ## [1.16.0](https://github.com/dream-num/univer-icons/compare/v1.15.1...v1.16.0) (2026-07-04)
 
 ### Bug Fixes
