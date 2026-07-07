@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.19.0](https://github.com/dream-num/univer-icons/compare/v1.18.0...v1.19.0) (2026-07-07)
+
+### Features
+
+* add stroke size icons ([9911de6](https://github.com/dream-num/univer-icons/commit/9911de60a0912aeb357d82ed64ff3ea77079ba13))
+
 ## [1.18.0](https://github.com/dream-num/univer-icons/compare/v1.17.0...v1.18.0) (2026-07-06)
 
 ### Features
