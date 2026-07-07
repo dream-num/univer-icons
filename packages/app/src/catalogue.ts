@@ -36,6 +36,7 @@ export type IconSubgroupId =
   | 'general'
   | 'multi'
   | 'shape'
+  | 'stroke-size'
 
 export type IconSearchResult = {
   groups: IconGroup[]
@@ -94,7 +95,12 @@ export const subgroupMeta = {
   shape: {
     id: 'shape',
     title: 'Shape',
-    description: 'Drawing, connector, callout, arrow, and chart shape icons.',
+    description: 'Drawing, connector, arrow, and chart shape icons.',
+  },
+  'stroke-size': {
+    id: 'stroke-size',
+    title: 'Stroke Size',
+    description: 'Stroke, brush, and pen size preset icons.',
   },
 } satisfies Record<IconSubgroupId, Omit<IconSubgroup, 'items'>>
 

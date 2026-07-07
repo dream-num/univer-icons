@@ -1,0 +1,14 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="10" cy="10" r="9" fill="#F5F5F5"/>
+  <path d="M10 10L10 1A9 9 0 0 1 19 10Z" fill="#6646E8"/>
+  <path d="M10 10L19 10A9 9 0 0 1 10 19Z" fill="#55B144"/>
+  <path d="M10 10L10 19A9 9 0 0 1 1 10Z" fill="#CBC443"/>
+  <path d="M10 10L1 10A9 9 0 0 1 10 1Z" fill="#E8433D"/>
+  <circle cx="10" cy="10" r="9" fill="url(#color-wheel-multi-icon-radial)"/>
+  <defs>
+    <radialGradient id="color-wheel-multi-icon-radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(10 10) rotate(90) scale(9)">
+      <stop stop-color="white" stop-opacity="0.82"/>
+      <stop offset="1" stop-color="#F5F5F5" stop-opacity="0.01"/>
+    </radialGradient>
+  </defs>
+</svg>

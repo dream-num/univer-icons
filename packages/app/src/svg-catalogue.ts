@@ -106,6 +106,10 @@ function getIconSubgroupId(icon: IconEntry): IconSubgroupId {
     return 'chart'
   }
 
+  if (icon.keywords.includes('stroke-size')) {
+    return 'stroke-size'
+  }
+
   if (
     icon.keywords.includes('diagram') &&
     (icon.products.includes('boards') || icon.products.includes('slides'))
@@ -122,7 +126,7 @@ function getIconSubgroupId(icon: IconEntry): IconSubgroupId {
 
 function getSubgroupIds(groupId: IconGroupId): IconSubgroupId[] {
   if (groupId === 'single') {
-    return ['general', 'diagram', 'brand', 'chart', 'shape']
+    return ['general', 'diagram', 'stroke-size', 'brand', 'chart', 'shape']
   }
 
   if (groupId === 'multi') {

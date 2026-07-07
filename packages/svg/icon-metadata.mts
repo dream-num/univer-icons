@@ -50,6 +50,14 @@ const explicitIconMetadata = {
   },
   'bases-multi-icon': productMetadata('bases', 'Bases product icon.'),
   'boards-multi-icon': productMetadata('boards', 'Boards product icon.'),
+  'callout-icon': {
+    aliases: ['text-callout', 'annotation'],
+    category: 'insert',
+    description: 'Open callout insertion tools.',
+    keywords: ['callout', 'annotation', 'insert', 'text', 'toolbar'],
+    products: ['common'],
+    role: 'action',
+  },
   'chart-icon': {
     category: 'insert',
     role: 'action',
@@ -57,6 +65,14 @@ const explicitIconMetadata = {
     aliases: ['graph', 'visualization'],
     description: 'Open chart insertion tools.',
     products: ['common'],
+  },
+  'color-wheel-multi-icon': {
+    aliases: ['palette', 'color-picker'],
+    category: 'formatting',
+    description: 'Open a color wheel picker.',
+    keywords: ['color', 'wheel', 'palette', 'picker', 'format', 'appearance'],
+    products: ['common'],
+    role: 'formatting',
   },
   'class-diagram-class-icon': boardDiagramMetadata('UML class diagram table shape.'),
   'class-diagram-dashed-filled-arrow-connector-icon': boardConnectorMetadata(
@@ -206,6 +222,11 @@ const explicitIconMetadata = {
   'status-diagram-final-state-icon': boardDiagramMetadata('Status final state shape.'),
   'status-diagram-initial-state-icon': boardDiagramMetadata('Status initial state shape.'),
   'status-diagram-state-bar-icon': boardDiagramMetadata('Status state bar shape.'),
+  'stroke-size1-icon': strokeSizeMetadata('Stroke size preset 1.'),
+  'stroke-size2-icon': strokeSizeMetadata('Stroke size preset 2.'),
+  'stroke-size3-icon': strokeSizeMetadata('Stroke size preset 3.'),
+  'stroke-size4-icon': strokeSizeMetadata('Stroke size preset 4.'),
+  'stroke-size5-icon': strokeSizeMetadata('Stroke size preset 5.'),
   'table-border-style-dashed-icon': tableBorderMetadata('Table dashed border style.'),
   'table-border-style-dotted-icon': tableBorderMetadata('Table dotted border style.'),
   'table-border-style-icon': tableBorderMetadata('Open table border style menu.'),
@@ -460,6 +481,17 @@ function tableBorderMetadata(description: string): IconMetadata {
     description,
     keywords: ['docs', 'table', 'border', 'style', 'width', 'format'],
     products: ['docs'],
+    role: 'formatting',
+  }
+}
+
+function strokeSizeMetadata(description: string): IconMetadata {
+  return {
+    aliases: ['line-width', 'brush-size', 'pen-size'],
+    category: 'formatting',
+    description,
+    keywords: ['stroke-size', 'stroke', 'width', 'line', 'brush', 'pen', 'format', 'size'],
+    products: ['common'],
     role: 'formatting',
   }
 }
