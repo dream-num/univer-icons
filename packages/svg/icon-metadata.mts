@@ -168,6 +168,8 @@ const explicitIconMetadata = {
   },
   'line-dashed-none-icon': lineMarkerMetadata('Dashed line without arrowheads.'),
   'line-double-open-arrow-icon': lineMarkerMetadata('Line with open arrowheads at both ends.'),
+  'line-indent-decrease-icon': lineIndentMetadata('Decrease paragraph line indentation.'),
+  'line-indent-increase-icon': lineIndentMetadata('Increase paragraph line indentation.'),
   'line-none-icon': lineMarkerMetadata('Line without arrowheads.'),
   'line-open-arrow-icon': lineMarkerMetadata('Line with an open arrowhead.'),
   'configure-tab-icon': tabMetadata('Configure the active view tab.', ['bases']),
@@ -480,6 +482,17 @@ function tableBorderMetadata(description: string): IconMetadata {
     category: 'formatting',
     description,
     keywords: ['docs', 'table', 'border', 'style', 'width', 'format'],
+    products: ['docs'],
+    role: 'formatting',
+  }
+}
+
+function lineIndentMetadata(description: string): IconMetadata {
+  return {
+    aliases: ['paragraph-indent', 'text-indent'],
+    category: 'formatting',
+    description,
+    keywords: ['docs', 'line', 'indent', 'paragraph', 'text', 'format'],
     products: ['docs'],
     role: 'formatting',
   }
