@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.20.0](https://github.com/dream-num/univer-icons/compare/v1.19.0...v1.20.0) (2026-07-10)
+
+### Features
+
+* add line indent increase and decrease icons ([833a0f1](https://github.com/dream-num/univer-icons/commit/833a0f11bf2b28e9276ab149344aba6a6bd48c77))
+
 ## [1.19.0](https://github.com/dream-num/univer-icons/compare/v1.18.0...v1.19.0) (2026-07-07)
 
 ### Features
