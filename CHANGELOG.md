@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.21.0](https://github.com/dream-num/univer-icons/compare/v1.20.0...v1.21.0) (2026-07-15)
+
+### Features
+
+* add shrink to fit icon ([6325f27](https://github.com/dream-num/univer-icons/commit/6325f27d003155bcf493e6ee1b7537c0d42a5c9f))
+
 ## [1.20.0](https://github.com/dream-num/univer-icons/compare/v1.19.0...v1.20.0) (2026-07-10)
 
 ### Features
