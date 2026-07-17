@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.22.0](https://github.com/dream-num/univer-icons/compare/v1.21.0...v1.22.0) (2026-07-17)
+
+### Features
+
+* add formula menu icons ([3ca6bf9](https://github.com/dream-num/univer-icons/commit/3ca6bf99871c00806321992cd0742374a1584d84))
+
 ## [1.21.0](https://github.com/dream-num/univer-icons/compare/v1.20.0...v1.21.0) (2026-07-15)
 
 ### Features
