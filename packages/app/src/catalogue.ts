@@ -34,6 +34,7 @@ export type IconSubgroupId =
   | 'diagram'
   | 'double'
   | 'formula'
+  | 'function'
   | 'general'
   | 'multi'
   | 'shape'
@@ -82,6 +83,11 @@ export const subgroupMeta = {
     id: 'formula',
     title: 'Formula',
     description: 'Formula structure and mathematical notation icons.',
+  },
+  function: {
+    id: 'function',
+    title: 'Function',
+    description: 'Function category icons for Sheets formula menus.',
   },
   general: {
     id: 'general',

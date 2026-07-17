@@ -106,6 +106,10 @@ function getIconSubgroupId(icon: IconEntry): IconSubgroupId {
     return 'chart'
   }
 
+  if (icon.keywords.includes('function-category')) {
+    return 'function'
+  }
+
   if (icon.keywords.includes('formula-menu')) {
     return 'formula'
   }
@@ -130,7 +134,7 @@ function getIconSubgroupId(icon: IconEntry): IconSubgroupId {
 
 function getSubgroupIds(groupId: IconGroupId): IconSubgroupId[] {
   if (groupId === 'single') {
-    return ['general', 'diagram', 'stroke-size', 'brand', 'chart', 'formula', 'shape']
+    return ['general', 'diagram', 'stroke-size', 'brand', 'chart', 'function', 'formula', 'shape']
   }
 
   if (groupId === 'multi') {

@@ -150,6 +150,41 @@ const explicitIconMetadata = {
   'entity-relationship-key-field-icon': boardDiagramMetadata(
     'Entity relationship key field table.',
   ),
+  'database-function-icon': functionCategoryMetadata('Open database functions.', [
+    'data',
+    'storage',
+  ]),
+  'date-function-icon': functionCategoryMetadata('Open date and time functions.', [
+    'calendar',
+    'clock',
+    'time',
+  ]),
+  'engineering-function-icon': functionCategoryMetadata('Open engineering functions.', [
+    'ruler',
+    'set-square',
+  ]),
+  'financial-function-icon': functionCategoryMetadata('Open financial functions.', [
+    'currency',
+    'money',
+  ]),
+  'information-function-icon': functionCategoryMetadata('Open information functions.', ['info']),
+  'logical-function-icon': functionCategoryMetadata('Open logical functions.', [
+    'boolean',
+    'condition',
+  ]),
+  'lookup-function-icon': functionCategoryMetadata('Open lookup and reference functions.', [
+    'reference',
+    'search',
+  ]),
+  'math-function-icon': functionCategoryMetadata('Open math and trigonometry functions.', [
+    'radical',
+    'trigonometry',
+  ]),
+  'statistical-function-icon': functionCategoryMetadata('Open statistical functions.', [
+    'distribution',
+    'statistics',
+  ]),
+  'text-function-icon': functionCategoryMetadata('Open text functions.', ['string']),
   'formula-accent-icon': formulaMenuMetadata('Open formula accent templates.', [
     'accent',
     'hat',
@@ -549,6 +584,24 @@ function lineIndentMetadata(description: string): IconMetadata {
     keywords: ['docs', 'line', 'indent', 'paragraph', 'text', 'format'],
     products: ['docs'],
     role: 'formatting',
+  }
+}
+
+function functionCategoryMetadata(description: string, aliases: string[]): IconMetadata {
+  return {
+    aliases,
+    category: 'formula',
+    description,
+    keywords: unique([
+      'sheets',
+      'formula',
+      'function',
+      'function-category',
+      'function-menu',
+      ...aliases,
+    ]),
+    products: ['sheets'],
+    role: 'action',
   }
 }
 
