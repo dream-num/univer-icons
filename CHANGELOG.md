@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.23.0](https://github.com/dream-num/univer-icons/compare/v1.22.0...v1.23.0) (2026-07-17)
+
+### Features
+
+* add function category icons ([9eca512](https://github.com/dream-num/univer-icons/commit/9eca5120718aa78f307294c58280101fd713b2db))
+
 ## [1.22.0](https://github.com/dream-num/univer-icons/compare/v1.21.0...v1.22.0) (2026-07-17)
 
 ### Features
