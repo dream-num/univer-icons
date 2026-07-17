@@ -33,6 +33,7 @@ export type IconSubgroupId =
   | 'chart'
   | 'diagram'
   | 'double'
+  | 'formula'
   | 'general'
   | 'multi'
   | 'shape'
@@ -76,6 +77,11 @@ export const subgroupMeta = {
     id: 'double',
     title: 'Double',
     description: 'Icons with a secondary color channel.',
+  },
+  formula: {
+    id: 'formula',
+    title: 'Formula',
+    description: 'Formula structure and mathematical notation icons.',
   },
   general: {
     id: 'general',

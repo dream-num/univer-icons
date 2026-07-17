@@ -150,6 +150,52 @@ const explicitIconMetadata = {
   'entity-relationship-key-field-icon': boardDiagramMetadata(
     'Entity relationship key field table.',
   ),
+  'formula-accent-icon': formulaMenuMetadata('Open formula accent templates.', [
+    'accent',
+    'hat',
+    'overline',
+  ]),
+  'formula-bracket-icon': formulaMenuMetadata('Open formula bracket templates.', [
+    'bracket',
+    'delimiter',
+    'parentheses',
+  ]),
+  'formula-fraction-icon': formulaMenuMetadata('Open formula fraction templates.', [
+    'division',
+    'fraction',
+  ]),
+  'formula-function-icon': formulaMenuMetadata('Open formula function templates.', [
+    'function',
+    'fx',
+  ]),
+  'formula-integral-icon': formulaMenuMetadata('Open formula integral templates.', [
+    'calculus',
+    'integral',
+  ]),
+  'formula-large-operator-icon': formulaMenuMetadata('Open large formula operator templates.', [
+    'large-operator',
+    'product',
+    'summation',
+  ]),
+  'formula-limit-logarithm-icon': formulaMenuMetadata(
+    'Open formula limit and logarithm templates.',
+    ['infinity', 'limit', 'logarithm'],
+  ),
+  'formula-matrix-icon': formulaMenuMetadata('Open formula matrix templates.', ['array', 'matrix']),
+  'formula-operator-icon': formulaMenuMetadata('Open formula operator templates.', [
+    'operator',
+    'plus-minus',
+  ]),
+  'formula-radical-icon': formulaMenuMetadata('Open formula radical templates.', [
+    'radical',
+    'root',
+    'square-root',
+  ]),
+  'formula-script-icon': formulaMenuMetadata('Open formula script templates.', [
+    'script',
+    'subscript',
+    'superscript',
+  ]),
   'loading-multi-icon': {
     category: 'status',
     role: 'status',
@@ -503,6 +549,25 @@ function lineIndentMetadata(description: string): IconMetadata {
     keywords: ['docs', 'line', 'indent', 'paragraph', 'text', 'format'],
     products: ['docs'],
     role: 'formatting',
+  }
+}
+
+function formulaMenuMetadata(description: string, aliases: string[]): IconMetadata {
+  return {
+    aliases,
+    category: 'formula',
+    description,
+    keywords: unique([
+      'docs',
+      'latex',
+      'formula',
+      'formula-menu',
+      'equation',
+      'template',
+      ...aliases,
+    ]),
+    products: ['docs'],
+    role: 'action',
   }
 }
 
