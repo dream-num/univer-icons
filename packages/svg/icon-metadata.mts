@@ -66,6 +66,14 @@ const explicitIconMetadata = {
     description: 'Open chart insertion tools.',
     products: ['common'],
   },
+  'checkbox-icon': {
+    aliases: ['check-box', 'data-validation-checkbox'],
+    category: 'insert',
+    description: 'Insert checkboxes into selected spreadsheet cells.',
+    keywords: ['checkbox', 'check', 'insert', 'cell', 'sheets', 'data-validation'],
+    products: ['sheets'],
+    role: 'action',
+  },
   'color-wheel-multi-icon': {
     aliases: ['palette', 'color-picker'],
     category: 'formatting',
@@ -158,6 +166,14 @@ const explicitIconMetadata = {
   'data-flow-rounded-rectangle-icon': boardDiagramMetadata('Data flow rounded rectangle shape.'),
   'data-flow-rounded-square-icon': boardDiagramMetadata('Data flow rounded square shape.'),
   'docs-multi-icon': productMetadata('docs', 'Docs product icon.'),
+  'dropdown-list-icon': {
+    aliases: ['drop-down-list', 'data-validation-list'],
+    category: 'insert',
+    description: 'Open dropdown list insertion tools for spreadsheet cells.',
+    keywords: ['dropdown', 'list', 'options', 'insert', 'cell', 'sheets', 'data-validation'],
+    products: ['sheets'],
+    role: 'action',
+  },
   'entity-relationship-entity-icon': boardDiagramMetadata('Entity relationship entity table.'),
   'entity-relationship-field-type-icon': boardDiagramMetadata(
     'Entity relationship field type table.',
