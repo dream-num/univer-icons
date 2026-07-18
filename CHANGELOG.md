@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.25.0](https://github.com/dream-num/univer-icons/compare/v1.24.0...v1.25.0) (2026-07-18)
+
+### Features
+
+* update data validation and resize icons ([fed350c](https://github.com/dream-num/univer-icons/commit/fed350c6edd3ca93c6ad43d61f46a717a1d270bd))
+
 ## [1.24.0](https://github.com/dream-num/univer-icons/compare/v1.23.0...v1.24.0) (2026-07-18)
 
 ### Features
