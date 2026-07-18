@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.24.0](https://github.com/dream-num/univer-icons/compare/v1.23.0...v1.24.0) (2026-07-18)
+
+### Features
+
+* add table deletion and number conversion icons ([613945a](https://github.com/dream-num/univer-icons/commit/613945a037d24d5dec8e628bd34b2df0c9f70f1f))
+
 ## [1.23.0](https://github.com/dream-num/univer-icons/compare/v1.22.0...v1.23.0) (2026-07-17)
 
 ### Features
