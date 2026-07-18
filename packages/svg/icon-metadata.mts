@@ -74,6 +74,22 @@ const explicitIconMetadata = {
     products: ['common'],
     role: 'formatting',
   },
+  'convert-to-number-icon': {
+    aliases: ['number-conversion', 'numeric-conversion', 'to-number'],
+    category: 'data',
+    description: 'Convert selected values to numbers.',
+    keywords: ['sheets', 'convert', 'number', 'numeric', 'type', 'conversion', 'data'],
+    products: ['sheets'],
+    role: 'action',
+  },
+  'delete-table-double-icon': {
+    aliases: ['remove-table', 'drop-table'],
+    category: 'editing',
+    description: 'Delete a table from a document.',
+    keywords: ['docs', 'delete', 'remove', 'table', 'grid'],
+    products: ['docs'],
+    role: 'action',
+  },
   'class-diagram-class-icon': boardDiagramMetadata('UML class diagram table shape.'),
   'class-diagram-dashed-filled-arrow-connector-icon': boardConnectorMetadata(
     'UML dashed connector with filled arrow marker.',
