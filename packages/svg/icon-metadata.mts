@@ -301,6 +301,14 @@ const explicitIconMetadata = {
   'line-indent-increase-icon': lineIndentMetadata('Increase paragraph line indentation.'),
   'line-none-icon': lineMarkerMetadata('Line without arrowheads.'),
   'line-open-arrow-icon': lineMarkerMetadata('Line with an open arrowhead.'),
+  'object-layers-icon': {
+    aliases: ['layers-panel', 'object-list'],
+    category: 'layout',
+    description: 'Open the panel for managing layered floating objects.',
+    keywords: ['layers', 'objects', 'panel', 'manage', 'images', 'shapes', 'floating'],
+    products: ['common'],
+    role: 'action',
+  },
   'configure-tab-icon': tabMetadata('Configure the active view tab.', ['bases']),
   'first-tab-icon': tabMetadata('Set a view as the first tab.', ['bases']),
   'quick-add-icon': {
