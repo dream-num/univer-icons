@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.29.0](https://github.com/dream-num/univer-icons/compare/v1.28.0...v1.29.0) (2026-07-20)
+
+### Features
+
+* add unlock icon and refine code block icon ([14cac6d](https://github.com/dream-num/univer-icons/commit/14cac6d88073cdd68394024b9539d7a3ef357ae3))
+
 ## [1.28.0](https://github.com/dream-num/univer-icons/compare/v1.27.0...v1.28.0) (2026-07-20)
 
 ### Bug Fixes
