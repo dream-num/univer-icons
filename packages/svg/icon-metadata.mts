@@ -395,12 +395,14 @@ const chartFeatureIconNames = new Set([
   'bar-chart-icon',
   'boxplot-icon',
   'bubble-icon',
+  'candlestick-chart-icon',
   'cloud-outline-icon',
   'column-chart-icon',
   'combo-chart-icon',
   'exponential-icon',
   'funnel-icon',
   'heatmap-icon',
+  'histogram-chart-icon',
   'linear-icon',
   'line-chart-icon',
   'logarithmic-icon',
@@ -412,6 +414,7 @@ const chartFeatureIconNames = new Set([
   'relationship-icon',
   'sankey-icon',
   'scatter-chart-icon',
+  'treemap-chart-icon',
   'waterfall-chart-icon',
 ])
 
