@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.30.0](https://github.com/dream-num/univer-icons/compare/v1.29.0...v1.30.0) (2026-07-20)
+
+### Features
+
+* add candlestick, histogram, and treemap chart icons ([#134](https://github.com/dream-num/univer-icons/issues/134)) ([9ee0f50](https://github.com/dream-num/univer-icons/commit/9ee0f50e9668c35c0de90fc9bc81b4bff887df58))
+
 ## [1.29.0](https://github.com/dream-num/univer-icons/compare/v1.28.0...v1.29.0) (2026-07-20)
 
 ### Features
