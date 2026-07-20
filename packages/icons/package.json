@@ -36,7 +36,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "node --experimental-strip-types ./scripts/build/index.mts && tsc"
+    "build": "node --experimental-strip-types ./scripts/build/index.mts && tsc && node --experimental-strip-types --test ./scripts/*.test.ts"
   },
   "peerDependencies": {
     "react": "*",
