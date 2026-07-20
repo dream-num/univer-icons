@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.28.0](https://github.com/dream-num/univer-icons/compare/v1.27.0...v1.28.0) (2026-07-20)
+
+### Bug Fixes
+
+* refine cross highlighting and hide gridlines icons ([6684048](https://github.com/dream-num/univer-icons/commit/668404899cfa50fe2fae2149ae2e0c064041f28b))
+
 ## [1.27.0](https://github.com/dream-num/univer-icons/compare/v1.26.0...v1.27.0) (2026-07-20)
 
 ### Bug Fixes
