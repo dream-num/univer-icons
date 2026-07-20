@@ -32,4 +32,10 @@ describe('chart icons', () => {
       assert.doesNotMatch(html, /(?:fill|stroke)="(?:black|#000(?:000)?)"/)
     })
   }
+
+  it('inherits the candlestick body fill from the icon color', () => {
+    const html = renderToStaticMarkup(createElement(CandlestickChartIcon))
+
+    assert.match(html, /fill="currentColor"/)
+  })
 })
