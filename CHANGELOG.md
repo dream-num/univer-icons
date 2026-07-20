@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.31.0](https://github.com/dream-num/univer-icons/compare/v1.30.0...v1.31.0) (2026-07-20)
+
+### Features
+
+* add object layers icon with metadata for layout management ([cd028a8](https://github.com/dream-num/univer-icons/commit/cd028a850095af3a81953d90b8b1f552d284675f))
+
 ## [1.30.0](https://github.com/dream-num/univer-icons/compare/v1.29.0...v1.30.0) (2026-07-20)
 
 ### Features
