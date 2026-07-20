@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.27.0](https://github.com/dream-num/univer-icons/compare/v1.26.0...v1.27.0) (2026-07-20)
+
+### Bug Fixes
+
+* refine hide gridlines icon ([01209cd](https://github.com/dream-num/univer-icons/commit/01209cddebd7ba123d00d03f1888693abe1efe0c))
+
 ## [1.26.0](https://github.com/dream-num/univer-icons/compare/v1.25.0...v1.26.0) (2026-07-18)
 
 ### Features
