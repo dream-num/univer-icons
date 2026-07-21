@@ -215,6 +215,14 @@ const explicitIconMetadata = {
     'currency',
     'money',
   ]),
+  'feature-search-icon': {
+    aliases: ['command-search', 'capability-search'],
+    category: 'system',
+    description: 'Search available product features and commands.',
+    keywords: ['feature', 'command', 'capability', 'search', 'discover'],
+    products: ['common'],
+    role: 'action',
+  },
   'information-function-icon': functionCategoryMetadata('Open information functions.', ['info']),
   'logical-function-icon': functionCategoryMetadata('Open logical functions.', [
     'boolean',
