@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.32.0](https://github.com/dream-num/univer-icons/compare/v1.31.0...v1.32.0) (2026-07-21)
+
+### Features
+
+* add feature-search icon ([4cc989d](https://github.com/dream-num/univer-icons/commit/4cc989dd2d61dc2de03707cb666690fcbe5517b7))
+* add sunburst, chord, and gauge chart icons ([#135](https://github.com/dream-num/univer-icons/issues/135)) ([95e3704](https://github.com/dream-num/univer-icons/commit/95e3704e3f65ba823faadb91ecc8dd6f02650a9e))
+
 ## [1.31.0](https://github.com/dream-num/univer-icons/compare/v1.30.0...v1.31.0) (2026-07-20)
 
 ### Features
