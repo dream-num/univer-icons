@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.33.0](https://github.com/dream-num/univer-icons/compare/v1.32.0...v1.33.0) (2026-07-23)
+
+### Features
+
+* add currency icons ([be01523](https://github.com/dream-num/univer-icons/commit/be01523515cdf82c8fdc18dd58ba9e0e3774efcc))
+
 ## [1.32.0](https://github.com/dream-num/univer-icons/compare/v1.31.0...v1.32.0) (2026-07-21)
 
 ### Features
