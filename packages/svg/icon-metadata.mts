@@ -465,7 +465,7 @@ const categoryMatchers: Array<{ category: IconCategory; terms: string[] }> = [
   },
   {
     category: 'formula',
-    terms: ['avg', 'cnt', 'function', 'fx', 'max', 'min', 'percent', 'sum'],
+    terms: ['function', 'fx', 'percent'],
   },
   { category: 'insert', terms: ['add', 'create', 'import', 'insert'] },
   {
