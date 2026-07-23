@@ -11,6 +11,7 @@ export type IconCategory =
   | 'brand'
   | 'chart'
   | 'collaboration'
+  | 'currency'
   | 'data'
   | 'document'
   | 'editing'
@@ -440,6 +441,10 @@ const chartFeatureIconNames = new Set([
 const categoryMatchers: Array<{ category: IconCategory; terms: string[] }> = [
   { category: 'brand', terms: ['app'] },
   { category: 'collaboration', terms: ['comment', 'live', 'note', 'reply', 'share'] },
+  {
+    category: 'currency',
+    terms: ['dollar', 'dong', 'euro', 'rial', 'rmb', 'rouble', 'rupiah', 'won', 'zloty'],
+  },
   { category: 'data', terms: ['database', 'filter', 'funnel', 'pivot', 'sort', 'validation'] },
   { category: 'document', terms: ['doc', 'docs', 'document', 'header', 'footer', 'text'] },
   { category: 'editing', terms: ['copy', 'cut', 'delete', 'paste', 'redo', 'restore', 'undo'] },
@@ -460,25 +465,7 @@ const categoryMatchers: Array<{ category: IconCategory; terms: string[] }> = [
   },
   {
     category: 'formula',
-    terms: [
-      'avg',
-      'cnt',
-      'dollar',
-      'dong',
-      'euro',
-      'function',
-      'fx',
-      'max',
-      'min',
-      'percent',
-      'rial',
-      'rmb',
-      'rouble',
-      'rupiah',
-      'sum',
-      'won',
-      'zloty',
-    ],
+    terms: ['avg', 'cnt', 'function', 'fx', 'max', 'min', 'percent', 'sum'],
   },
   { category: 'insert', terms: ['add', 'create', 'import', 'insert'] },
   {
@@ -536,6 +523,7 @@ const categoryKeywords: Record<IconCategory, string[]> = {
   brand: ['brand', 'application', 'product', 'logo'],
   chart: ['chart', 'graph', 'visualization', 'analytics'],
   collaboration: ['collaboration', 'sharing', 'annotation', 'review'],
+  currency: ['currency', 'money', 'exchange', 'symbol'],
   data: ['data', 'table', 'filtering', 'organization'],
   document: ['document', 'text', 'page', 'writing'],
   editing: ['edit', 'editing', 'command', 'content'],
@@ -822,7 +810,12 @@ function inferRole(tokens: string[], category: IconCategory): IconRole {
     return 'layout'
   }
 
-  if (category === 'data' || category === 'formula' || category === 'spreadsheet') {
+  if (
+    category === 'currency' ||
+    category === 'data' ||
+    category === 'formula' ||
+    category === 'spreadsheet'
+  ) {
     return 'data'
   }
 

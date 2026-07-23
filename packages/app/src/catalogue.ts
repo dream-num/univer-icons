@@ -31,6 +31,7 @@ export type IconSubgroup = {
 export type IconSubgroupId =
   | 'brand'
   | 'chart'
+  | 'currency'
   | 'diagram'
   | 'double'
   | 'formula'
@@ -73,6 +74,11 @@ export const subgroupMeta = {
     id: 'chart',
     title: 'Chart',
     description: 'Chart type, trendline, and chart feature icons.',
+  },
+  currency: {
+    id: 'currency',
+    title: 'Currency',
+    description: 'Currency symbol icons.',
   },
   double: {
     id: 'double',

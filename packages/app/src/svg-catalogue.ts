@@ -98,6 +98,10 @@ function getIconSubgroupId(icon: IconEntry): IconSubgroupId {
     return 'brand'
   }
 
+  if (icon.category === 'currency') {
+    return 'currency'
+  }
+
   if (icon.group === 'multi') {
     return 'multi'
   }
@@ -134,7 +138,17 @@ function getIconSubgroupId(icon: IconEntry): IconSubgroupId {
 
 function getSubgroupIds(groupId: IconGroupId): IconSubgroupId[] {
   if (groupId === 'single') {
-    return ['general', 'diagram', 'stroke-size', 'brand', 'chart', 'function', 'formula', 'shape']
+    return [
+      'general',
+      'diagram',
+      'stroke-size',
+      'brand',
+      'chart',
+      'currency',
+      'function',
+      'formula',
+      'shape',
+    ]
   }
 
   if (groupId === 'multi') {
