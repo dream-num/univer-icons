@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.34.0](https://github.com/dream-num/univer-icons/compare/v1.33.0...v1.34.0) (2026-07-23)
+
+### Bug Fixes
+
+* correct path definition in unlock icon ([afa32fd](https://github.com/dream-num/univer-icons/commit/afa32fd31b40226b38a702e03ac07509ed546c7e))
+
+### Features
+
+* add smile icon ([5356741](https://github.com/dream-num/univer-icons/commit/53567418ab4b2310c71045a58ad777aa1b63419b))
+* refine symbols icon ([f22ac78](https://github.com/dream-num/univer-icons/commit/f22ac78417fb9995b8dd78737381ef11a65ec512))
+* group currency icons and refine feature search icon ([a99b216](https://github.com/dream-num/univer-icons/commit/a99b2167c03bdacf5d50fdfdbe6e6ff2e6df98ef))
+
 ## [1.33.0](https://github.com/dream-num/univer-icons/compare/v1.32.0...v1.33.0) (2026-07-23)
 
 ### Features
