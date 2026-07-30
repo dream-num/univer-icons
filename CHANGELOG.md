@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.35.0](https://github.com/dream-num/univer-icons/compare/v1.34.0...v1.35.0) (2026-07-30)
+
+### Features
+
+* add pdf icons ([914f92a](https://github.com/dream-num/univer-icons/commit/914f92a3125cd583e2904afe99645730e2a93a3f))
+
+### Other Changes (refactor)
+
+* remove unused aggregate icons and refine shape format icon ([78bc2b7](https://github.com/dream-num/univer-icons/commit/78bc2b7243d6c1e255bd146f1f8c69831b4a8515))
+
 ## [1.34.0](https://github.com/dream-num/univer-icons/compare/v1.33.0...v1.34.0) (2026-07-23)
 
 ### Bug Fixes
