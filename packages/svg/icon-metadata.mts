@@ -28,7 +28,15 @@ export type IconCategory =
   | 'system'
   | 'view'
 
-export type IconProduct = 'bases' | 'boards' | 'common' | 'docs' | 'sheets' | 'slides' | 'univer'
+export type IconProduct =
+  | 'bases'
+  | 'boards'
+  | 'common'
+  | 'docs'
+  | 'pdf'
+  | 'sheets'
+  | 'slides'
+  | 'univer'
 
 export type IconRole =
   | 'action'
@@ -318,6 +326,7 @@ const explicitIconMetadata = {
     products: ['common'],
     role: 'action',
   },
+  'pdf-multi-icon': productMetadata('pdf', 'PDF product icon.'),
   'configure-tab-icon': tabMetadata('Configure the active view tab.', ['bases']),
   'first-tab-icon': tabMetadata('Set a view as the first tab.', ['bases']),
   'quick-add-icon': {
@@ -836,6 +845,10 @@ function inferProducts(tokens: string[], category: IconCategory): IconProduct[] 
 
   if (tokens.includes('boards')) {
     return ['boards']
+  }
+
+  if (tokens.includes('pdf')) {
+    return ['pdf']
   }
 
   if (tokens.some((token) => ['doc', 'docs', 'document'].includes(token))) {
