@@ -2,11 +2,12 @@
   "name": "@univerjs/icons-workspace",
   "version": "1.34.0",
   "private": true,
-  "packageManager": "pnpm@11.9.0",
+  "packageManager": "pnpm@11.22.0",
   "description": "Icons used by Univer",
   "author": "DreamNum Co., Ltd. <developer@univer.ai>",
   "license": "MIT",
   "repository": "https://github.com/dream-num/univer-icons.git",
+  "type": "module",
   "sideEffects": false,
   "main": "index.js",
   "devEngines": {
@@ -33,15 +34,17 @@
     "release": "verso"
   },
   "devDependencies": {
-    "@types/node": "^26.1.0",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "@univerkit/verso": "1.0.0-rc.1",
-    "lint-staged": "^17.0.8",
-    "oxfmt": "^0.57.0",
-    "oxlint": "^1.72.0",
+    "@amamo/oxlint-config": "^1.1.0",
+    "@amamo/verso": "1.1.0",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "lint-staged": "^17.3.0",
+    "oxfmt": "^0.64.0",
+    "oxlint": "^1.79.0",
+    "oxlint-tailwindcss": "^1.9.0",
     "simple-git-hooks": "^2.13.1",
-    "typescript": "7.0.1-rc"
+    "typescript": "7.0.2"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint:staged"

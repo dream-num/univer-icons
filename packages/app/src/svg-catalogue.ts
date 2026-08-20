@@ -1,23 +1,19 @@
-import {
-  groupMeta,
-  subgroupMeta,
-  type IconEntry,
-  type IconGroup,
-  type IconGroupId,
-  type IconSubgroupId,
-} from './catalogue.ts'
+import type { IconEntry, IconGroup, IconGroupId, IconSubgroupId } from './catalogue.ts'
+import type { PreserveStrokeWidthSupport } from '../../svg/icon-capabilities.mts'
 import { createIconMetadata } from '../../svg/icon-metadata.mts'
 import manifest from '../../svg/manifest.json' with { type: 'json' }
+import { groupMeta, subgroupMeta } from './catalogue.ts'
 
 type SvgGroupId = 'double' | 'other' | 'single'
 type ManifestIcon = {
+  preserveStrokeWidthSupport?: PreserveStrokeWidthSupport
   group: string
   name: string
   updatedVer: string
 }
 
 const svgPathPattern = /(?:^|\/)(double|other|single)\/([^/]+)\.svg$/
-const updatedVersionBySource = createUpdatedVersionMap()
+const manifestIconBySource = createManifestIconMap()
 
 export function createSvgIconGroups(svgModules: Record<string, string>): IconGroup[] {
   const groupedEntries = new Map<IconGroupId, Map<IconSubgroupId, IconEntry[]>>()
@@ -34,13 +30,15 @@ export function createSvgIconGroups(svgModules: Record<string, string>): IconGro
       groupedEntries.get(icon.group)?.get(getIconSubgroupId(icon))?.push(icon)
     })
 
-  return groupMeta.map((group) => ({
-    ...group,
-    subgroups: getSubgroupIds(group.id).map((id) => ({
-      ...subgroupMeta[id],
-      items: groupedEntries.get(group.id)?.get(id) ?? [],
-    })),
-  }))
+  return groupMeta.map((group) =>
+    Object.assign({}, group, {
+      subgroups: getSubgroupIds(group.id).map((id) =>
+        Object.assign({}, subgroupMeta[id], {
+          items: groupedEntries.get(group.id)?.get(id) ?? [],
+        }),
+      ),
+    }),
+  )
 }
 
 function createSvgIconEntry(sourcePath: string, svg: string): IconEntry | null {
@@ -56,22 +54,24 @@ function createSvgIconEntry(sourcePath: string, svg: string): IconEntry | null {
     return null
   }
 
+  const manifestIcon = manifestIconBySource.get(`${rawGroup}/${fileName}.svg`)
+
   return {
+    preserveStrokeWidthSupport: manifestIcon?.preserveStrokeWidthSupport ?? 'none',
     group: getIconGroupId(rawGroup),
     name: getComponentName(fileName),
     sourcePath,
     svg: normalizeSvg(svg),
-    updatedVer: updatedVersionBySource.get(`${rawGroup}/${fileName}.svg`),
+    updatedVer: manifestIcon?.updatedVer,
     ...createIconMetadata(fileName, rawGroup),
   }
 }
 
-function createUpdatedVersionMap() {
+function createManifestIconMap() {
   const entries = Object.values(manifest as Record<string, ManifestIcon[]>).flatMap(
     (icons) => icons,
   )
-
-  return new Map(entries.map((icon) => [`${icon.group}/${icon.name}.svg`, icon.updatedVer]))
+  return new Map(entries.map((icon) => [`${icon.group}/${icon.name}.svg`, icon]))
 }
 
 function getComponentName(fileName: string) {

@@ -30,5 +30,8 @@
   ],
   "scripts": {
     "prepare": "node --experimental-strip-types ./scripts/generate-manifest.mts"
+  },
+  "devDependencies": {
+    "svg-parser": "^2.0.4"
   }
 }
