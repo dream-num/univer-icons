@@ -37,18 +37,18 @@ yarn add @univerjs/icons-vue
 Use icons just like render a React component:
 
 ```tsx
-import { SaveIcon } from '@univerjs/icons'
+import { ShapePieIcon } from '@univerjs/icons'
 
 function App() {
-  return <SaveIcon />
+  return <ShapePieIcon />
 }
 ```
 
-Because icons are React components, you can pass any SVGElement attributes to them, such as style:
+Because icons are React components, you can pass standard SVG attributes to them, such as style:
 
 ```tsx
 function App() {
-  return <SaveIcon style={{ color: '#3526de', fontSize: '48px' }} />
+  return <ShapePieIcon preserveStrokeWidth style={{ color: '#3526de', fontSize: '48px' }} />
 }
 ```
 
@@ -62,6 +62,7 @@ Instead of adding various props to the icons, we prefer to follow the existing b
 
 - All icons have a height and width of 1em, so you can adjust the size of the icon by adjusting the fontSize.
 - All monochrome icons can be adjusted in overall color using the color prop.
+- Stroke-based icons can preserve the line width they render at 16 × 16 by setting `preserveStrokeWidth`; that width stays fixed at every later size. The icon catalogue marks icons that fully support this behavior. Icons whose outlines are filled paths are not affected.
 
 Additionally: We also provide some multi-colored icons, which have fixed colors.
 
@@ -88,11 +89,11 @@ Use icons as Vue components:
 
 ```vue
 <script setup lang="ts">
-import { CopyIcon } from '@univerjs/icons-vue'
+import { ShapePieIcon } from '@univerjs/icons-vue'
 </script>
 
 <template>
-  <CopyIcon class="toolbar-icon" style="font-size: 20px" />
+  <ShapePieIcon preserve-stroke-width class="toolbar-icon" style="font-size: 48px" />
 </template>
 ```
 
@@ -128,7 +129,11 @@ Generating icon components: Finally, we will generate a corresponding React comp
 ## Interface definition of icon components
 
 ```typescript
-interface IconProps extends React.SVGAttributes<SVGElement> {
+type IconProps = React.SVGAttributes<SVGSVGElement> & {
+  /**
+   * Preserve the stroke width rendered at 16 × 16 as the icon scales.
+   */
+  preserveStrokeWidth?: boolean
   /**
    * The color of the icon.
    */

@@ -2,7 +2,7 @@ packages:
   - packages/*
   - svg
 allowBuilds:
-  esbuild: true
+  esbuild: false
   simple-git-hooks: true
 minimumReleaseAgeExclude:
-  - '@univerkit/*'
+  - '@amamo/*'

@@ -1,4 +1,7 @@
+import type { PreserveStrokeWidthSupport } from '../../svg/icon-capabilities.mts'
+
 export type IconEntry = {
+  preserveStrokeWidthSupport: PreserveStrokeWidthSupport
   aliases: string[]
   category: string
   description: string
@@ -197,6 +200,7 @@ function matchesIcon(icon: IconEntry, terms: string[]) {
     icon.role,
     icon.sourcePath,
     icon.updatedVer ?? '',
+    icon.preserveStrokeWidthSupport === 'full' ? 'preserveStrokeWidth Preserve stroke width' : '',
     ...icon.aliases,
     ...icon.keywords,
     ...icon.products,

@@ -1,11 +1,16 @@
-import { globSync, writeFileSync } from 'node:fs'
+import { globSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { argv, cwd } from 'node:process'
 import { spawnSync } from 'node:child_process'
-import { createIconMetadata, type IconMetadata } from '../icon-metadata.mts'
+
+import type { PreserveStrokeWidthSupport } from '../icon-capabilities.mts'
+import type { IconMetadata } from '../icon-metadata.mts'
+import { getPreserveStrokeWidthSupport } from '../icon-capabilities.mts'
+import { createIconMetadata } from '../icon-metadata.mts'
 
 export type ManifestIcon = IconMetadata & {
+  preserveStrokeWidthSupport: PreserveStrokeWidthSupport
   name: string
   componentName: string
   group: string
@@ -36,6 +41,9 @@ export function createManifest(
       .join('')
 
     manifest.get(key)!.push({
+      preserveStrokeWidthSupport: getPreserveStrokeWidthSupport(
+        readFileSync(`${currentPath}/${filePath}`, 'utf8'),
+      ),
       name: iconName,
       componentName,
       group: key,

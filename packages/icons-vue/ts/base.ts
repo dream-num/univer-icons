@@ -1,36 +1,49 @@
 import type { CSSProperties, PropType, VNode } from 'vue'
-import { defineComponent, h, useAttrs } from 'vue'
+import { defineComponent, h, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
+
+const SVG_STROKE_ELEMENT_SELECTOR =
+  'circle, ellipse, line, path, polygon, polyline, rect, text, textPath, tspan, use'
 
 export interface IExtendProps {
   colorChannel1?: string
 }
 
-export interface IconProps {
+export interface IIconProps {
+  /** Preserve stroke widths relative to a 16×16 baseline when the icon scales. */
+  preserveStrokeWidth?: boolean
   focusable?: string
   style?: CSSProperties | string
   class?: unknown
   extend?: IExtendProps
 }
 
-export interface Attrs {
+export type IconProps = IIconProps
+
+export interface IAttrs {
   [key: string]: unknown
 }
 
-export interface IconElement {
+export type Attrs = IAttrs
+
+export interface IIconElement {
   tag: string
-  attrs: Attrs
+  attrs: IAttrs
   style?: CSSProperties
-  children?: IconElement[]
+  children?: IIconElement[]
   defIds?: string[]
 }
 
-export interface IconFulfilledProps extends IconProps {
-  icon: IconElement
+export type IconElement = IIconElement
+
+export interface IIconFulfilledProps extends IIconProps {
+  icon: IIconElement
   id: string
 }
 
-interface RuntimeProps {
-  defIds?: IconElement['defIds']
+export type IconFulfilledProps = IIconFulfilledProps
+
+interface IRuntimeProps {
+  defIds?: IIconElement['defIds']
   idSuffix: string
 }
 
@@ -50,10 +63,33 @@ export const IconBase = defineComponent({
       type: Object as PropType<IExtendProps>,
       default: undefined,
     },
+    preserveStrokeWidth: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
     const attrs = useAttrs()
     const idSuffix = `_${generateShortUuid()}`
+    const rootRef = ref<SVGSVGElement | null>(null)
+    let restoreStrokeWidths: (() => void) | undefined
+
+    const updatePreserveStrokeWidth = () => {
+      restoreStrokeWidths?.()
+      restoreStrokeWidths = undefined
+
+      if (props.preserveStrokeWidth && rootRef.value) {
+        restoreStrokeWidths = applyPreserveStrokeWidth(rootRef.value)
+      }
+    }
+
+    onMounted(updatePreserveStrokeWidth)
+    watch([() => props.preserveStrokeWidth, () => props.icon], updatePreserveStrokeWidth, {
+      flush: 'post',
+    })
+    onBeforeUnmount(() => {
+      restoreStrokeWidths?.()
+    })
 
     return () => {
       const cls = ['univerjs-icon', `univerjs-icon-${props.id}`, attrs.class]
@@ -68,6 +104,7 @@ export const IconBase = defineComponent({
         {
           ...attrs,
           class: cls,
+          ref: rootRef,
         },
         props.extend,
       )
@@ -76,10 +113,10 @@ export const IconBase = defineComponent({
 })
 
 function render(
-  node: IconElement,
+  node: IIconElement,
   id: string,
-  runtimeProps: RuntimeProps,
-  rootProps?: Attrs,
+  runtimeProps: IRuntimeProps,
+  rootProps?: IAttrs,
   extend?: IExtendProps,
 ): VNode {
   const renderedNode = replaceRuntimeIdsInDefs(node, runtimeProps)
@@ -98,10 +135,10 @@ function render(
 }
 
 function replaceRuntimeIdsAndExtInAttrs(
-  node: IconElement,
-  runtimeProps: RuntimeProps,
+  node: IIconElement,
+  runtimeProps: IRuntimeProps,
   extend?: IExtendProps,
-): Attrs {
+): IAttrs {
   const attrs = { ...node.attrs }
 
   if (extend?.colorChannel1 && attrs.fill === 'colorChannel1') {
@@ -144,7 +181,7 @@ function replaceRuntimeIdsAndExtInAttrs(
   return attrs
 }
 
-function replaceRuntimeIdsInDefs(node: IconElement, runtimeProps: RuntimeProps): IconElement {
+function replaceRuntimeIdsInDefs(node: IIconElement, runtimeProps: IRuntimeProps): IIconElement {
   const { defIds } = runtimeProps
   if (!defIds || defIds.length === 0) {
     return node
@@ -178,6 +215,178 @@ function shouldSuffixDefId(childId: string, defIds: string[]): boolean {
 
 function replaceLocalUrlRefs(value: string, idSuffix: string): string {
   return value.replace(/url\(#([^)]+?)\)/g, `url(#$1${idSuffix})`)
+}
+
+interface IInlineStyleSnapshot {
+  priority: string
+  value: string
+}
+
+interface IStrokeWidthOverride {
+  appliedStrokeWidth?: string
+  consumerControlled: boolean
+  element: SVGGeometryElement
+  hadStyleAttribute: boolean
+  sourceStrokeWidth: number
+  strokeWidth: IInlineStyleSnapshot
+}
+
+/** Keep ordinary strokes at their 16×16 baseline width as the icon's layout changes. */
+function applyPreserveStrokeWidth(root: SVGSVGElement): () => void {
+  const viewBox = root.viewBox.baseVal
+  const viewBoxSize = Math.max(viewBox.width, viewBox.height)
+
+  if (!Number.isFinite(viewBoxSize) || viewBoxSize <= 0) {
+    return () => {}
+  }
+
+  const baselineViewportScale = 16 / viewBoxSize
+  const overrides = Array.from(
+    root.querySelectorAll<SVGGeometryElement>(SVG_STROKE_ELEMENT_SELECTOR),
+  ).flatMap((element): IStrokeWidthOverride[] => {
+    const computedStyle = getComputedStyle(element)
+    const strokeWidth = Number.parseFloat(computedStyle.strokeWidth)
+
+    if (
+      computedStyle.stroke === 'none' ||
+      Number.parseFloat(computedStyle.strokeOpacity) === 0 ||
+      computedStyle.vectorEffect === 'non-scaling-stroke' ||
+      !Number.isFinite(strokeWidth) ||
+      strokeWidth <= 0
+    ) {
+      return []
+    }
+
+    return [
+      {
+        consumerControlled: false,
+        element,
+        hadStyleAttribute: element.hasAttribute('style'),
+        sourceStrokeWidth: strokeWidth,
+        strokeWidth: getInlineStyleSnapshot(element.style, 'stroke-width'),
+      },
+    ]
+  })
+
+  if (overrides.length === 0) {
+    return () => {}
+  }
+
+  let active = true
+  const updateStrokeWidths = () => {
+    if (!active) {
+      return
+    }
+
+    const currentViewportScale = getCurrentViewportScale(root, viewBox.width, viewBox.height)
+
+    if (currentViewportScale === null) {
+      return
+    }
+
+    overrides.forEach((override) => {
+      if (override.consumerControlled) {
+        return
+      }
+
+      const expectedStrokeWidth = override.appliedStrokeWidth ?? override.strokeWidth.value
+
+      if (
+        override.element.style.getPropertyValue('stroke-width') !== expectedStrokeWidth ||
+        override.element.style.getPropertyPriority('stroke-width') !== override.strokeWidth.priority
+      ) {
+        override.consumerControlled = true
+        return
+      }
+
+      const appliedStrokeWidth = `${
+        override.sourceStrokeWidth * (baselineViewportScale / currentViewportScale)
+      }px`
+
+      override.element.style.setProperty(
+        'stroke-width',
+        appliedStrokeWidth,
+        override.strokeWidth.priority,
+      )
+      override.appliedStrokeWidth = appliedStrokeWidth
+    })
+  }
+
+  updateStrokeWidths()
+
+  const resizeObserver =
+    typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateStrokeWidths)
+
+  resizeObserver?.observe(root)
+
+  return () => {
+    active = false
+    resizeObserver?.disconnect()
+
+    overrides.forEach((override) => {
+      if (override.appliedStrokeWidth === undefined) {
+        return
+      }
+
+      restoreInlineStyle(
+        override.element.style,
+        'stroke-width',
+        override.appliedStrokeWidth,
+        override.strokeWidth.priority,
+        override.strokeWidth,
+      )
+
+      if (!override.hadStyleAttribute && override.element.style.length === 0) {
+        override.element.removeAttribute('style')
+      }
+    })
+  }
+}
+
+function getCurrentViewportScale(
+  root: SVGSVGElement,
+  viewBoxWidth: number,
+  viewBoxHeight: number,
+): number | null {
+  if (viewBoxWidth <= 0 || viewBoxHeight <= 0) {
+    return null
+  }
+
+  const bounds = root.getBoundingClientRect()
+  const scale = Math.min(bounds.width / viewBoxWidth, bounds.height / viewBoxHeight)
+
+  return Number.isFinite(scale) && scale > 0 ? scale : null
+}
+
+function getInlineStyleSnapshot(
+  style: CSSStyleDeclaration,
+  property: string,
+): IInlineStyleSnapshot {
+  return {
+    priority: style.getPropertyPriority(property),
+    value: style.getPropertyValue(property),
+  }
+}
+
+function restoreInlineStyle(
+  style: CSSStyleDeclaration,
+  property: string,
+  appliedValue: string,
+  appliedPriority: string,
+  snapshot: IInlineStyleSnapshot,
+) {
+  if (
+    style.getPropertyValue(property) !== appliedValue ||
+    style.getPropertyPriority(property) !== appliedPriority
+  ) {
+    return
+  }
+
+  if (snapshot.value) {
+    style.setProperty(property, snapshot.value, snapshot.priority)
+  } else {
+    style.removeProperty(property)
+  }
 }
 
 function generateShortUuid(): string {
