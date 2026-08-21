@@ -35,14 +35,14 @@
   },
   "devDependencies": {
     "@amamo/oxlint-config": "^1.1.0",
-    "@amamo/verso": "1.1.0",
+    "@amamo/verso": "1.2.0",
     "@types/node": "^26.2.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "lint-staged": "^17.3.0",
     "oxfmt": "^0.64.0",
     "oxlint": "^1.79.0",
-    "oxlint-tailwindcss": "^1.9.0",
+    "oxlint-tailwindcss": "^1.10.0",
     "simple-git-hooks": "^2.13.1",
     "typescript": "7.0.2"
   },

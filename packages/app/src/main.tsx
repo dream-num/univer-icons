@@ -143,12 +143,12 @@ function Hero({ totalCount }: { totalCount: number }) {
         <span
           aria-label='Fully supports preserveStrokeWidth'
           className='inline-flex min-h-5 max-w-full items-center rounded-full border border-[#b7d7c4] bg-[#eef7ee] px-2 text-[0.68rem] leading-none font-semibold wrap-anywhere text-[#1f6f5b]'
-          title='All visible artwork uses compatible SVG strokes and can preserve its 16 × 16 baseline line width when scaling.'
+          title='All visible SVG strokes can preserve their 16 × 16 baseline line width when scaling.'
         >
           Preserve stroke width
         </span>
         <span className='text-[0.78rem] text-[#706f67]'>
-          Full 16 × 16 baseline support: all visible artwork uses SVG strokes.
+          Full support: every visible SVG stroke preserves its 16 × 16 baseline width.
         </span>
       </aside>
     </section>
@@ -476,7 +476,7 @@ function createIconCard(icon: IconEntry, subgroupId: IconSubgroupId) {
           <span
             aria-label='Fully supports preserveStrokeWidth'
             className='mt-2 inline-flex min-h-5 max-w-full items-center rounded-full border border-[#b7d7c4] bg-[#eef7ee] px-2 text-[0.68rem] leading-none font-semibold wrap-anywhere text-[#1f6f5b]'
-            title='All visible artwork uses compatible SVG strokes and can preserve its 16 × 16 baseline line width when scaling.'
+            title='All visible SVG strokes can preserve their 16 × 16 baseline line width when scaling.'
           >
             Preserve stroke width
           </span>

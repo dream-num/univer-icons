@@ -5,8 +5,6 @@ export type PreserveStrokeWidthSupport = 'full' | 'none' | 'partial'
 
 type PaintContext = {
   color: string
-  fill: string
-  fillOpacity: number
   hasUnsupportedEffect: boolean
   stroke: string
   strokeOpacity: number
@@ -15,9 +13,7 @@ type PaintContext = {
 }
 
 type PaintSummary = {
-  hasFill: boolean
   hasStroke: boolean
-  hasUnknownArtwork: boolean
   hasUnsupportedStroke: boolean
 }
 
@@ -33,7 +29,6 @@ const GRAPHICS_TAGS = new Set([
   'textPath',
   'tspan',
 ])
-const GRAPHICS_WITHOUT_FILL_AREA = new Set(['line'])
 const NON_RENDERING_TAGS = new Set([
   'clipPath',
   'defs',
@@ -49,9 +44,7 @@ const NON_RENDERING_TAGS = new Set([
   'symbol',
   'title',
 ])
-const UNKNOWN_ARTWORK_TAGS = new Set(['foreignObject', 'image', 'use'])
 const UNSUPPORTED_EFFECT_PROPERTIES = [
-  'clip-path',
   'filter',
   'marker',
   'marker-end',
@@ -61,8 +54,6 @@ const UNSUPPORTED_EFFECT_PROPERTIES = [
 ]
 const DEFAULT_PAINT_CONTEXT: PaintContext = {
   color: 'black',
-  fill: 'black',
-  fillOpacity: 1,
   hasUnsupportedEffect: false,
   stroke: 'none',
   strokeOpacity: 1,
@@ -71,15 +62,12 @@ const DEFAULT_PAINT_CONTEXT: PaintContext = {
 }
 
 /**
- * Reports whether every visible part of an SVG can preserve its authored stroke width.
- * The result is intentionally conservative so the docs only promise full support when
- * viewport-relative stroke compensation is sufficient for the entire icon.
+ * Reports whether every visible SVG stroke can preserve its authored width.
+ * Filled artwork does not participate because it has no stroke width to compensate.
  */
 export function getPreserveStrokeWidthSupport(svg: string): PreserveStrokeWidthSupport {
   const summary: PaintSummary = {
-    hasFill: false,
     hasStroke: false,
-    hasUnknownArtwork: false,
     hasUnsupportedStroke: false,
   }
 
@@ -89,7 +77,7 @@ export function getPreserveStrokeWidthSupport(svg: string): PreserveStrokeWidthS
     return 'none'
   }
 
-  if (summary.hasFill || summary.hasUnknownArtwork || summary.hasUnsupportedStroke) {
+  if (summary.hasUnsupportedStroke) {
     return 'partial'
   }
 
@@ -116,21 +104,12 @@ function analyzeNode(node: Node | string, parent: PaintContext, summary: PaintSu
   const context = createPaintContext(node, parent)
   const isVisible = context.visibility !== 'hidden' && context.visibility !== 'collapse'
 
-  if (UNKNOWN_ARTWORK_TAGS.has(tagName) && isVisible) {
-    summary.hasUnknownArtwork = true
-  }
-
   if (GRAPHICS_TAGS.has(tagName) && isVisible) {
-    const hasFill =
-      !GRAPHICS_WITHOUT_FILL_AREA.has(tagName) &&
-      context.fillOpacity > 0 &&
-      isVisiblePaint(context.fill, context.color)
     const hasStroke =
       context.strokeOpacity > 0 &&
       !isZeroLength(context.strokeWidth) &&
       isVisiblePaint(context.stroke, context.color)
 
-    summary.hasFill ||= hasFill
     summary.hasStroke ||= hasStroke
 
     if (hasStroke && (context.hasUnsupportedEffect || isUrlPaint(context.stroke))) {
@@ -144,8 +123,6 @@ function analyzeNode(node: Node | string, parent: PaintContext, summary: PaintSu
 function createPaintContext(node: ElementNode, parent: PaintContext): PaintContext {
   return {
     color: getInheritedPaint(node, 'color', parent.color, 'black'),
-    fill: getInheritedPaint(node, 'fill', parent.fill, 'black'),
-    fillOpacity: getOpacity(node, 'fill-opacity', parent.fillOpacity),
     hasUnsupportedEffect: parent.hasUnsupportedEffect || hasUnsupportedEffect(node),
     stroke: getInheritedPaint(node, 'stroke', parent.stroke, 'none'),
     strokeOpacity: getOpacity(node, 'stroke-opacity', parent.strokeOpacity),

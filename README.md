@@ -62,7 +62,7 @@ Instead of adding various props to the icons, we prefer to follow the existing b
 
 - All icons have a height and width of 1em, so you can adjust the size of the icon by adjusting the fontSize.
 - All monochrome icons can be adjusted in overall color using the color prop.
-- Stroke-based icons can preserve the line width they render at 16 × 16 by setting `preserveStrokeWidth`; that width stays fixed at every later size. The icon catalogue marks icons that fully support this behavior. Icons whose outlines are filled paths are not affected.
+- Stroke-based icons can preserve the line width they render at 16 × 16 by setting `preserveStrokeWidth`; that width stays fixed at every later size. The icon catalogue marks icons whose visible SVG strokes fully support this behavior. Filled artwork is unaffected and does not prevent an otherwise compatible icon from being marked as supported.
 
 Additionally: We also provide some multi-colored icons, which have fixed colors.
 
