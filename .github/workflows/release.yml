@@ -1,6 +1,9 @@
 name: 🎉 Release
 
 on:
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
       version:
@@ -23,7 +26,6 @@ permissions:
 
 jobs:
   prepare:
-    if: ${{ github.event.inputs.version != '' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -48,7 +50,13 @@ jobs:
           const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
           let version = pkg.version;
 
-          if (bump === 'current') {
+          if (process.env.EVENT_NAME === 'push') {
+            if (`v${version}` !== process.env.GITHUB_REF_NAME) {
+              throw new Error(`Tag ${process.env.GITHUB_REF_NAME} does not match package version ${version}`);
+            }
+
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\n`);
+          } else if (bump === 'current') {
             fs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\n`);
           } else {
             const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(version);
@@ -77,14 +85,17 @@ jobs:
           }
           NODE
         env:
+          EVENT_NAME: ${{ github.event_name }}
           VERSION_BUMP: ${{ github.event.inputs.version }}
 
       - name: Configure git author
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
 
       - name: 📝 Create release commit and tag
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         env:
           RELEASE_VERSION: ${{ steps.version.outputs.version }}
         run: pnpm release -- --version "${RELEASE_VERSION}" --yes
