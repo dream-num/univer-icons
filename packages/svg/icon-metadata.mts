@@ -49,6 +49,22 @@ export type IconRole =
   | 'status'
 
 const explicitIconMetadata = {
+  'paragraph-setting-icon': {
+    aliases: ['paragraph-properties', 'paragraph-format'],
+    category: 'formatting',
+    description: 'Open paragraph settings for indentation, spacing, and alignment.',
+    keywords: ['docs', 'paragraph', 'settings', 'indentation', 'spacing', 'alignment', '段落设置'],
+    products: ['docs'],
+    role: 'action',
+  },
+  'section-setting-icon': {
+    aliases: ['section-properties', 'section-layout'],
+    category: 'layout',
+    description: 'Open document section settings for columns and page layout.',
+    keywords: ['docs', 'section', 'settings', 'columns', 'page', 'layout', '节设置'],
+    products: ['docs'],
+    role: 'action',
+  },
   'ai-assistant-multi-icon': {
     aliases: ['ai', 'assistant', 'automation'],
     category: 'collaboration',
