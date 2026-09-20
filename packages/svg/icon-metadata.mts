@@ -49,6 +49,14 @@ export type IconRole =
   | 'status'
 
 const explicitIconMetadata = {
+  'doc-paste-options-icon': {
+    aliases: ['paste-options', 'clipboard-options'],
+    category: 'editing',
+    description: 'Choose how to format pasted document content.',
+    keywords: ['docs', 'paste', 'clipboard', 'format', 'options', '粘贴选项'],
+    products: ['docs'],
+    role: 'action',
+  },
   'paragraph-setting-icon': {
     aliases: ['paragraph-properties', 'paragraph-format'],
     category: 'formatting',

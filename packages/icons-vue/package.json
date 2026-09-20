@@ -43,13 +43,13 @@
     "vue": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node": "^26.5.1",
+    "@types/node": "^26.6.2",
     "@types/svg-parser": "^2.0.6",
     "@univerjs/icons-svg": "workspace:*",
-    "rolldown": "1.2.8",
+    "rolldown": "1.2.9",
     "svg-parser": "^2.1.0",
     "svgo": "^4.1.0",
     "typescript": "7.0.2",
-    "vue": "^3.5.42"
+    "vue": "^3.5.43"
   }
 }

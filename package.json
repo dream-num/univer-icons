@@ -2,7 +2,7 @@
   "name": "@univerjs/icons-workspace",
   "version": "1.39.0",
   "private": true,
-  "packageManager": "pnpm@12.3.4",
+  "packageManager": "pnpm@12.5.1",
   "description": "Icons used by Univer",
   "author": "DreamNum Co., Ltd. <developer@univer.ai>",
   "license": "MIT",
@@ -36,7 +36,7 @@
   "devDependencies": {
     "@amamo/oxlint-config": "^1.1.1",
     "@amamo/verso": "1.2.0",
-    "@types/node": "^26.5.1",
+    "@types/node": "^26.6.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "lint-staged": "^17.5.1",
