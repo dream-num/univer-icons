@@ -49,6 +49,30 @@ export type IconRole =
   | 'status'
 
 const explicitIconMetadata = {
+  'title-type-icon': {
+    aliases: [],
+    category: 'formatting',
+    description: 'Apply the document title style.',
+    keywords: ['title', 'text', 'style', '标题'],
+    products: ['docs'],
+    role: 'formatting',
+  },
+  'subtitle-type-icon': {
+    aliases: [],
+    category: 'formatting',
+    description: 'Apply the document subtitle style.',
+    keywords: ['subtitle', 'text', 'style', '副标题'],
+    products: ['docs'],
+    role: 'formatting',
+  },
+  'text-color-swatch-double-icon': {
+    aliases: [],
+    category: 'formatting',
+    description: 'Preview a document text color.',
+    keywords: ['text', 'color', 'swatch', '字体颜色'],
+    products: ['docs'],
+    role: 'formatting',
+  },
   'doc-paste-options-icon': {
     aliases: ['paste-options', 'clipboard-options'],
     category: 'editing',
