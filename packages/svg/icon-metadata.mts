@@ -49,6 +49,30 @@ export type IconRole =
   | 'status'
 
 const explicitIconMetadata = {
+  'pivot-chart-icon': {
+    aliases: ['pivot-chart'],
+    category: 'chart',
+    description: 'Insert a pivot chart from spreadsheet data.',
+    keywords: ['pivot', 'chart', 'insert', 'sheets', '透视图'],
+    products: ['sheets'],
+    role: 'action',
+  },
+  'pivot-chart-expand-icon': {
+    aliases: ['pivot-chart-expand'],
+    category: 'chart',
+    description: 'Expand a pivot chart field hierarchy to show more detail.',
+    keywords: ['pivot', 'chart', 'expand', 'hierarchy', 'detail', '展开'],
+    products: ['sheets'],
+    role: 'action',
+  },
+  'pivot-chart-collapse-icon': {
+    aliases: ['pivot-chart-collapse'],
+    category: 'chart',
+    description: 'Collapse a pivot chart field hierarchy to hide detail.',
+    keywords: ['pivot', 'chart', 'collapse', 'hierarchy', 'detail', '折叠'],
+    products: ['sheets'],
+    role: 'action',
+  },
   'title-type-icon': {
     aliases: [],
     category: 'formatting',
