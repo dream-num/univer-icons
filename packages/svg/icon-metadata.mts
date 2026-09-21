@@ -49,6 +49,22 @@ export type IconRole =
   | 'status'
 
 const explicitIconMetadata = {
+  'slicer-icon': {
+    aliases: ['slicer', 'insert-slicer'],
+    category: 'spreadsheet',
+    description: 'Insert a slicer to filter spreadsheet data.',
+    keywords: ['slicer', 'filter', 'pivot', 'table', '切片器'],
+    products: ['sheets'],
+    role: 'action',
+  },
+  'clear-filter-icon': {
+    aliases: ['clear-filter', 'reset-filter'],
+    category: 'data',
+    description: 'Clear the current filter selection.',
+    keywords: ['filter', 'clear', 'reset', 'slicer', 'timeline', '清除筛选'],
+    products: ['sheets', 'bases'],
+    role: 'action',
+  },
   'pivot-chart-icon': {
     aliases: ['pivot-chart'],
     category: 'chart',
