@@ -2,17 +2,13 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { IconBase } from '../dist/esm/base.js'
 
-type IconElement = {
-  attrs: Record<string, unknown>
-  children?: IconElement[]
-  tag: string
-}
+import type { IIconElement } from '../../dist/esm/base.js'
+import { IconBase } from '../../dist/esm/base.js'
 
 describe('IconBase runtime color channels', () => {
   it('replaces colorChannel1 stroke attributes', () => {
-    const icon: IconElement = {
+    const icon: IIconElement = {
       tag: 'svg',
       attrs: {
         height: '1em',

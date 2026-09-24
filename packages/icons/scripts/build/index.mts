@@ -1,9 +1,10 @@
-import type { IconNode } from '#build/normalize-ast'
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import manifest from '@univerjs/icons-svg/manifest' with { type: 'json' }
 import { rolldown } from 'rolldown'
+
+import type { IconNode } from '#build/normalize-ast'
 import { normalizeAST } from '#build/normalize-ast'
 import { parseSvg } from '#build/parse-svg'
 import { getIconComponent } from '#build/templates'
@@ -56,9 +57,10 @@ async function compileTsFile() {
   rmSync(distDir, { force: true, recursive: true })
 
   for (const icon of [{ name: 'base' }, ...Object.values(manifest).flat(), { name: 'index' }]) {
+    const cjsFile = resolve(distDir, `cjs/${icon.name}.cjs`)
     const bundle = await rolldown({
       input: `ts/${icon.name}.tsx`,
-      external: [/^react/, /^.\//],
+      external: [/^react/, /^\.{1,2}\//],
     })
 
     await bundle.write({
@@ -67,16 +69,20 @@ async function compileTsFile() {
       exports: 'named',
     })
     await bundle.write({
-      file: `dist/cjs/${icon.name}.cjs`,
+      file: cjsFile,
       format: 'cjs',
       exports: 'named',
     })
+    rewriteCjsRelativeRequires(cjsFile)
   }
 }
 
-function main() {
-  createComponentFiles()
-  compileTsFile()
+function rewriteCjsRelativeRequires(file: string) {
+  const code = readFileSync(file, 'utf-8')
+  const rewritten = code.replace(/require\((['"])(\.{1,2}\/[^'"]+)\.js\1\)/g, 'require($1$2.cjs$1)')
+
+  writeFileSync(file, rewritten, 'utf-8')
 }
 
-main()
+createComponentFiles()
+await compileTsFile()

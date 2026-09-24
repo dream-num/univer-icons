@@ -1,3 +1,4 @@
 ts/*
 !ts/base.tsx
+!ts/__tests__/
 dist
