@@ -517,7 +517,6 @@ const explicitIconMetadata = {
     description: 'Univer CLI brand icon.',
     products: ['univer'],
   },
-  'univer-sdk-multi-icon': productMetadata('univer', 'Univer SDK product icon.'),
 } satisfies Record<string, IconMetadata>
 
 const chartFeatureIconNames = new Set([
