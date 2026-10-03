@@ -1,5 +1,5 @@
 import type { CSSProperties, PropType, VNode } from 'vue'
-import { defineComponent, h, onBeforeUnmount, onMounted, ref, useAttrs, watch } from 'vue'
+import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const SVG_STROKE_ELEMENT_SELECTOR =
   'circle, ellipse, line, path, polygon, polyline, rect, text, textPath, tspan, use'
@@ -68,8 +68,7 @@ export const IconBase = defineComponent({
       default: false,
     },
   },
-  setup(props) {
-    const attrs = useAttrs()
+  setup(props, { attrs }) {
     const idSuffix = `_${generateShortUuid()}`
     const rootRef = ref<SVGSVGElement | null>(null)
     let restoreStrokeWidths: (() => void) | undefined
