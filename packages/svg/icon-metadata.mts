@@ -155,6 +155,14 @@ const explicitIconMetadata = {
     products: ['common'],
     role: 'action',
   },
+  'insert-below-double-icon': {
+    aliases: ['insert-below', 'add-block-below'],
+    category: 'insert',
+    description: 'Insert new content below the current block.',
+    keywords: ['insert', 'below', 'add', 'block', 'paragraph', '在下方插入'],
+    products: ['docs'],
+    role: 'action',
+  },
   'chart-icon': {
     category: 'insert',
     role: 'action',
