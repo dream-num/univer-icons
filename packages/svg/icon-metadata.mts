@@ -49,6 +49,22 @@ export type IconRole =
   | 'status'
 
 const explicitIconMetadata = {
+  'calculation-options-icon': {
+    aliases: ['calculation-settings', 'iterative-calculation'],
+    category: 'formula',
+    description: 'Configure workbook calculation and iteration settings.',
+    keywords: [
+      'calculation',
+      'formula',
+      'settings',
+      'iteration',
+      'parameters',
+      '计算选项',
+      '迭代计算',
+    ],
+    products: ['sheets'],
+    role: 'action',
+  },
   'slicer-icon': {
     aliases: ['slicer', 'insert-slicer'],
     category: 'spreadsheet',
