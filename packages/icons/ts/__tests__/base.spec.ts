@@ -2,7 +2,6 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-
 import type { IIconElement } from '../../dist/esm/base.js'
 import { IconBase } from '../../dist/esm/base.js'
 

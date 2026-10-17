@@ -23,7 +23,7 @@
     ]
   },
   "scripts": {
-    "build": "pnpm --filter @univerjs/icons-svg run prepare && pnpm --filter ./packages/icons run build && pnpm --filter ./packages/icons-vue run build",
+    "build": "pnpm --filter @univerjs/icons-svg run prepare && pnpm --filter @univerjs/icons-svg run test && pnpm --filter ./packages/icons run build && pnpm --filter ./packages/icons-vue run build",
     "dev": "pnpm --filter ./packages/app dev",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",

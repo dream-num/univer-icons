@@ -3,7 +3,6 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { argv, cwd } from 'node:process'
 import { spawnSync } from 'node:child_process'
-
 import type { PreserveStrokeWidthSupport } from '../icon-capabilities.mts'
 import type { IconMetadata } from '../icon-metadata.mts'
 import { getPreserveStrokeWidthSupport } from '../icon-capabilities.mts'
