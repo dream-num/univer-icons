@@ -368,6 +368,7 @@ function FamilyComparison({
     throw new Error(`Unknown icon family: ${familyId}`)
   }
   const icons = getFamilyIcons(groups, family.icons)
+  const [dropdownIcon] = getFamilyIcons(groups, ['MoreDownIcon'])
 
   return (
     <section className='mx-auto mt-8 max-w-[1180px]' aria-labelledby='family-comparison-title'>
@@ -383,17 +384,25 @@ function FamilyComparison({
         </div>
         <label className='flex items-center gap-2 text-sm font-medium'>
           Family
-          <select
-            className='min-h-10 rounded-md border border-[#deded7] bg-[#fffffb] px-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f6f5b]'
-            value={familyId}
-            onChange={(event) => onFamilyChange(event.currentTarget.value)}
-          >
-            {comparisonFamilies.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.title}
-              </option>
-            ))}
-          </select>
+          <span className='relative inline-flex items-center'>
+            <select
+              className='min-h-10 appearance-none rounded-md border border-[#deded7] bg-[#fffffb] py-2 pr-10 pl-3 hover:border-[#c8c8c0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f6f5b]'
+              value={familyId}
+              onChange={(event) => onFamilyChange(event.currentTarget.value)}
+            >
+              {comparisonFamilies.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+            <span
+              className='pointer-events-none absolute right-3 inline-flex text-[#706f67]'
+              aria-hidden='true'
+            >
+              <IconPreview icon={dropdownIcon} size={16} />
+            </span>
+          </span>
         </label>
       </div>
       <div className='grid gap-4 min-[1000px]:grid-cols-2'>
