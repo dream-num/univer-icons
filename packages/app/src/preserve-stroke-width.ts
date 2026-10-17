@@ -74,7 +74,7 @@ export function createPreserveStrokeWidthCapture(): PreserveStrokeWidthCapture {
         appliedStrokeWidth,
         originalState.strokeWidthPriority,
       )
-      originalState.appliedStrokeWidth = appliedStrokeWidth
+      originalState.appliedStrokeWidth = element.style.getPropertyValue('stroke-width')
     })
   }
 
@@ -162,14 +162,9 @@ function calculateCompensatedStrokeWidth(
   originalComputedStrokeWidth: number,
   currentViewportScale: number | null,
   baselineScale: number | null,
-  sourceAlreadyNonScaling = false,
 ): number | null {
   if (!Number.isFinite(originalComputedStrokeWidth) || originalComputedStrokeWidth <= 0) {
     return null
-  }
-
-  if (sourceAlreadyNonScaling) {
-    return originalComputedStrokeWidth
   }
 
   if (currentViewportScale === null || baselineScale === null) {

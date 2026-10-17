@@ -28,7 +28,10 @@ export default amamo(
       },
       {
         files: ['packages/app/src/main.tsx'],
-        rules: { 'jsx-a11y/prefer-tag-over-role': 'off' },
+        rules: {
+          'jsx-a11y/prefer-tag-over-role': 'off',
+          'jsx-a11y/no-noninteractive-tabindex': ['error', { roles: ['tabpanel', 'region'] }],
+        },
       },
       {
         // ponytail: keep icon bundling sequential to cap memory; batch it if build time becomes a bottleneck.
