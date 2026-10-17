@@ -31,6 +31,11 @@ describe('getPreserveStrokeWidthSupport', () => {
       'more-right',
       'delete',
       'home',
+      'table',
+      'grid',
+      'grid-outline',
+      'show-toolbar',
+      'calendar',
     ]
 
     for (const name of toolbarIcons) {
