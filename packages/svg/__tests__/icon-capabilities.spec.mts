@@ -8,6 +8,36 @@ function readSingleIcon(name: string) {
 }
 
 describe('getPreserveStrokeWidthSupport', () => {
+  it('preserves the strokes of common toolbar actions when enlarged', () => {
+    const toolbarIcons = [
+      'search',
+      'zoom-in',
+      'zoom-out',
+      'arrow-up',
+      'arrow-down',
+      'arrow-left',
+      'arrow-right',
+      'arrow-tilt-up',
+      'arrow-tilt-down',
+      'undo',
+      'redo',
+      'close',
+      'check-mark',
+      'increase',
+      'reduce',
+      'more-up',
+      'more-down',
+      'more-left',
+      'more-right',
+      'delete',
+      'home',
+    ]
+
+    for (const name of toolbarIcons) {
+      assert.equal(getPreserveStrokeWidthSupport(readSingleIcon(`${name}-icon`)), 'full', name)
+    }
+  })
+
   it('supports icons that combine compatible strokes with filled artwork', () => {
     assert.equal(getPreserveStrokeWidthSupport(readSingleIcon('smile-icon')), 'full')
   })

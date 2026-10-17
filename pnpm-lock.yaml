@@ -279,6 +279,9 @@ importers:
 
   packages/svg:
     devDependencies:
+      '@types/svg-parser':
+        specifier: ^2.0.6
+        version: 2.0.6
       svg-parser:
         specifier: ^2.1.0
         version: 2.1.0

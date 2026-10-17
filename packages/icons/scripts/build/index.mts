@@ -3,8 +3,7 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import manifest from '@univerjs/icons-svg/manifest' with { type: 'json' }
 import { rolldown } from 'rolldown'
-
-import type { IconNode } from '#build/normalize-ast'
+import type { IIconNode } from '#build/normalize-ast'
 import { normalizeAST } from '#build/normalize-ast'
 import { parseSvg } from '#build/parse-svg'
 import { getIconComponent } from '#build/templates'
@@ -28,7 +27,7 @@ function createComponentFiles() {
       const raw = readFileSync(icon.path, 'utf-8')
 
       const ast = parseSvg(raw)
-      const element = normalizeAST(icon.name, ast.children as unknown as IconNode[])[0]
+      const element = normalizeAST(icon.name, ast.children as unknown as IIconNode[])[0]
 
       const tsx = getIconComponent({
         element,

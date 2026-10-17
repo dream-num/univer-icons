@@ -9,7 +9,6 @@ export function getIconComponent({
 }) {
   return `import type { PropType } from 'vue'
 import { defineComponent, h } from 'vue'
-
 import type { IExtendProps } from './base.js'
 import { IconBase } from './base.js'
 

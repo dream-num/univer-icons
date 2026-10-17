@@ -29,9 +29,11 @@
     "single"
   ],
   "scripts": {
-    "prepare": "node --experimental-strip-types ./scripts/generate-manifest.mts"
+    "prepare": "node --experimental-strip-types ./scripts/generate-manifest.mts",
+    "test": "node --test ./__tests__/*.spec.mts"
   },
   "devDependencies": {
-    "svg-parser": "^2.1.0"
+    "svg-parser": "^2.1.0",
+    "@types/svg-parser": "^2.0.6"
   }
 }

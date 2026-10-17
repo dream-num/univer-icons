@@ -1,29 +1,29 @@
 import { camelCase } from '#build/camel-case'
 
-interface Attrs {
+interface IAttrs {
   style?: object | string
   [key: string]: string | number | object | undefined
 }
 
-export interface IconNode {
+export interface IIconNode {
   tagName: string
-  properties: Attrs
-  children: IconNode[]
+  properties: IAttrs
+  children: IIconNode[]
   [key: string]: unknown
 }
 
-interface IconElement {
+interface IIconElement {
   tag: string
-  attrs: Attrs
-  children?: IconElement[]
+  attrs: IAttrs
+  children?: IIconElement[]
   defIds?: string[]
 }
 
-interface NormalizationContext {
+interface INormalizationContext {
   idReplacementSet: Set<string>
 }
 
-export function normalizeAST(name: string, roots: IconNode[]): string[] {
+export function normalizeAST(name: string, roots: IIconNode[]): string[] {
   const context = createNormalizationContext()
   const normalizedRoots = doNormalize(roots, context)
 
@@ -37,20 +37,20 @@ export function normalizeAST(name: string, roots: IconNode[]): string[] {
   )
 }
 
-function createNormalizationContext(): NormalizationContext {
+function createNormalizationContext(): INormalizationContext {
   return {
     idReplacementSet: new Set(),
   }
 }
 
-function doNormalize(roots: IconNode[], context: NormalizationContext): IconElement[] {
+function doNormalize(roots: IIconNode[], context: INormalizationContext): IIconElement[] {
   return roots
     .map((node) => ({
       tag: node.tagName,
       attrs: node.properties,
       children: doNormalize(node.children, context),
     }))
-    .map((node: IconElement) => {
+    .map((node: IIconElement) => {
       normalizeChildren(node)
       normalizeAttrs(node)
       normalizeDefinitions(node, context)
@@ -58,7 +58,7 @@ function doNormalize(roots: IconNode[], context: NormalizationContext): IconElem
     })
 }
 
-function normalizeDefinitions(node: IconElement, context: NormalizationContext) {
+function normalizeDefinitions(node: IIconElement, context: INormalizationContext) {
   if (node.tag === 'defs') {
     node.children?.forEach((def) => {
       if (typeof def.attrs.id === 'string') {
@@ -68,23 +68,23 @@ function normalizeDefinitions(node: IconElement, context: NormalizationContext) 
   }
 }
 
-function normalizeAttrs(node: IconElement) {
+function normalizeAttrs(node: IIconElement) {
   normalizeStyle(node)
   normalizeColor(node)
 }
 
-function normalizeWidthAndHeight(node: IconElement) {
+function normalizeWidthAndHeight(node: IIconElement) {
   node.attrs.width = '1em'
   node.attrs.height = '1em'
 }
 
-function normalizeChildren(node: IconElement) {
+function normalizeChildren(node: IIconElement) {
   if (node.children?.length === 0) {
     delete node.children
   }
 }
 
-function addDefIds(root: IconElement, context: NormalizationContext) {
+function addDefIds(root: IIconElement, context: INormalizationContext) {
   const defIds = Array.from(context.idReplacementSet)
   if (defIds.length > 0) {
     root.defIds = defIds
@@ -97,7 +97,7 @@ function replaceIds(name: string, str: string, set: Set<string>): string {
   }, str)
 }
 
-function normalizeStyle(node: IconElement) {
+function normalizeStyle(node: IIconElement) {
   const { attrs } = node
   const styleMap: { [k: string]: string } = {}
 
@@ -113,7 +113,7 @@ function normalizeStyle(node: IconElement) {
   }
 }
 
-function normalizeColor(node: IconElement) {
+function normalizeColor(node: IIconElement) {
   const { attrs } = node
 
   if (attrs.fill === '#000' || attrs.fill === '#000000' || attrs.fill === 'black') {

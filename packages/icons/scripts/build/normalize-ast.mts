@@ -1,32 +1,32 @@
 import { camelCase } from '#build/camel-case'
 
-interface Attrs {
+interface IAttrs {
   style: object | string
 
   [key: string]: string | object
 }
 
-export interface IconNode {
+export interface IIconNode {
   tagName: string
-  properties: Attrs
-  children: IconNode[]
+  properties: IAttrs
+  children: IIconNode[]
 
   [key: string]: any
 }
 
-interface IconElement {
+interface IIconElement {
   tag: string
-  attrs: Attrs
+  attrs: IAttrs
   style?: React.CSSProperties
-  children?: IconElement[]
+  children?: IIconElement[]
   defIds?: string[]
 }
 
-interface NormalizationContext {
+interface INormalizationContext {
   idReplacementSet: Set<string>
 }
 
-function normalizeDefinitions(node: IconElement, context: NormalizationContext) {
+function normalizeDefinitions(node: IIconElement, context: INormalizationContext) {
   if (node.tag === 'defs') {
     node.children?.forEach((def) => {
       if (typeof def.attrs.id === 'string') {
@@ -36,7 +36,7 @@ function normalizeDefinitions(node: IconElement, context: NormalizationContext) 
   }
 }
 
-function normalizeAttrs(node: IconElement) {
+function normalizeAttrs(node: IIconElement) {
   const { attrs } = node
 
   Object.keys(attrs).forEach((key) => {
@@ -51,7 +51,7 @@ function normalizeAttrs(node: IconElement) {
   normalizeColor(node)
 }
 
-function createNormalizationContext(): NormalizationContext {
+function createNormalizationContext(): INormalizationContext {
   return {
     idReplacementSet: new Set(),
   }
@@ -60,14 +60,14 @@ function createNormalizationContext(): NormalizationContext {
 /**
  * map svg-parser ast to React element, so it would be convenient to render
  */
-function doNormalize(roots: IconNode[], context: NormalizationContext): IconElement[] {
+function doNormalize(roots: IIconNode[], context: INormalizationContext): IIconElement[] {
   return roots
     .map((node) => ({
       tag: node.tagName,
       attrs: node.properties,
       children: doNormalize(node.children, context),
     }))
-    .map((node: IconElement) => {
+    .map((node: IIconElement) => {
       normalizeChildren(node)
       normalizeAttrs(node)
       normalizeDefinitions(node, context)
@@ -75,19 +75,19 @@ function doNormalize(roots: IconNode[], context: NormalizationContext): IconElem
     })
 }
 
-function normalizeWidthAndHeight(node: IconElement) {
+function normalizeWidthAndHeight(node: IIconElement) {
   const { attrs } = node
   attrs.width = '1em'
   attrs.height = '1em'
 }
 
-function normalizeChildren(node: IconElement) {
+function normalizeChildren(node: IIconElement) {
   if (node.children?.length === 0) {
     delete node.children
   }
 }
 
-function addDefIds(root: IconElement, context: NormalizationContext) {
+function addDefIds(root: IIconElement, context: INormalizationContext) {
   const defIds = Array.from(context.idReplacementSet)
   if (defIds.length === 0) return
   root.defIds = defIds
@@ -99,7 +99,7 @@ function replaceIds(name: string, str: string, set: Set<string>): string {
   }, str)
 }
 
-function normalizeStyle(node: IconElement) {
+function normalizeStyle(node: IIconElement) {
   const { attrs } = node
   const styleMap: { [k: string]: string } = {}
 
@@ -113,7 +113,7 @@ function normalizeStyle(node: IconElement) {
   }
 }
 
-function normalizeClassName(node: IconElement) {
+function normalizeClassName(node: IIconElement) {
   const { attrs } = node
 
   if (attrs.class) {
@@ -123,7 +123,7 @@ function normalizeClassName(node: IconElement) {
   }
 }
 
-export function normalizeAST(name: string, roots: IconNode[]): string[] {
+export function normalizeAST(name: string, roots: IIconNode[]): string[] {
   const context = createNormalizationContext()
   const normalizedRoots = doNormalize(roots, context)
 
@@ -144,7 +144,7 @@ export function normalizeAST(name: string, roots: IconNode[]): string[] {
  * for single colored icons, we assume that #000 is placeholder for 'currentColor'
  * for multi colored icons, we assume that #E5E5E5 is placeholder for 'colorChannel1'
  */
-function normalizeColor(node: IconElement) {
+function normalizeColor(node: IIconElement) {
   const { attrs } = node
 
   // replace black with currentColor
