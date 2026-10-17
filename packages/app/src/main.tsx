@@ -1,18 +1,18 @@
 import type { CSSProperties } from 'react'
-import React, { useDeferredValue, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import React, { useDeferredValue, useId, useLayoutEffect, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-
-import type { PreserveStrokeWidthCapture } from './preserve-stroke-width.ts'
 import type { IconEntry, IconGroup, IconSubgroup, IconSubgroupId } from './catalogue.ts'
-import { createPreserveStrokeWidthCapture } from './preserve-stroke-width.ts'
 import {
+  comparisonFamilies,
   filterIconGroups,
+  getFamilyIcons,
   getGroupIconCount,
   getRecentIconVersions,
   getTotalIconCount,
   isRecentIconVersion,
 } from './catalogue.ts'
-import { createSvgIconGroups } from './svg-catalogue.ts'
+import { createPreserveStrokeWidthCapture } from './preserve-stroke-width.ts'
+import { createSvgIconGroups, scopeSvgIds } from './svg-catalogue.ts'
 
 const svgModules = import.meta.glob('../../svg/{double,other,single}/*.svg', {
   eager: true,
@@ -24,7 +24,7 @@ const defaultSettings = {
   preserveStrokeWidth: false,
   color: '#18181b',
   colorChannel1: '#facc15',
-  size: 32,
+  size: 16,
 }
 
 const groups = createSvgIconGroups(svgModules)
@@ -44,20 +44,9 @@ function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(' ')
 }
 
-function getDemoStyle() {
-  return {
-    '--icon-color': defaultSettings.color,
-    '--icon-color-channel-1': defaultSettings.colorChannel1,
-    '--icon-size': `${defaultSettings.size}px`,
-    '--stage-grid': 'rgb(31 111 91 / 0.075)',
-  } as CSSProperties
-}
-
 function DemoShell() {
-  const preserveStrokeWidthCaptureRef = useRef<PreserveStrokeWidthCapture | null>(null)
-  const [preserveStrokeWidth, setPreserveStrokeWidth] = useState(
-    defaultSettings.preserveStrokeWidth,
-  )
+  const [settings, setSettings] = useState(defaultSettings)
+  const [familyId, setFamilyId] = useState(comparisonFamilies[0].id)
   const [searchTerm, setSearchTerm] = useState('')
   const deferredSearchTerm = useDeferredValue(searchTerm)
   const searchResult = useMemo(
@@ -66,39 +55,39 @@ function DemoShell() {
   )
   const totalCount = getTotalIconCount(groups)
 
+  const demoStyle = {
+    '--icon-color': settings.color,
+    '--icon-color-channel-1': settings.colorChannel1,
+    '--icon-size': `${settings.size}px`,
+    '--stage-grid': 'rgb(31 111 91 / 0.075)',
+  } as CSSProperties
+
   useLayoutEffect(() => {
-    if (preserveStrokeWidth) {
-      preserveStrokeWidthCaptureRef.current ??= createPreserveStrokeWidthCapture()
-      preserveStrokeWidthCaptureRef.current?.capture(root)
+    if (!settings.preserveStrokeWidth) {
       return
     }
 
-    preserveStrokeWidthCaptureRef.current?.restore()
-    preserveStrokeWidthCaptureRef.current = null
-  })
-
-  useLayoutEffect(
-    () => () => {
-      preserveStrokeWidthCaptureRef.current?.restore()
-    },
-    [],
-  )
+    const capture = createPreserveStrokeWidthCapture()
+    capture.capture(root)
+    return () => capture.restore()
+  }, [settings.preserveStrokeWidth, familyId, searchResult.groups])
 
   return (
     <main
       className='min-h-screen min-w-80 bg-[#f8f8f5] px-[clamp(14px,3vw,32px)] pt-5 pb-12 text-[#181713] antialiased'
-      style={getDemoStyle()}
+      style={demoStyle}
     >
       <Header />
       <Hero totalCount={totalCount} />
       <Toolbar
-        preserveStrokeWidth={preserveStrokeWidth}
+        settings={settings}
         matchCount={searchResult.matchCount}
-        onPreserveStrokeWidthChange={setPreserveStrokeWidth}
+        onSettingsChange={setSettings}
         onSearchTermChange={setSearchTerm}
         searchTerm={searchTerm}
         totalCount={totalCount}
       />
+      <FamilyComparison familyId={familyId} onFamilyChange={setFamilyId} />
       <section className='mx-auto mt-8 grid max-w-[1180px] gap-[30px]' aria-label='Icon groups'>
         {searchResult.groups.length === 0 ? (
           <EmptyState searchTerm={searchTerm} />
@@ -156,25 +145,20 @@ function Hero({ totalCount }: { totalCount: number }) {
 }
 
 function Toolbar({
-  preserveStrokeWidth,
+  settings,
   matchCount,
-  onPreserveStrokeWidthChange,
+  onSettingsChange,
   onSearchTermChange,
   searchTerm,
   totalCount,
 }: {
-  preserveStrokeWidth: boolean
+  settings: typeof defaultSettings
   matchCount: number
-  onPreserveStrokeWidthChange: (value: boolean) => void
+  onSettingsChange: (value: typeof defaultSettings) => void
   onSearchTermChange: (value: string) => void
   searchTerm: string
   totalCount: number
 }) {
-  function handleReset() {
-    resetSettings()
-    onPreserveStrokeWidthChange(defaultSettings.preserveStrokeWidth)
-  }
-
   return (
     <section
       className={cx(
@@ -191,16 +175,25 @@ function Toolbar({
           searchTerm={searchTerm}
           totalCount={totalCount}
         />
-        <ColorControl defaultValue={defaultSettings.color} label='Color' name='color' />
         <ColorControl
-          defaultValue={defaultSettings.colorChannel1}
-          label='colorChannel1'
-          name='colorChannel1'
+          value={settings.color}
+          label='Color'
+          onChange={(color) => onSettingsChange({ ...settings, color })}
         />
-        <SizeControl />
+        <ColorControl
+          value={settings.colorChannel1}
+          label='colorChannel1'
+          onChange={(colorChannel1) => onSettingsChange({ ...settings, colorChannel1 })}
+        />
+        <SizeControl
+          value={settings.size}
+          onChange={(size) => onSettingsChange({ ...settings, size })}
+        />
         <PreserveStrokeWidthControl
-          checked={preserveStrokeWidth}
-          onCheckedChange={onPreserveStrokeWidthChange}
+          checked={settings.preserveStrokeWidth}
+          onCheckedChange={(preserveStrokeWidth) =>
+            onSettingsChange({ ...settings, preserveStrokeWidth })
+          }
         />
         <button
           className={cx(
@@ -209,7 +202,7 @@ function Toolbar({
             'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f6f5b]',
             'max-[880px]:flex-1 max-[880px]:basis-[calc(50%-5px)]',
           )}
-          onClick={handleReset}
+          onClick={() => onSettingsChange(defaultSettings)}
           type='button'
         >
           Reset
@@ -311,13 +304,13 @@ function SearchControl({
 }
 
 function ColorControl({
-  defaultValue,
+  value,
   label,
-  name,
+  onChange,
 }: {
-  defaultValue: string
+  value: string
   label: string
-  name: 'color' | 'colorChannel1'
+  onChange: (value: string) => void
 }) {
   return (
     <label
@@ -330,22 +323,16 @@ function ColorControl({
       <span className='text-[0.78rem] font-medium text-[#706f67]'>{label}</span>
       <input
         className='h-[26px] w-7 cursor-pointer appearance-none border-0 bg-transparent p-0'
-        data-setting-input={name}
-        defaultValue={defaultValue}
-        onInput={(event) => updateSetting(name, event.currentTarget.value)}
+        value={value}
+        onInput={(event) => onChange(event.currentTarget.value)}
         type='color'
       />
-      <span
-        className='min-w-[58px] text-[0.78rem] font-medium text-[#706f67]'
-        data-setting-output={name}
-      >
-        {defaultValue}
-      </span>
+      <span className='min-w-[58px] text-[0.78rem] font-medium text-[#706f67]'>{value}</span>
     </label>
   )
 }
 
-function SizeControl() {
+function SizeControl({ value, onChange }: { value: number; onChange: (value: number) => void }) {
   return (
     <label
       className={cx(
@@ -358,20 +345,136 @@ function SizeControl() {
       <span className='text-[0.78rem] font-medium text-[#706f67]'>Size</span>
       <input
         className='min-w-0 accent-[#1f6f5b]'
-        data-setting-input='size'
-        defaultValue={defaultSettings.size}
+        value={value}
         max={96}
         min={16}
-        onInput={(event) => updateSetting('size', event.currentTarget.value)}
+        onInput={(event) => onChange(event.currentTarget.valueAsNumber)}
         type='range'
       />
-      <span
-        className='min-w-[58px] text-[0.78rem] font-medium text-[#706f67]'
-        data-setting-output='size'
-      >
-        {defaultSettings.size}px
-      </span>
+      <span className='min-w-[58px] text-[0.78rem] font-medium text-[#706f67]'>{value}px</span>
     </label>
+  )
+}
+
+function FamilyComparison({
+  familyId,
+  onFamilyChange,
+}: {
+  familyId: string
+  onFamilyChange: (id: string) => void
+}) {
+  const family = comparisonFamilies.find((item) => item.id === familyId)
+  if (!family) {
+    throw new Error(`Unknown icon family: ${familyId}`)
+  }
+  const icons = getFamilyIcons(groups, family.icons)
+  const [dropdownIcon] = getFamilyIcons(groups, ['MoreDownIcon'])
+
+  return (
+    <section className='mx-auto mt-8 max-w-[1180px]' aria-labelledby='family-comparison-title'>
+      <div className='mb-4 flex flex-wrap items-end justify-between gap-4'>
+        <div>
+          <h2 className='text-[1.35rem] leading-tight font-[650]' id='family-comparison-title'>
+            Compare families
+          </h2>
+          <p className='mt-2 max-w-[640px] text-sm text-[#706f67]'>
+            Check weight, spacing, and detail at toolbar sizes. Standard light and dark colors; the
+            stroke width switch applies here too.
+          </p>
+        </div>
+        <label className='flex items-center gap-2 text-sm font-medium'>
+          Family
+          <span className='relative inline-flex items-center'>
+            <select
+              className='min-h-10 appearance-none rounded-md border border-[#deded7] bg-[#fffffb] py-2 pr-10 pl-3 hover:border-[#c8c8c0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f6f5b]'
+              value={familyId}
+              onChange={(event) => onFamilyChange(event.currentTarget.value)}
+            >
+              {comparisonFamilies.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+            <span
+              className='pointer-events-none absolute right-3 inline-flex text-[#706f67]'
+              aria-hidden='true'
+            >
+              <IconPreview icon={dropdownIcon} size={16} />
+            </span>
+          </span>
+        </label>
+      </div>
+      <div className='grid gap-4 min-[1000px]:grid-cols-2'>
+        {['Light', 'Dark'].map((theme) => (
+          <div
+            className={cx(
+              'min-w-0 overflow-x-auto rounded-lg border p-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f6f5b]',
+              theme === 'Light'
+                ? 'border-[#deded7] bg-[#fffffb] text-[#18181b]'
+                : 'border-[#3f444c] bg-[#20242a] text-[#f4f4f5]',
+            )}
+            aria-label={`${theme} ${family.title} comparison`}
+            role='region'
+            tabIndex={0}
+            key={theme}
+          >
+            <table
+              className='w-full table-fixed border-collapse text-center'
+              style={{ minWidth: 48 + icons.length * 64 }}
+            >
+              <caption className='pb-4 text-left text-sm font-semibold'>
+                {theme} · {family.title}
+              </caption>
+              <thead>
+                <tr>
+                  <th className='w-12 pb-2 text-left text-xs font-medium' scope='col'>
+                    Size
+                  </th>
+                  {icons.map((icon) => (
+                    <th
+                      className='px-1 pb-2 text-[0.68rem] font-medium wrap-anywhere'
+                      scope='col'
+                      key={icon.name}
+                    >
+                      {icon.name.replace(/Icon$/, '')}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {[16, 20, 24, 32].map((size) => (
+                  <tr className='border-t border-current/15' key={size}>
+                    <th className='py-4 text-left text-xs font-medium' scope='row'>
+                      {size} px
+                    </th>
+                    {icons.map((icon) => (
+                      <td className='py-3 align-middle' key={icon.name}>
+                        <IconPreview icon={icon} size={size} />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function IconPreview({ icon, size }: { icon: IconEntry; size?: number }) {
+  const id = useId()
+
+  return (
+    <span
+      aria-label={icon.name}
+      className='inline-flex leading-none [&_svg]:block [&_svg]:h-[1em] [&_svg]:w-[1em]'
+      dangerouslySetInnerHTML={{ __html: scopeSvgIds(icon.svg, id) }}
+      role='img'
+      style={{ fontSize: size ?? 'var(--icon-size)' }}
+    />
   )
 }
 
@@ -426,13 +529,15 @@ function IconSubgroupSection({
         </div>
       )}
       <div className='grid grid-cols-[repeat(auto-fill,minmax(148px,1fr))] gap-2.5 max-[560px]:grid-cols-[repeat(auto-fill,minmax(136px,1fr))]'>
-        {subgroup.items.map((icon) => createIconCard(icon, subgroup.id))}
+        {subgroup.items.map((icon) => (
+          <IconCard icon={icon} subgroupId={subgroup.id} key={icon.name} />
+        ))}
       </div>
     </section>
   )
 }
 
-function createIconCard(icon: IconEntry, subgroupId: IconSubgroupId) {
+function IconCard({ icon, subgroupId }: { icon: IconEntry; subgroupId: IconSubgroupId }) {
   const isRecent = isRecentIconVersion(icon, recentVersions)
   const hasFullPreserveStrokeWidthSupport = icon.preserveStrokeWidthSupport === 'full'
 
@@ -460,12 +565,7 @@ function createIconCard(icon: IconEntry, subgroupId: IconSubgroupId) {
             {icon.updatedVer}
           </span>
         )}
-        <span
-          aria-label={icon.name}
-          className='inline-flex text-(length:--icon-size) leading-none text-(--icon-color) [&_svg]:block [&_svg]:h-[1em] [&_svg]:w-[1em]'
-          dangerouslySetInnerHTML={{ __html: icon.svg }}
-          role='img'
-        />
+        <IconPreview icon={icon} />
       </div>
       <div className='min-w-0 p-2.5'>
         <h3 className='m-0 text-[0.8rem] leading-tight font-semibold wrap-anywhere text-[#181713]'>
@@ -495,48 +595,4 @@ function EmptyState({ searchTerm }: { searchTerm: string }) {
       </p>
     </div>
   )
-}
-
-function updateSetting(name: 'color' | 'colorChannel1' | 'size', value: string) {
-  const shell = document.querySelector<HTMLElement>('main')
-  const cssValue = name === 'size' ? `${value}px` : value
-
-  shell?.style.setProperty(getCssVariableName(name), cssValue)
-  updateSettingOutput(name, cssValue)
-}
-
-function resetSettings() {
-  const values = {
-    color: defaultSettings.color,
-    colorChannel1: defaultSettings.colorChannel1,
-    size: `${defaultSettings.size}`,
-  }
-
-  Object.entries(values).forEach(([name, value]) => {
-    const input = document.querySelector<HTMLInputElement>(`[data-setting-input="${name}"]`)
-
-    if (input) {
-      input.value = value
-    }
-
-    updateSetting(name as 'color' | 'colorChannel1' | 'size', value)
-  })
-}
-
-function getCssVariableName(name: 'color' | 'colorChannel1' | 'size') {
-  if (name === 'colorChannel1') {
-    return '--icon-color-channel-1'
-  }
-
-  if (name === 'size') {
-    return '--icon-size'
-  }
-
-  return '--icon-color'
-}
-
-function updateSettingOutput(name: 'color' | 'colorChannel1' | 'size', value: string) {
-  document.querySelectorAll<HTMLElement>(`[data-setting-output="${name}"]`).forEach((element) => {
-    element.textContent = value
-  })
 }

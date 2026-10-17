@@ -1,18 +1,12 @@
-import type { PreserveStrokeWidthSupport } from '../../svg/icon-capabilities.mts'
+import type manifest from '@univerjs/icons-svg/manifest'
 
-export type IconEntry = {
-  preserveStrokeWidthSupport: PreserveStrokeWidthSupport
-  aliases: string[]
-  category: string
-  description: string
+export type IconEntry = Omit<
+  (typeof manifest)['single'][number],
+  'componentName' | 'group' | 'path'
+> & {
   group: IconGroupId
-  keywords: string[]
-  name: string
-  products: string[]
-  role: string
   sourcePath: string
   svg: string
-  updatedVer?: string
 }
 
 export type IconGroup = {
@@ -124,6 +118,84 @@ export const subgroupMeta = {
     description: 'Stroke, brush, and pen size preset icons.',
   },
 } satisfies Record<IconSubgroupId, Omit<IconSubgroup, 'items'>>
+
+export const comparisonFamilies = [
+  { id: 'search', title: 'Search & zoom', icons: ['SearchIcon', 'ZoomInIcon', 'ZoomOutIcon'] },
+  {
+    id: 'arrows',
+    title: 'Arrows',
+    icons: [
+      'ArrowUpIcon',
+      'ArrowDownIcon',
+      'ArrowLeftIcon',
+      'ArrowRightIcon',
+      'ArrowTiltUpIcon',
+      'ArrowTiltDownIcon',
+    ],
+  },
+  {
+    id: 'chevrons',
+    title: 'Chevrons',
+    icons: ['MoreUpIcon', 'MoreDownIcon', 'MoreLeftIcon', 'MoreRightIcon'],
+  },
+  {
+    id: 'containers',
+    title: 'Containers',
+    icons: ['TableIcon', 'GridIcon', 'GridOutlineIcon', 'ShowToolbarIcon', 'CalendarIcon'],
+  },
+  {
+    id: 'status',
+    title: 'Status',
+    icons: [
+      'CheckMarkIcon',
+      'SuccessIcon',
+      'SuccessOutlineIcon',
+      'InfoIcon',
+      'HelpIcon',
+      'ErrorIcon',
+    ],
+  },
+  {
+    id: 'charts',
+    title: 'Charts',
+    icons: [
+      'ColumnChartIcon',
+      'LineChartIcon',
+      'HistogramChartIcon',
+      'PieChartIcon',
+      'ChordChartIcon',
+      'SunburstChartIcon',
+    ],
+  },
+  {
+    id: 'formulas',
+    title: 'Formulas',
+    icons: [
+      'FormulaFractionIcon',
+      'FormulaMatrixIcon',
+      'FormulaRadicalIcon',
+      'FormulaLimitLogarithmIcon',
+    ],
+  },
+]
+
+export function getFamilyIcons(groups: IconGroup[], names: string[]): IconEntry[] {
+  const icons = new Map(
+    groups.flatMap((group) =>
+      group.subgroups.flatMap((subgroup) =>
+        subgroup.items.map((icon) => [icon.name, icon] as const),
+      ),
+    ),
+  )
+
+  return names.map((name) => {
+    const icon = icons.get(name)
+    if (!icon) {
+      throw new Error(`Missing family icon: ${name}`)
+    }
+    return icon
+  })
+}
 
 export function filterIconGroups(groups: IconGroup[], searchTerm: string): IconSearchResult {
   const terms = normalizeSearchTerm(searchTerm)

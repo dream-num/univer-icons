@@ -1,16 +1,8 @@
+import manifest from '@univerjs/icons-svg/manifest' with { type: 'json' }
 import type { IconEntry, IconGroup, IconGroupId, IconSubgroupId } from './catalogue.ts'
-import type { PreserveStrokeWidthSupport } from '../../svg/icon-capabilities.mts'
-import { createIconMetadata } from '../../svg/icon-metadata.mts'
-import manifest from '../../svg/manifest.json' with { type: 'json' }
 import { groupMeta, subgroupMeta } from './catalogue.ts'
 
 type SvgGroupId = 'double' | 'other' | 'single'
-type ManifestIcon = {
-  preserveStrokeWidthSupport?: PreserveStrokeWidthSupport
-  group: string
-  name: string
-  updatedVer: string
-}
 
 const svgPathPattern = /(?:^|\/)(double|other|single)\/([^/]+)\.svg$/
 const manifestIconBySource = createManifestIconMap()
@@ -56,29 +48,31 @@ function createSvgIconEntry(sourcePath: string, svg: string): IconEntry | null {
 
   const manifestIcon = manifestIconBySource.get(`${rawGroup}/${fileName}.svg`)
 
+  if (!manifestIcon) {
+    throw new Error(
+      `Missing manifest entry for ${rawGroup}/${fileName}.svg. Run pnpm build to refresh it.`,
+    )
+  }
+
   return {
-    preserveStrokeWidthSupport: manifestIcon?.preserveStrokeWidthSupport ?? 'none',
+    preserveStrokeWidthSupport: manifestIcon.preserveStrokeWidthSupport,
     group: getIconGroupId(rawGroup),
-    name: getComponentName(fileName),
+    name: manifestIcon.componentName,
     sourcePath,
     svg: normalizeSvg(svg),
-    updatedVer: manifestIcon?.updatedVer,
-    ...createIconMetadata(fileName, rawGroup),
+    updatedVer: manifestIcon.updatedVer,
+    aliases: manifestIcon.aliases,
+    category: manifestIcon.category,
+    description: manifestIcon.description,
+    keywords: manifestIcon.keywords,
+    products: manifestIcon.products,
+    role: manifestIcon.role,
   }
 }
 
 function createManifestIconMap() {
-  const entries = Object.values(manifest as Record<string, ManifestIcon[]>).flatMap(
-    (icons) => icons,
-  )
+  const entries = Object.values(manifest).flat()
   return new Map(entries.map((icon) => [`${icon.group}/${icon.name}.svg`, icon]))
-}
-
-function getComponentName(fileName: string) {
-  return fileName
-    .split('-')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join('')
 }
 
 function getIconGroupId(group: SvgGroupId): IconGroupId {
@@ -170,4 +164,11 @@ function normalizeSvgSize(svg: string) {
 
     return `<svg${attributesWithoutSize} width="1em" height="1em">`
   })
+}
+
+export function scopeSvgIds(svg: string, prefix: string) {
+  return svg
+    .replace(/(\sid=["'])([^"']+)(["'])/g, `$1${prefix}-$2$3`)
+    .replace(/url\(#([^)]+)\)/g, `url(#${prefix}-$1)`)
+    .replace(/(\s(?:xlink:)?href=["'])#([^"']+)(["'])/g, `$1#${prefix}-$2$3`)
 }

@@ -28,6 +28,15 @@ jobs:
       - name: 📦 Build
         run: pnpm build
 
+      - name: Test demo catalogue
+        run: pnpm --filter ./packages/app test
+
+      - name: Typecheck demo catalogue
+        run: pnpm --filter ./packages/app typecheck
+
+      - name: Build demo catalogue
+        run: pnpm --filter ./packages/app exec vite build
+
   set-pr-info:
     name: set PR info
     runs-on: ubuntu-latest
