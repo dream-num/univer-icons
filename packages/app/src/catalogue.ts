@@ -122,6 +122,18 @@ export const subgroupMeta = {
 export const comparisonFamilies = [
   { id: 'search', title: 'Search & zoom', icons: ['SearchIcon', 'ZoomInIcon', 'ZoomOutIcon'] },
   {
+    id: 'shape-merge',
+    title: 'Shape merging',
+    icons: [
+      'ShapeMergeIcon',
+      'ShapeUnionIcon',
+      'ShapeCombineIcon',
+      'ShapeFragmentIcon',
+      'ShapeIntersectIcon',
+      'ShapeSubtractIcon',
+    ],
+  },
+  {
     id: 'arrows',
     title: 'Arrows',
     icons: [

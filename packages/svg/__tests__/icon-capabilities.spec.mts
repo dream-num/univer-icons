@@ -36,6 +36,12 @@ describe('getPreserveStrokeWidthSupport', () => {
       'grid-outline',
       'show-toolbar',
       'calendar',
+      'shape-merge',
+      'shape-union',
+      'shape-combine',
+      'shape-fragment',
+      'shape-intersect',
+      'shape-subtract',
     ]
 
     for (const name of toolbarIcons) {
