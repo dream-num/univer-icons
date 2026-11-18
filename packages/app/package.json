@@ -6,16 +6,16 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "test": "node --test ./src/__tests__/*.spec.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsrs --noEmit"
   },
   "dependencies": {
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
-    "tailwindcss": "^4.3.3",
-    "vite": "^8.3.4",
-    "@univerjs/icons-svg": "workspace:*"
+    "@tailwindcss/vite": "^4.3.5",
+    "@univerjs/icons-svg": "workspace:*",
+    "tailwindcss": "^4.3.5",
+    "vite": "^8.3.8"
   }
 }
