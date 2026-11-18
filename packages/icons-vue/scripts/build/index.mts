@@ -12,6 +12,7 @@ const dirname = fileURLToPath(new URL('.', import.meta.url))
 const packageRoot = resolve(dirname, '../..')
 const tsDir = resolve(packageRoot, 'ts')
 const distDir = resolve(packageRoot, 'dist')
+const manifestUrl = import.meta.resolve('@univerjs/icons-svg/manifest')
 
 function createComponentFiles() {
   const groups = Object.values(manifest)
@@ -24,7 +25,7 @@ function createComponentFiles() {
   const exportsFileLines: string[] = []
   for (const icons of groups) {
     for (const icon of icons) {
-      const raw = readFileSync(icon.path, 'utf-8')
+      const raw = readFileSync(new URL(icon.path, manifestUrl), 'utf-8')
       const ast = parseSvg(raw)
       const element = normalizeAST(icon.name, ast.children as unknown as IIconNode[])[0]
 

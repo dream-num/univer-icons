@@ -21,10 +21,14 @@
   ],
   "sideEffects": false,
   "exports": {
+    "./double/*.svg": "./double/*.svg",
+    "./other/*.svg": "./other/*.svg",
+    "./single/*.svg": "./single/*.svg",
     "./manifest": "./manifest.json"
   },
   "files": [
     "double",
+    "manifest.json",
     "other",
     "single"
   ],

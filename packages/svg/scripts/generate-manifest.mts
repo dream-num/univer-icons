@@ -46,7 +46,7 @@ export function createManifest(
       name: iconName,
       componentName,
       group: key,
-      path: `${currentPath}/${filePath}`,
+      path: filePath,
       updatedVer: updatedVersions[filePath] ?? 'unreleased',
       ...createIconMetadata(iconName, key),
     })
