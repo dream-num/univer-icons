@@ -1,8 +1,4 @@
-<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="2.8" y="4.8" width="14.4" height="10.4" stroke="black" stroke-width="1.6"/>
-<rect x="1.5" y="3.5" width="3" height="3" fill="white" stroke="black" stroke-width="1.2"/>
-<rect x="15.5" y="3.5" width="3" height="3" fill="white" stroke="black" stroke-width="1.2"/>
-<rect x="15.5" y="13.5" width="3" height="3" fill="white" stroke="black" stroke-width="1.2"/>
-<rect x="1.5" y="13.5" width="3" height="3" fill="white" stroke="black" stroke-width="1.2"/>
-<path d="M6.5 6.97823C6.5 7.29621 6.69236 7.58258 6.98673 7.70283L8.38 8.272V11.752L6.9659 12.3477C6.68357 12.4667 6.5 12.7432 6.5 13.0496C6.5 13.5855 7.03894 13.9538 7.53828 13.7591L13.5175 11.4272C14.11 11.1961 14.5 10.6253 14.5 9.98948C14.5 9.35214 14.1082 8.78037 13.5138 8.55034L7.56524 6.24825C7.05231 6.04974 6.5 6.42823 6.5 6.97823ZM9.7 11.284V8.74L13.096 9.928V10.072L9.7 11.284Z" fill="black"/>
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="black" stroke-width="1.6" xmlns="http://www.w3.org/2000/svg">
+<rect x="1.8" y="3.8" width="16.4" height="12.4"/>
+<path d="M13.4 6.9v6.2M10 6.9v6.2M6.6 6.9v4.4" stroke-width="1.4" stroke-linecap="round"/>
 </svg>
