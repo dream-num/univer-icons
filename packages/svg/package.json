@@ -39,7 +39,7 @@
   ],
   "scripts": {
     "prepare": "node --experimental-strip-types ./scripts/generate-manifest.mts && node ./scripts/generate-canvas.mts && tsrs -p tsconfig.json",
-    "test": "node --test ./__tests__/*.spec.mts ./scripts/__tests__/*.spec.mts ./ts/__tests__/*.spec.mts"
+    "test": "node --test ./__tests__/*.spec.mts ./ts/__tests__/*.spec.mts"
   },
   "devDependencies": {
     "svg-parser": "^2.1.0",

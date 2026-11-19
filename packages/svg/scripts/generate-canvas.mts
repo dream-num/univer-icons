@@ -134,7 +134,7 @@ function paint(value: string | number | undefined) {
   return value
 }
 
-export function compileCanvasIcon(svg: string, source: string): ICanvasIcon {
+function compileCanvasIcon(svg: string, source: string): ICanvasIcon {
   const root = parse(svg).children[0] as ElementNode
   const [x, y, width, height] = String(root.properties!.viewBox).split(/\s+/).map(Number)
   assert.ok(x === 0 && y === 0 && width > 0 && height > 0, source)
@@ -253,18 +253,16 @@ export function compileCanvasIcon(svg: string, source: string): ICanvasIcon {
   return { width, height, paths }
 }
 
-if (import.meta.main) {
-  const data = Object.fromEntries(
-    icons.map((file) => {
-      const svg = readFileSync(new URL(`../${file}-icon.svg`, import.meta.url), 'utf8')
-      return [`${file.split('/')[1]}-icon`, compileCanvasIcon(svg, file)]
-    }),
-  )
-  const names = Object.keys(data)
-    .map((name) => JSON.stringify(name))
-    .join(' | ')
-  writeFileSync(
-    new URL('../ts/canvas-icons.generated.ts', import.meta.url),
-    `import type { ICanvasIcon } from './canvas-geometry.js'\nexport const canvasIcons: Record<${names}, ICanvasIcon> = ${JSON.stringify(data)}\n`,
-  )
-}
+const data = Object.fromEntries(
+  icons.map((file) => {
+    const svg = readFileSync(new URL(`../${file}-icon.svg`, import.meta.url), 'utf8')
+    return [`${file.split('/')[1]}-icon`, compileCanvasIcon(svg, file)]
+  }),
+)
+const names = Object.keys(data)
+  .map((name) => JSON.stringify(name))
+  .join(' | ')
+writeFileSync(
+  new URL('../ts/canvas-icons.generated.ts', import.meta.url),
+  `import type { ICanvasIcon } from './canvas-geometry.js'\nexport const canvasIcons: Record<${names}, ICanvasIcon> = ${JSON.stringify(data)}\n`,
+)
