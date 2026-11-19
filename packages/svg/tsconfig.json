@@ -6,8 +6,8 @@
     "types": [],
     "strict": true,
     "declaration": true,
-    "outDir": "canvas",
+    "outDir": "dist",
     "rootDir": "ts"
   },
-  "include": ["ts/canvas.cts"]
+  "include": ["ts/*.ts"]
 }

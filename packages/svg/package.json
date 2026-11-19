@@ -22,29 +22,24 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./canvas/canvas.d.cts",
-      "default": "./canvas/canvas.cjs"
+      "types": "./dist/canvas.d.ts",
+      "default": "./dist/canvas.js"
     },
     "./double/*.svg": "./double/*.svg",
     "./other/*.svg": "./other/*.svg",
     "./single/*.svg": "./single/*.svg",
-    "./manifest": "./manifest.json",
-    "./canvas/*-icon": {
-      "types": "./canvas-icon.d.cts",
-      "default": "./canvas/*-icon.cjs"
-    }
+    "./manifest": "./manifest.json"
   },
   "files": [
     "double",
     "manifest.json",
     "other",
     "single",
-    "canvas",
-    "canvas-icon.d.cts"
+    "dist"
   ],
   "scripts": {
     "prepare": "node --experimental-strip-types ./scripts/generate-manifest.mts && node ./scripts/generate-canvas.mts && tsrs -p tsconfig.json",
-    "test": "node --test ./__tests__/*.spec.mts ./scripts/__tests__/*.spec.mts"
+    "test": "node --test ./__tests__/*.spec.mts ./scripts/__tests__/*.spec.mts ./ts/__tests__/*.spec.mts"
   },
   "devDependencies": {
     "svg-parser": "^2.1.0",

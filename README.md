@@ -85,13 +85,12 @@ function App() {
 
 ### Canvas rendering
 
-Import the drawing function from `@univerjs/icons-svg` and the geometry for each Canvas icon from its own subpath. This draws a 16 px filter icon on a 2D rendering context.
+Pass a supported icon name to `drawCanvasIcon` to draw it synchronously on a 2D rendering context. TypeScript suggests the available names through `CanvasIconName`. Omit the color to keep the SVG palette, pass one color to tint its main and accent paths, or pass a map of source colors to replacements for a multicolor icon.
 
 ```ts
 import { drawCanvasIcon } from '@univerjs/icons-svg'
-import filterAppliedIcon from '@univerjs/icons-svg/canvas/filter-applied-icon'
 
-drawCanvasIcon(ctx, filterAppliedIcon, 0, 0, 16, '#222')
+drawCanvasIcon(ctx, 'filter-applied-icon', 0, 0, 16, '#222')
 ```
 
 ## Vue 3 Usage
