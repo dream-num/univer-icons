@@ -77,6 +77,8 @@ const explicitIconMetadata = {
   ...editorIcons('bases', 'view', 'layout', {
     'kanban-view-icon': ['Show records on a kanban board.', '看板'],
     'gantt-view-icon': ['Show records on a Gantt timeline.', '甘特图'],
+    'panel-left-close-icon': ['Collapse the left panel.', '收起左侧面板'],
+    'panel-left-open-icon': ['Expand the left panel.', '展开左侧面板'],
     'view-settings-icon': ['Configure the current view.', '视图设置'],
   }),
   ...editorIcons('sheets', 'data', 'status', {
