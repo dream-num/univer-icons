@@ -6,7 +6,10 @@ it('restores the caller’s drawing state when a clipped foreground fails to pai
   const originalPath = Object.getOwnPropertyDescriptor(globalThis, 'Path2D')
   Object.defineProperty(globalThis, 'Path2D', {
     value: class {
-      constructor(readonly data: string) {}
+      readonly data: string
+      constructor(data: string) {
+        this.data = data
+      }
     },
     configurable: true,
   })
