@@ -49,6 +49,42 @@ export type IconRole =
   | 'status'
 
 const explicitIconMetadata = {
+  ...editorIcons('docs', 'document', 'action', {
+    'footnote-double-icon': ['Insert a footnote.', '脚注'],
+    'endnote-double-icon': ['Insert an endnote.', '尾注'],
+    'return-to-reference-double-icon': ['Return to a note reference in the document.', '返回引用'],
+    'footnote-settings-double-icon': ['Configure footnotes.', '脚注设置'],
+    'endnote-settings-double-icon': ['Configure endnotes.', '尾注设置'],
+  }),
+  ...editorIcons('docs', 'layout', 'layout', {
+    'wrap-inline-icon': ['Place an object inline with the text.', '嵌入型'],
+    'wrap-square-icon': ['Wrap text around the sides of an object.', '四周型'],
+    'wrap-top-bottom-icon': ['Place text above and below an object.', '上下型'],
+    'wrap-behind-text-icon': ['Place an object behind the text.', '衬于文字下方'],
+    'wrap-in-front-of-text-icon': ['Place an object in front of the text.', '浮于文字上方'],
+  }),
+  ...editorIcons('bases', 'data', 'data', {
+    'person-icon': ['A person field.', '人员'],
+    'phone-icon': ['A telephone number field.', '电话'],
+    'email-icon': ['An email address field.', '邮箱'],
+    'attachment-icon': ['An attachment field.', '附件'],
+    'single-select-icon': ['A field with one selectable option.', '单选'],
+    'created-by-icon': ['The person who created a record.', '创建人'],
+    'updated-by-icon': ['The person who last updated a record.', '修改人'],
+    'created-at-icon': ['The time a record was created.', '创建时间'],
+    'updated-at-icon': ['The time a record was last updated.', '更新时间'],
+  }),
+  ...editorIcons('bases', 'view', 'layout', {
+    'kanban-view-icon': ['Show records on a kanban board.', '看板'],
+    'gantt-view-icon': ['Show records on a Gantt timeline.', '甘特图'],
+    'view-settings-icon': ['Configure the current view.', '视图设置'],
+  }),
+  ...editorIcons('sheets', 'data', 'status', {
+    'filter-applied-icon': ['A filter is applied to this column.', '已筛选'],
+    'filter-options-icon': ['Open filter options for this column.', '筛选选项'],
+    'filter-sort-ascending-icon': ['A filtered column sorted in ascending order.', '筛选升序'],
+    'filter-sort-descending-icon': ['A filtered column sorted in descending order.', '筛选降序'],
+  }),
   'calculation-options-icon': {
     aliases: ['calculation-settings', 'iterative-calculation'],
     category: 'formula',
@@ -793,6 +829,27 @@ export function createIconMetadata(iconName: string, group: string): IconMetadat
     products,
     role,
   }
+}
+
+function editorIcons(
+  product: IconProduct,
+  category: IconCategory,
+  role: IconRole,
+  entries: Record<string, [description: string, keyword: string]>,
+): Record<string, IconMetadata> {
+  return Object.fromEntries(
+    Object.entries(entries).map(([name, [description, keyword]]) => [
+      name,
+      {
+        aliases: [],
+        category,
+        description,
+        keywords: [...getNameTokens(name.replace('-double-icon', '-icon')), keyword],
+        products: [product],
+        role,
+      },
+    ]),
+  )
 }
 
 function productMetadata(product: IconProduct, description: string): IconMetadata {

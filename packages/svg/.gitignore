@@ -1,1 +1,3 @@
 manifest.json
+dist/
+ts/canvas-icons.generated.ts

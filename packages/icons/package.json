@@ -37,7 +37,7 @@
   ],
   "scripts": {
     "build": "node --experimental-strip-types ./scripts/build/index.mts && tsrs && pnpm test",
-    "test": "node --test ./scripts/build/__tests__/index.spec.mts ./ts/__tests__/base.spec.ts"
+    "test": "node --test ./ts/__tests__/*.spec.ts"
   },
   "peerDependencies": {
     "react": "*",

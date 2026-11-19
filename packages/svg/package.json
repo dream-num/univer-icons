@@ -21,6 +21,10 @@
   ],
   "sideEffects": false,
   "exports": {
+    ".": {
+      "types": "./dist/canvas.d.ts",
+      "default": "./dist/canvas.js"
+    },
     "./double/*.svg": "./double/*.svg",
     "./other/*.svg": "./other/*.svg",
     "./single/*.svg": "./single/*.svg",
@@ -30,11 +34,12 @@
     "double",
     "manifest.json",
     "other",
-    "single"
+    "single",
+    "dist"
   ],
   "scripts": {
-    "prepare": "node --experimental-strip-types ./scripts/generate-manifest.mts",
-    "test": "node --test ./__tests__/*.spec.mts"
+    "prepare": "node --experimental-strip-types ./scripts/generate-manifest.mts && node ./scripts/generate-canvas.mts && tsrs -p tsconfig.json",
+    "test": "node --test ./__tests__/*.spec.mts ./ts/__tests__/*.spec.mts"
   },
   "devDependencies": {
     "svg-parser": "^2.1.0",
