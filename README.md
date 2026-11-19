@@ -83,6 +83,17 @@ function App() {
 }
 ```
 
+### Canvas rendering
+
+Import the drawing function from `@univerjs/icons-svg` and the geometry for each Canvas icon from its own subpath. This draws a 16 px filter icon on a 2D rendering context.
+
+```ts
+import { drawCanvasIcon } from '@univerjs/icons-svg'
+import filterAppliedIcon from '@univerjs/icons-svg/canvas/filter-applied-icon'
+
+drawCanvasIcon(ctx, filterAppliedIcon, 0, 0, 16, '#222')
+```
+
 ## Vue 3 Usage
 
 Use icons as Vue components:

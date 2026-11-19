@@ -21,14 +21,14 @@
   ],
   "sideEffects": false,
   "exports": {
+    ".": {
+      "types": "./canvas/canvas.d.cts",
+      "default": "./canvas/canvas.cjs"
+    },
     "./double/*.svg": "./double/*.svg",
     "./other/*.svg": "./other/*.svg",
     "./single/*.svg": "./single/*.svg",
     "./manifest": "./manifest.json",
-    "./canvas": {
-      "types": "./canvas/canvas.d.cts",
-      "default": "./canvas/canvas.cjs"
-    },
     "./canvas/*-icon": {
       "types": "./canvas-icon.d.cts",
       "default": "./canvas/*-icon.cjs"
