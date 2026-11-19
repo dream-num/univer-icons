@@ -32,6 +32,8 @@ describe('getPreserveStrokeWidthSupport', () => {
       'delete',
       'home',
       'table',
+      'add-note',
+      'folder',
       'grid',
       'grid-outline',
       'show-toolbar',

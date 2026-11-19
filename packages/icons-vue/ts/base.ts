@@ -307,7 +307,7 @@ function applyPreserveStrokeWidth(root: SVGSVGElement): () => void {
         appliedStrokeWidth,
         override.strokeWidth.priority,
       )
-      override.appliedStrokeWidth = appliedStrokeWidth
+      override.appliedStrokeWidth = override.element.style.getPropertyValue('stroke-width')
     })
   }
 
