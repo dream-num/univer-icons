@@ -24,17 +24,27 @@
     "./double/*.svg": "./double/*.svg",
     "./other/*.svg": "./other/*.svg",
     "./single/*.svg": "./single/*.svg",
-    "./manifest": "./manifest.json"
+    "./manifest": "./manifest.json",
+    "./canvas": {
+      "types": "./canvas/canvas.d.cts",
+      "default": "./canvas/canvas.cjs"
+    },
+    "./canvas/*-icon": {
+      "types": "./canvas-icon.d.cts",
+      "default": "./canvas/*-icon.cjs"
+    }
   },
   "files": [
     "double",
     "manifest.json",
     "other",
-    "single"
+    "single",
+    "canvas",
+    "canvas-icon.d.cts"
   ],
   "scripts": {
-    "prepare": "node --experimental-strip-types ./scripts/generate-manifest.mts",
-    "test": "node --test ./__tests__/*.spec.mts"
+    "prepare": "node --experimental-strip-types ./scripts/generate-manifest.mts && node ./scripts/generate-canvas.mts && tsrs -p tsconfig.json",
+    "test": "node --test ./__tests__/*.spec.mts ./scripts/__tests__/*.spec.mts"
   },
   "devDependencies": {
     "svg-parser": "^2.1.0",

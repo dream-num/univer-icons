@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "lib": ["ES2022", "DOM"],
+    "types": [],
+    "strict": true,
+    "declaration": true,
+    "outDir": "canvas",
+    "rootDir": "ts"
+  },
+  "include": ["ts/canvas.cts"]
+}
