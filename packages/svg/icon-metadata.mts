@@ -51,6 +51,32 @@ export type IconRole =
 const explicitIconMetadata = {
   ...editorIcons('docs', 'document', 'action', {
     'footnote-double-icon': ['Insert a footnote.', '脚注'],
+    'reference-contents-icon': ['Insert a table of contents.', '目录'],
+    'reference-add-text-icon': [
+      'Set the table of contents level of a paragraph.',
+      '添加文字 目录级别',
+    ],
+    'reference-update-icon': ['Update a generated reference table.', '更新目录 更新索引'],
+    'reference-show-notes-icon': [
+      'Show the footnote or endnote for a reference.',
+      '显示备注 脚注 尾注',
+    ],
+    'reference-citation-icon': ['Insert an in-text citation.', '插入引文'],
+    'reference-sources-icon': ['Manage citation sources.', '管理来源 管理源'],
+    'reference-bibliography-icon': ['Insert a bibliography or works cited list.', '书目 参考文献'],
+    'reference-caption-icon': ['Insert a caption for an object.', '插入题注'],
+    'reference-figures-icon': ['Insert a table of figures.', '插入图表目录'],
+    'reference-cross-reference-icon': ['Insert a cross-reference to another item.', '交叉引用'],
+    'reference-mark-entry-icon': ['Mark selected text as an index entry.', '标记索引项 标记条目'],
+    'reference-index-icon': ['Insert an alphabetical index.', '插入索引'],
+    'reference-mark-authority-icon': [
+      'Mark a legal citation for a table of authorities.',
+      '标记法律引文',
+    ],
+    'reference-authorities-icon': [
+      'Insert a table of cited legal authorities.',
+      '插入引文目录 法律引文',
+    ],
     'endnote-double-icon': ['Insert an endnote.', '尾注'],
     'return-to-reference-double-icon': ['Return to a note reference in the document.', '返回引用'],
     'footnote-settings-double-icon': ['Configure footnotes.', '脚注设置'],

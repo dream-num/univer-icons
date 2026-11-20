@@ -65,6 +65,7 @@ const icons = [
   'single/filter-sort-ascending',
   'single/filter-sort-descending',
   'single/flag',
+  'single/grip-vertical',
   'single/group',
   'single/increase',
   'single/link',
