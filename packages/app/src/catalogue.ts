@@ -142,6 +142,24 @@ export const comparisonFamilies = [
     ],
   },
   {
+    id: 'mind-layouts',
+    title: 'Mind map layouts',
+    icons: [
+      'MindLayoutHorizontalIcon',
+      'MindLayoutVerticalIcon',
+      'MindTreeLeftIcon',
+      'MindTreeRightIcon',
+      'MindTreeAlternateIcon',
+      'MindTimelineHorizontalIcon',
+      'MindTimelineVerticalIcon',
+    ],
+  },
+  {
+    id: 'mind-branches',
+    title: 'Mind map branches',
+    icons: ['MindBranchCurveIcon', 'MindBranchRoundedOrthogonalIcon', 'MindBranchOrthogonalIcon'],
+  },
+  {
     id: 'shape-merge',
     title: 'Shape merging',
     icons: [
