@@ -1,4 +1,3 @@
 manifest.json
 dist/
 ts/canvas-icons.generated.ts
-ts/data-urls.generated.ts
