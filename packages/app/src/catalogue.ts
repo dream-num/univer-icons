@@ -122,6 +122,26 @@ export const subgroupMeta = {
 export const comparisonFamilies = [
   { id: 'search', title: 'Search & zoom', icons: ['SearchIcon', 'ZoomInIcon', 'ZoomOutIcon'] },
   {
+    id: 'references',
+    title: 'Document references',
+    icons: [
+      'ReferenceContentsIcon',
+      'ReferenceAddTextIcon',
+      'ReferenceUpdateIcon',
+      'ReferenceShowNotesIcon',
+      'ReferenceCitationIcon',
+      'ReferenceSourcesIcon',
+      'ReferenceBibliographyIcon',
+      'ReferenceCaptionIcon',
+      'ReferenceFiguresIcon',
+      'ReferenceCrossReferenceIcon',
+      'ReferenceMarkEntryIcon',
+      'ReferenceIndexIcon',
+      'ReferenceMarkAuthorityIcon',
+      'ReferenceAuthoritiesIcon',
+    ],
+  },
+  {
     id: 'shape-merge',
     title: 'Shape merging',
     icons: [
