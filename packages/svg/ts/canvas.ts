@@ -20,7 +20,9 @@ type CanvasContext = Pick<
 
 const paths = new Map<CanvasIconName, { path: Path2D; clip?: Path2D }[]>()
 
-function resolvePaint(paint: string, colors?: string | Readonly<Record<string, string>>): string {
+type CanvasColors = string | Readonly<Record<string, CanvasRenderingContext2D['fillStyle']>>
+
+function resolvePaint(paint: string, colors?: CanvasColors): CanvasRenderingContext2D['fillStyle'] {
   if (typeof colors === 'string') return paint === 'black' || paint === '#E5E5E5' ? colors : paint
   return colors?.[paint] ?? paint
 }
@@ -31,7 +33,7 @@ export function drawCanvasIcon(
   x: number,
   y: number,
   size: number,
-  colors?: string | Readonly<Record<string, string>>,
+  colors?: CanvasColors,
 ): void {
   if (!Object.hasOwn(canvasIcons, name)) throw new RangeError(`Unknown Canvas icon: ${name}`)
   if (!Number.isFinite(size) || size <= 0) return

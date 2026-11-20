@@ -49,6 +49,44 @@ export type IconRole =
   | 'status'
 
 const explicitIconMetadata = {
+  ...editorIcons('docs', 'document', 'status', {
+    'document-anchor-icon': [
+      'Mark the paragraph anchoring a floating object.',
+      '浮动对象 段落锚点',
+    ],
+  }),
+  ...editorIcons('common', 'document', 'object', {
+    'file-image-multi-icon': ['Image file attachment.', '图片文件'],
+    'file-zip-multi-icon': ['ZIP file attachment.', '压缩文件'],
+    'file-unknown-multi-icon': ['Unknown file attachment.', '未知文件'],
+  }),
+  ...editorIcons('common', 'status', 'status', {
+    'warning-triangle-double-icon': ['Triangular warning badge.', '附件警告 三角叹号'],
+    'broken-image-icon': ['Placeholder for an image that failed to load.', '图片加载失败 占位图'],
+  }),
+  ...editorIcons('bases', 'data', 'data', {
+    'rating-heart-icon': ['Filled heart rating mark.', '心形评分'],
+    'rating-thumb-icon': ['Filled thumb rating mark.', '点赞评分'],
+    'rating-fire-icon': ['Filled fire rating mark.', '火焰评分'],
+    'rating-smile-icon': ['Filled smile rating mark.', '笑脸评分'],
+    'rating-bolt-icon': ['Filled bolt rating mark.', '闪电评分'],
+    'rating-medal-icon': ['Filled medal rating mark.', '奖章评分'],
+  }),
+  ...editorIcons('boards', 'layout', 'layout', {
+    'mind-layout-horizontal-icon': ['Preview the mindmap horizontal layout.', '左右思维导图'],
+    'mind-layout-vertical-icon': ['Preview the mindmap vertical layout.', '上下思维导图'],
+    'mind-tree-right-icon': ['Preview the tree right layout.', '向右树形图'],
+    'mind-tree-left-icon': ['Preview the tree left layout.', '向左树形图'],
+    'mind-tree-alternate-icon': ['Preview the tree alternate layout.', '交替树形图'],
+    'mind-timeline-horizontal-icon': ['Preview the timeline horizontal layout.', '水平时间线'],
+    'mind-timeline-vertical-icon': ['Preview the timeline vertical layout.', '垂直时间线'],
+    'mind-branch-curve-icon': ['Preview the branch curve layout.', '曲线分支'],
+    'mind-branch-rounded-orthogonal-icon': [
+      'Preview the branch rounded orthogonal layout.',
+      '圆角折线分支',
+    ],
+    'mind-branch-orthogonal-icon': ['Preview the branch orthogonal layout.', '直角折线分支'],
+  }),
   ...editorIcons('docs', 'document', 'action', {
     'footnote-double-icon': ['Insert a footnote.', '脚注'],
     'reference-contents-icon': ['Insert a table of contents.', '目录'],

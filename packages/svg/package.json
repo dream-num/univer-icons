@@ -28,7 +28,11 @@
     "./double/*.svg": "./double/*.svg",
     "./other/*.svg": "./other/*.svg",
     "./single/*.svg": "./single/*.svg",
-    "./manifest": "./manifest.json"
+    "./manifest": "./manifest.json",
+    "./data-urls": {
+      "types": "./dist/data-urls.generated.d.ts",
+      "default": "./dist/data-urls.generated.js"
+    }
   },
   "files": [
     "double",
@@ -38,7 +42,7 @@
     "dist"
   ],
   "scripts": {
-    "prepare": "node --experimental-strip-types ./scripts/generate-manifest.mts && node ./scripts/generate-canvas.mts && tsrs -p tsconfig.json",
+    "prepare": "node --experimental-strip-types ./scripts/generate-manifest.mts && node ./scripts/generate-canvas.mts && node ./scripts/generate-data-urls.mts && tsrs -p tsconfig.json",
     "test": "node --test ./__tests__/*.spec.mts ./ts/__tests__/*.spec.mts"
   },
   "devDependencies": {
