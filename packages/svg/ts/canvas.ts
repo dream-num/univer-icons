@@ -35,7 +35,8 @@ export function drawCanvasIcon(
   size: number,
   colors?: CanvasColors,
 ): void {
-  if (!Object.hasOwn(canvasIcons, name)) throw new RangeError(`Unknown Canvas icon: ${name}`)
+  if (!Object.prototype.hasOwnProperty.call(canvasIcons, name))
+    throw new RangeError(`Unknown Canvas icon: ${name}`)
   if (!Number.isFinite(size) || size <= 0) return
   const icon = canvasIcons[name]
   let geometry = paths.get(name)
