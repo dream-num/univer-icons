@@ -61,7 +61,10 @@ const explicitIconMetadata = {
     'file-unknown-multi-icon': ['Unknown file attachment.', '未知文件'],
   }),
   ...editorIcons('common', 'status', 'status', {
-    'warning-triangle-multi-icon': ['Warning badge for unavailable attachments.', '附件警告 三角叹号'],
+    'warning-triangle-multi-icon': [
+      'Warning badge for unavailable attachments.',
+      '附件警告 三角叹号',
+    ],
   }),
   ...editorIcons('bases', 'data', 'data', {
     'rating-heart-icon': ['Filled heart rating mark.', '心形评分'],
