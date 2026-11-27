@@ -1,18 +1,60 @@
 import type { CSSProperties } from 'react'
-import React, { useDeferredValue, useId, useLayoutEffect, useMemo, useState } from 'react'
+import React, {
+  useDeferredValue,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { createRoot } from 'react-dom/client'
-import type { IconEntry, IconGroup, IconSubgroup, IconSubgroupId } from './catalogue.ts'
+import type { IconEntry, IconGroup, IconSubgroup } from './catalogue.ts'
 import {
-  comparisonFamilies,
-  filterIconGroups,
-  getFamilyIcons,
+  filterIconCatalogue,
+  getAllIcons,
+  getAvailableProducts,
+  getCatalogueFacetCounts,
   getGroupIconCount,
   getRecentIconVersions,
   getTotalIconCount,
+  groupMeta,
   isRecentIconVersion,
+  productLabels,
+  subgroupMeta,
 } from './catalogue.ts'
+import { FamilyComparison } from './components/FamilyComparison.tsx'
+import { FilterSidebar } from './components/FilterSidebar.tsx'
+import { IconInspector } from './components/IconInspector.tsx'
+import { IconPreview } from './components/IconPreview.tsx'
+import {
+  CheckGlyph,
+  CloseGlyph,
+  ColumnsGlyph,
+  CopyGlyph,
+  GridGlyph,
+  LayoutGridGlyph,
+  MoonGlyph,
+  RotateCcwGlyph,
+  SearchGlyph,
+  SlidersGlyph,
+  SunGlyph,
+} from './components/ui-icons.tsx'
 import { createPreserveStrokeWidthCapture } from './preserve-stroke-width.ts'
-import { createSvgIconGroups, scopeSvgIds } from './svg-catalogue.ts'
+import type { DemoState, SurfaceMode } from './state.ts'
+import {
+  countActiveFilters,
+  defaultDemoState,
+  hasActiveFilters,
+  hasCustomPreviewSettings,
+  loadDemoState,
+  MAX_ICON_SIZE,
+  MIN_ICON_SIZE,
+  resetFilters,
+  resetPreviewSettings,
+  saveDemoState,
+  syncDemoStateToUrl,
+} from './state.ts'
+import { createSvgIconGroups } from './svg-catalogue.ts'
 
 const svgModules = import.meta.glob('../../svg/{double,other,single}/*.svg', {
   eager: true,
@@ -20,195 +62,653 @@ const svgModules = import.meta.glob('../../svg/{double,other,single}/*.svg', {
   query: '?raw',
 }) as Record<string, string>
 
-const defaultSettings = {
-  preserveStrokeWidth: false,
-  color: '#18181b',
-  colorChannel1: '#facc15',
-  size: 16,
-}
+const SIZE_PRESETS = [16, 20, 24, 32, 48] as const
+const COLOR_PRESETS = ['#18181b', '#274fee', '#059669', '#e11d48', '#d97706'] as const
+const CHANNEL_1_PRESETS = ['#facc15', '#38bdf8', '#fb7185', '#34d399', '#a78bfa'] as const
 
 const groups = createSvgIconGroups(svgModules)
+const allIcons = getAllIcons(groups)
+const iconByName = new Map(allIcons.map((icon) => [icon.name, icon] as const))
+const validIconNames = new Set(iconByName.keys())
+const availableProducts = getAvailableProducts(groups)
+const validProducts = new Set(availableProducts)
+const totalCount = getTotalIconCount(groups)
 const recentVersionList = getRecentIconVersions(groups, 3)
 const recentVersions = new Set(recentVersionList)
-const rootElement = document.querySelector<HTMLElement>('#app')
 
+const rootElement = document.querySelector<HTMLElement>('#app')
 if (!rootElement) {
   throw new Error('Missing #app root')
 }
 
 const root: HTMLElement = rootElement
-
 createRoot(root).render(<DemoShell />)
 
-function cx(...classes: Array<string | false | null | undefined>) {
-  return classes.filter(Boolean).join(' ')
+function getSafeLocalStorage(): Storage | null {
+  try {
+    return window.localStorage
+  } catch {
+    return null
+  }
 }
 
 function DemoShell() {
-  const [settings, setSettings] = useState(defaultSettings)
-  const [familyId, setFamilyId] = useState(comparisonFamilies[0].id)
-  const [searchTerm, setSearchTerm] = useState('')
-  const deferredSearchTerm = useDeferredValue(searchTerm)
-  const searchResult = useMemo(
-    () => filterIconGroups(groups, deferredSearchTerm),
-    [deferredSearchTerm],
+  const [state, setState] = useState<DemoState>(() =>
+    loadDemoState(window.location.search, getSafeLocalStorage(), {
+      validIconNames,
+      validProducts,
+    }),
   )
-  const totalCount = getTotalIconCount(groups)
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+  const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
+  const toastTimerRef = useRef<number | null>(null)
 
-  const demoStyle = {
-    '--icon-color': settings.color,
-    '--icon-color-channel-1': settings.colorChannel1,
-    '--icon-size': `${settings.size}px`,
-    '--stage-grid': 'rgb(31 111 91 / 0.075)',
-  } as CSSProperties
+  const deferredSearchTerm = useDeferredValue(state.searchTerm)
 
+  const activeFilterOptions = useMemo(
+    () => ({
+      group: state.group,
+      product: state.product,
+      recentOnly: state.recentOnly,
+      searchTerm: deferredSearchTerm,
+      strokeSupport: state.strokeSupport,
+      subgroup: state.subgroup,
+    }),
+    [
+      deferredSearchTerm,
+      state.group,
+      state.product,
+      state.recentOnly,
+      state.strokeSupport,
+      state.subgroup,
+    ],
+  )
+
+  const searchResult = useMemo(
+    () => filterIconCatalogue(groups, activeFilterOptions, recentVersions),
+    [activeFilterOptions],
+  )
+
+  const facets = useMemo(
+    () => getCatalogueFacetCounts(groups, activeFilterOptions, recentVersions),
+    [activeFilterOptions],
+  )
+
+  const selectedIcon = state.selectedIcon ? (iconByName.get(state.selectedIcon) ?? null) : null
+  const activeFilterCount = countActiveFilters(state)
+  const isPreviewCustomized = hasCustomPreviewSettings(state)
+
+  // Persist every config/filter change to both localStorage and URL query params.
+  useEffect(() => {
+    saveDemoState(state, getSafeLocalStorage())
+    syncDemoStateToUrl(state)
+  }, [state])
+
+  // Keyboard shortcuts: / or Cmd/Ctrl+K focuses search; Escape closes overlays.
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      const target = event.target as HTMLElement | null
+      const isEditable =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement ||
+        target?.isContentEditable
+
+      if (event.key === 'Escape') {
+        if (state.selectedIcon) {
+          setState((prev) => ({ ...prev, selectedIcon: null }))
+          return
+        }
+        if (mobileFiltersOpen) {
+          setMobileFiltersOpen(false)
+        }
+        return
+      }
+
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault()
+        setState((prev) => (prev.view === 'catalogue' ? prev : { ...prev, view: 'catalogue' }))
+        requestAnimationFrame(() => {
+          searchInputRef.current?.focus()
+          searchInputRef.current?.select()
+        })
+        return
+      }
+
+      if (event.key === '/' && !isEditable && !event.metaKey && !event.ctrlKey && !event.altKey) {
+        event.preventDefault()
+        setState((prev) => (prev.view === 'catalogue' ? prev : { ...prev, view: 'catalogue' }))
+        requestAnimationFrame(() => {
+          searchInputRef.current?.focus()
+        })
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [mobileFiltersOpen, state.selectedIcon])
+
+  useEffect(
+    () => () => {
+      if (toastTimerRef.current !== null) {
+        window.clearTimeout(toastTimerRef.current)
+      }
+    },
+    [],
+  )
+
+  // Apply preserveStrokeWidth exclusively to rendered Univer icon previews.
   useLayoutEffect(() => {
-    if (!settings.preserveStrokeWidth) {
+    if (!state.preserveStrokeWidth) {
       return
     }
 
     const capture = createPreserveStrokeWidthCapture()
-    capture.capture(root)
+    root.querySelectorAll('[data-icon-preview]').forEach((previewNode) => {
+      capture.capture(previewNode)
+    })
     return () => capture.restore()
-  }, [settings.preserveStrokeWidth, familyId, searchResult.groups])
+  }, [
+    state.preserveStrokeWidth,
+    state.view,
+    state.familyId,
+    searchResult.groups,
+    selectedIcon?.name,
+  ])
+
+  function updateState(patch: Partial<DemoState>) {
+    setState((prev) => ({ ...prev, ...patch }))
+  }
+
+  function showToast(message: string, key?: string) {
+    setToastMessage(message)
+    if (key) {
+      setCopiedKey(key)
+    }
+    if (toastTimerRef.current !== null) {
+      window.clearTimeout(toastTimerRef.current)
+    }
+    toastTimerRef.current = window.setTimeout(() => {
+      setToastMessage(null)
+      setCopiedKey(null)
+    }, 1800)
+  }
+
+  function handleCopy(key: string, text: string, label: string) {
+    if (navigator.clipboard?.writeText) {
+      void navigator.clipboard.writeText(text).then(
+        () => showToast(label, key),
+        () => fallbackCopy(text, label, key),
+      )
+      return
+    }
+    fallbackCopy(text, label, key)
+  }
+
+  function fallbackCopy(text: string, label: string, key: string) {
+    const textarea = document.createElement('textarea')
+    textarea.value = text
+    textarea.style.position = 'fixed'
+    textarea.style.opacity = '0'
+    document.body.append(textarea)
+    textarea.select()
+    try {
+      document.execCommand('copy')
+      showToast(label, key)
+    } finally {
+      textarea.remove()
+    }
+  }
+
+  const effectiveCatalogueColor =
+    state.surface === 'dark' && state.color.toLowerCase() === defaultDemoState.color
+      ? '#f4f4f5'
+      : state.color
+
+  const demoStyle = {
+    '--icon-color': effectiveCatalogueColor,
+    '--icon-color-channel-1': state.colorChannel1,
+    '--icon-size': `${state.size}px`,
+  } as CSSProperties
 
   return (
-    <main
-      className='min-h-screen min-w-80 bg-[#f8f8f5] px-[clamp(14px,3vw,32px)] pt-5 pb-12 text-[#181713] antialiased'
-      style={demoStyle}
-    >
-      <Header />
-      <Hero totalCount={totalCount} />
-      <Toolbar
-        settings={settings}
-        matchCount={searchResult.matchCount}
-        onSettingsChange={setSettings}
-        onSearchTermChange={setSearchTerm}
-        searchTerm={searchTerm}
-        totalCount={totalCount}
-      />
-      <FamilyComparison familyId={familyId} onFamilyChange={setFamilyId} />
-      <section className='mx-auto mt-8 grid max-w-[1180px] gap-[30px]' aria-label='Icon groups'>
-        {searchResult.groups.length === 0 ? (
-          <EmptyState searchTerm={searchTerm} />
-        ) : (
-          searchResult.groups.map((group) => <IconGroupSection group={group} key={group.id} />)
-        )}
+    <div className='min-h-screen bg-zinc-50 text-zinc-950' style={demoStyle}>
+      {/* Top navigation bar */}
+      <header className='sticky top-0 z-30 border-b border-zinc-200/80 bg-white/85 backdrop-blur-md'>
+        <div className='mx-auto flex h-14 max-w-[1440px] items-center justify-between gap-3 px-4 sm:px-6'>
+          {/* Brand */}
+          <div className='flex min-w-0 items-center gap-2.5'>
+            <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-zinc-950 text-xs font-bold text-white shadow-xs'>
+              U
+            </div>
+            <div className='flex min-w-0 items-baseline gap-2'>
+              <span className='truncate text-sm font-semibold tracking-tight text-zinc-950'>
+                Univer Icons
+              </span>
+              <span className='hidden rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-500 tabular-nums sm:inline-flex'>
+                {totalCount} icons
+              </span>
+            </div>
+          </div>
+
+          {/* Center view switcher */}
+          <nav
+            aria-label='Workspace view'
+            className='inline-flex items-center rounded-lg border border-zinc-200/80 bg-zinc-100/80 p-0.5'
+          >
+            <button
+              aria-current={state.view === 'catalogue' ? 'page' : undefined}
+              className={`inline-flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all ${
+                state.view === 'catalogue'
+                  ? 'bg-white text-zinc-950 shadow-xs'
+                  : 'text-zinc-600 hover:text-zinc-950'
+              }`}
+              onClick={() => updateState({ view: 'catalogue' })}
+              type='button'
+            >
+              <LayoutGridGlyph className='h-3.5 w-3.5' />
+              <span>Catalogue</span>
+            </button>
+            <button
+              aria-current={state.view === 'compare' ? 'page' : undefined}
+              className={`inline-flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all ${
+                state.view === 'compare'
+                  ? 'bg-white text-zinc-950 shadow-xs'
+                  : 'text-zinc-600 hover:text-zinc-950'
+              }`}
+              onClick={() => updateState({ view: 'compare' })}
+              type='button'
+            >
+              <ColumnsGlyph className='h-3.5 w-3.5' />
+              <span>Compare families</span>
+            </button>
+          </nav>
+
+          {/* Right surface switcher */}
+          <div className='flex items-center gap-2'>
+            {state.view === 'catalogue' && (
+              <div
+                aria-label='Icon card surface'
+                className='hidden items-center rounded-lg border border-zinc-200/80 bg-zinc-100/80 p-0.5 sm:inline-flex'
+                role='group'
+              >
+                {(
+                  [
+                    { id: 'light', icon: <SunGlyph />, label: 'Light surface' },
+                    { id: 'grid', icon: <GridGlyph />, label: 'Grid surface' },
+                    { id: 'dark', icon: <MoonGlyph />, label: 'Dark surface' },
+                  ] as Array<{ icon: React.ReactNode; id: SurfaceMode; label: string }>
+                ).map((mode) => (
+                  <button
+                    aria-label={mode.label}
+                    aria-pressed={state.surface === mode.id}
+                    className={`inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-all ${
+                      state.surface === mode.id
+                        ? 'bg-white text-zinc-950 shadow-xs'
+                        : 'text-zinc-500 hover:text-zinc-900'
+                    }`}
+                    key={mode.id}
+                    onClick={() => updateState({ surface: mode.id })}
+                    title={mode.label}
+                    type='button'
+                  >
+                    {mode.icon}
+                  </button>
+                ))}
+              </div>
+            )}
+            <a
+              className='hidden rounded-lg border border-zinc-200/80 bg-white px-2.5 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:border-zinc-300 hover:text-zinc-950 md:inline-flex'
+              href='https://github.com/dream-num/univer-icons'
+              rel='noreferrer'
+              target='_blank'
+            >
+              GitHub
+            </a>
+          </div>
+        </div>
+      </header>
+
+      {/* Sticky Studio Control Bar */}
+      <section
+        aria-label='Icon preview controls'
+        className='sticky top-14 z-20 border-b border-zinc-200/80 bg-white/95 backdrop-blur-md'
+      >
+        <div className='mx-auto max-w-[1440px] px-4 py-2.5 sm:px-6'>
+          <div className='flex flex-wrap items-center gap-2.5'>
+            {state.view === 'catalogue' && (
+              <>
+                {/* Search input */}
+                <div className='relative min-w-[220px] flex-1'>
+                  <SearchGlyph className='pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400' />
+                  <input
+                    aria-label='Search icons'
+                    autoCapitalize='none'
+                    autoComplete='off'
+                    className='h-9 w-full rounded-lg border border-zinc-200 bg-zinc-50/70 pr-24 pl-9 text-sm text-zinc-950 transition-colors placeholder:text-zinc-400 hover:border-zinc-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/15 focus:outline-none'
+                    onChange={(event) => updateState({ searchTerm: event.currentTarget.value })}
+                    placeholder='Search 721 icons by name, keyword, Chinese...'
+                    ref={searchInputRef}
+                    spellCheck={false}
+                    type='text'
+                    value={state.searchTerm}
+                  />
+                  <div className='absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1.5'>
+                    {state.searchTerm && (
+                      <button
+                        aria-label='Clear search'
+                        className='inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-200/70 hover:text-zinc-700'
+                        onClick={() => updateState({ searchTerm: '' })}
+                        type='button'
+                      >
+                        <CloseGlyph className='h-3 w-3' />
+                      </button>
+                    )}
+                    <span className='rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-[11px] font-medium text-zinc-500 tabular-nums'>
+                      {searchResult.matchCount}/{totalCount}
+                    </span>
+                    {!state.searchTerm && (
+                      <kbd className='hidden rounded border border-zinc-200 bg-white px-1.5 py-0.5 text-[10px] font-medium text-zinc-400 sm:inline-block'>
+                        /
+                      </kbd>
+                    )}
+                  </div>
+                </div>
+
+                {/* Mobile filter drawer trigger */}
+                <button
+                  className='inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-700 transition-colors hover:border-zinc-300 hover:bg-zinc-50 lg:hidden'
+                  onClick={() => setMobileFiltersOpen(true)}
+                  type='button'
+                >
+                  <SlidersGlyph className='h-3.5 w-3.5' />
+                  <span>Filters</span>
+                  {activeFilterCount > 0 && (
+                    <span className='inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-indigo-600 px-1 text-[10px] font-semibold text-white'>
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </button>
+
+                <div className='hidden h-5 w-px bg-zinc-200 xl:block' />
+
+                {/* Size selector */}
+                <SizeControl onChange={(size) => updateState({ size })} value={state.size} />
+
+                {/* Color controls */}
+                <ColorControl
+                  label='Color'
+                  onChange={(color) => updateState({ color })}
+                  presets={COLOR_PRESETS}
+                  value={state.color}
+                />
+                <ColorControl
+                  label='Channel 1'
+                  onChange={(colorChannel1) => updateState({ colorChannel1 })}
+                  presets={CHANNEL_1_PRESETS}
+                  value={state.colorChannel1}
+                />
+              </>
+            )}
+
+            {state.view === 'compare' && (
+              <p className='mr-auto text-xs text-zinc-500'>
+                Comparing families at 16 / 20 / 24 / 32 px on standard Light & Dark palettes.
+              </p>
+            )}
+
+            {/* Preserve stroke width switch (shared across both views) */}
+            <PreserveStrokeWidthControl
+              checked={state.preserveStrokeWidth}
+              onCheckedChange={(preserveStrokeWidth) => updateState({ preserveStrokeWidth })}
+            />
+
+            {/* Reset preview settings */}
+            <button
+              className={`inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition-colors ${
+                isPreviewCustomized
+                  ? 'border-zinc-900 bg-zinc-900 text-white hover:bg-zinc-800'
+                  : 'border-zinc-200 bg-white text-zinc-500 hover:border-zinc-300 hover:text-zinc-800'
+              }`}
+              onClick={() => setState((prev) => resetPreviewSettings(prev))}
+              title='Reset size, colors, surface, and preserveStrokeWidth to defaults'
+              type='button'
+            >
+              <RotateCcwGlyph className='h-3.5 w-3.5' />
+              <span>Reset</span>
+            </button>
+          </div>
+        </div>
       </section>
-    </main>
-  )
-}
 
-function Header() {
-  return (
-    <header className='mx-auto flex max-w-[1180px] items-center justify-start gap-3'>
-      <div className='inline-flex h-[30px] min-w-10 items-center justify-center rounded-md bg-[#222018] px-[7px] text-[0.76rem] font-bold text-[#f7f3e7]'>
-        SVG
-      </div>
-      <div className='flex min-w-0 flex-col gap-px'>
-        <strong className='text-[0.92rem] leading-[1.2] text-[#181713]'>Univer Icons</strong>
-        <span className='truncate text-[0.76rem] text-[#706f67]'>@univerjs/icons-svg</span>
-      </div>
-    </header>
-  )
-}
+      {/* Main Content */}
+      <main className='mx-auto max-w-[1440px] px-4 py-6 sm:px-6'>
+        {state.view === 'compare' ? (
+          <FamilyComparison
+            familyId={state.familyId}
+            groups={groups}
+            onFamilyChange={(familyId) => updateState({ familyId })}
+            onSelectIcon={(icon) => updateState({ selectedIcon: icon.name })}
+            onToggleGuides={() => updateState({ showGuides: !state.showGuides })}
+            preserveStrokeWidth={state.preserveStrokeWidth}
+            showGuides={state.showGuides}
+          />
+        ) : (
+          <div className='flex items-start gap-7'>
+            {/* Desktop Filter Rail */}
+            <aside
+              aria-label='Filter icons'
+              className='sticky top-[128px] hidden max-h-[calc(100vh-152px)] w-[224px] shrink-0 overflow-y-auto pr-2 lg:block'
+            >
+              <FilterSidebar
+                availableProducts={availableProducts}
+                facets={facets}
+                onClearFilters={() => setState((prev) => resetFilters(prev))}
+                onUpdate={updateState}
+                recentVersionList={recentVersionList}
+                state={state}
+              />
+            </aside>
 
-function Hero({ totalCount }: { totalCount: number }) {
-  return (
-    <section
-      className={cx(
-        'mx-auto mt-[clamp(32px,7vw,72px)] max-w-[1180px] border-b border-[#deded7] pb-[clamp(22px,4vw,34px)]',
-        'max-[560px]:mt-[30px]',
-      )}
-    >
-      <p className='mb-2.5 text-[0.78rem] font-medium text-[#706f67]'>Source catalogue</p>
-      <h1 className='m-0 max-w-[820px] text-[clamp(2.2rem,7vw,4rem)] leading-[0.95] font-[720] text-[#181713]'>
-        Icons
-      </h1>
-      <p className='mt-3 max-w-[560px] text-[clamp(0.95rem,1.6vw,1.08rem)] text-[#706f67]'>
-        {totalCount} SVG sources grouped for inspection, search, and color preview.
-      </p>
-      <aside className='mt-4 flex flex-wrap items-center gap-2' aria-label='Icon support legend'>
-        <span
-          aria-label='Fully supports preserveStrokeWidth'
-          className='inline-flex min-h-5 max-w-full items-center rounded-full border border-[#b7d7c4] bg-[#eef7ee] px-2 text-[0.68rem] leading-none font-semibold wrap-anywhere text-[#1f6f5b]'
-          title='All visible SVG strokes can preserve their 16 × 16 baseline line width when scaling.'
+            {/* Catalogue Content */}
+            <div className='min-w-0 flex-1 space-y-6'>
+              {/* Legend & active filter pills */}
+              <div className='flex flex-wrap items-center justify-between gap-3'>
+                <ActiveFilterPills
+                  onClearAll={() => setState((prev) => resetFilters(prev))}
+                  onUpdate={updateState}
+                  state={state}
+                />
+                <div className='ml-auto flex flex-wrap items-center gap-3 text-xs text-zinc-500'>
+                  <span className='inline-flex items-center gap-1.5'>
+                    <span className='h-2 w-2 rounded-full bg-emerald-500' />
+                    Supports{' '}
+                    <code className='font-mono text-[11px] text-zinc-700'>preserveStrokeWidth</code>
+                  </span>
+                  <span className='hidden text-zinc-300 sm:inline'>·</span>
+                  <span className='hidden sm:inline'>Click any icon to inspect & copy code</span>
+                </div>
+              </div>
+
+              {/* Icon groups */}
+              {searchResult.groups.length === 0 ? (
+                <EmptyState
+                  onClearFilters={() => setState((prev) => resetFilters(prev))}
+                  searchTerm={state.searchTerm}
+                />
+              ) : (
+                <div className='space-y-9'>
+                  {searchResult.groups.map((group) => (
+                    <IconGroupSection
+                      copiedKey={copiedKey}
+                      group={group}
+                      key={group.id}
+                      onCopy={handleCopy}
+                      onSelectIcon={(icon) => updateState({ selectedIcon: icon.name })}
+                      selectedIconName={state.selectedIcon}
+                      size={state.size}
+                      surface={state.surface}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Mobile Filter Drawer */}
+      {mobileFiltersOpen && (
+        <div
+          aria-label='Filter icons'
+          aria-modal='true'
+          className='fixed inset-0 z-50 flex lg:hidden'
+          role='dialog'
         >
-          Preserve stroke width
-        </span>
-        <span className='text-[0.78rem] text-[#706f67]'>
-          Full support: every visible SVG stroke preserves its 16 × 16 baseline width.
-        </span>
-      </aside>
-    </section>
+          <button
+            aria-label='Close filter drawer'
+            className='fixed inset-0 bg-zinc-950/35 backdrop-blur-[2px]'
+            onClick={() => setMobileFiltersOpen(false)}
+            type='button'
+          />
+          <aside className='relative z-10 h-full w-72 max-w-[85vw] overflow-y-auto bg-white p-5 shadow-2xl'>
+            <FilterSidebar
+              availableProducts={availableProducts}
+              facets={facets}
+              onClearFilters={() => setState((prev) => resetFilters(prev))}
+              onCloseMobile={() => setMobileFiltersOpen(false)}
+              onUpdate={(patch) => updateState(patch)}
+              recentVersionList={recentVersionList}
+              state={state}
+            />
+          </aside>
+        </div>
+      )}
+
+      {/* Icon Inspector Drawer */}
+      {selectedIcon && (
+        <IconInspector
+          copiedKey={copiedKey}
+          icon={selectedIcon}
+          isRecent={isRecentIconVersion(selectedIcon, recentVersions)}
+          onClose={() => updateState({ selectedIcon: null })}
+          onCopy={handleCopy}
+          onFilterByKeyword={(keyword) =>
+            updateState({
+              searchTerm: keyword,
+              selectedIcon: null,
+              view: 'catalogue',
+            })
+          }
+          onFilterByProduct={(product) =>
+            updateState({
+              product,
+              selectedIcon: null,
+              view: 'catalogue',
+            })
+          }
+          onSelectCodeTab={(codeTab) => updateState({ codeTab })}
+          state={state}
+        />
+      )}
+
+      {/* Floating Copy Toast */}
+      {toastMessage && (
+        <div
+          aria-live='polite'
+          className='fixed right-5 bottom-5 z-50 flex items-center gap-2 rounded-xl bg-zinc-950 px-3.5 py-2.5 text-xs font-medium text-white shadow-lg ring-1 ring-white/10'
+          role='status'
+        >
+          <CheckGlyph className='h-3.5 w-3.5 text-emerald-400' />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+    </div>
   )
 }
 
-function Toolbar({
-  settings,
-  matchCount,
-  onSettingsChange,
-  onSearchTermChange,
-  searchTerm,
-  totalCount,
+function SizeControl({ onChange, value }: { onChange: (value: number) => void; value: number }) {
+  return (
+    <div className='flex h-9 items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50/70 px-2.5'>
+      <span className='text-[11px] font-medium text-zinc-500'>Size</span>
+      <div className='hidden items-center gap-0.5 2xl:flex'>
+        {SIZE_PRESETS.map((preset) => (
+          <button
+            className={`cursor-pointer rounded px-1.5 py-0.5 font-mono text-[11px] transition-colors ${
+              value === preset
+                ? 'bg-zinc-900 font-semibold text-white'
+                : 'text-zinc-500 hover:bg-zinc-200/70 hover:text-zinc-900'
+            }`}
+            key={preset}
+            onClick={() => onChange(preset)}
+            type='button'
+          >
+            {preset}
+          </button>
+        ))}
+      </div>
+      <input
+        aria-label='Icon size in pixels'
+        className='w-20 cursor-pointer accent-indigo-600'
+        max={MAX_ICON_SIZE}
+        min={MIN_ICON_SIZE}
+        onChange={(event) => onChange(event.currentTarget.valueAsNumber)}
+        type='range'
+        value={value}
+      />
+      <span className='w-9 text-right font-mono text-[11px] font-medium text-zinc-700 tabular-nums'>
+        {value}px
+      </span>
+    </div>
+  )
+}
+
+function ColorControl({
+  label,
+  onChange,
+  presets,
+  value,
 }: {
-  settings: typeof defaultSettings
-  matchCount: number
-  onSettingsChange: (value: typeof defaultSettings) => void
-  onSearchTermChange: (value: string) => void
-  searchTerm: string
-  totalCount: number
+  label: string
+  onChange: (value: string) => void
+  presets: readonly string[]
+  value: string
 }) {
   return (
-    <section
-      className={cx(
-        'sticky top-2.5 z-10 mx-auto mt-[18px] max-w-[1180px] rounded-lg border border-[#deded7]',
-        'bg-[color-mix(in_srgb,#fffffb_96%,transparent)] p-2.5 shadow-[0_1px_2px_rgb(0_0_0/0.04)]',
-        'max-[560px]:static',
-      )}
-      aria-label='Icon preview controls'
-    >
-      <div className='flex w-full flex-wrap items-center gap-2'>
-        <SearchControl
-          matchCount={matchCount}
-          onSearchTermChange={onSearchTermChange}
-          searchTerm={searchTerm}
-          totalCount={totalCount}
+    <div className='flex h-9 items-center gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50/70 px-2.5'>
+      <label className='flex cursor-pointer items-center gap-1.5'>
+        <span className='text-[11px] font-medium text-zinc-500'>{label}</span>
+        <input
+          aria-label={label}
+          className='h-5 w-5 cursor-pointer appearance-none border-0 bg-transparent p-0'
+          onChange={(event) => onChange(event.currentTarget.value)}
+          type='color'
+          value={value}
         />
-        <ColorControl
-          value={settings.color}
-          label='Color'
-          onChange={(color) => onSettingsChange({ ...settings, color })}
-        />
-        <ColorControl
-          value={settings.colorChannel1}
-          label='colorChannel1'
-          onChange={(colorChannel1) => onSettingsChange({ ...settings, colorChannel1 })}
-        />
-        <SizeControl
-          value={settings.size}
-          onChange={(size) => onSettingsChange({ ...settings, size })}
-        />
-        <PreserveStrokeWidthControl
-          checked={settings.preserveStrokeWidth}
-          onCheckedChange={(preserveStrokeWidth) =>
-            onSettingsChange({ ...settings, preserveStrokeWidth })
-          }
-        />
-        <button
-          className={cx(
-            'min-h-[38px] flex-none cursor-pointer rounded-lg border border-[#181713]',
-            'bg-[#181713] px-3.5 text-[0.86rem] font-medium text-[#f8f8f5]',
-            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f6f5b]',
-            'max-[880px]:flex-1 max-[880px]:basis-[calc(50%-5px)]',
-          )}
-          onClick={() => onSettingsChange(defaultSettings)}
-          type='button'
-        >
-          Reset
-        </button>
+      </label>
+      <span className='hidden w-[54px] font-mono text-[11px] text-zinc-600 sm:inline'>
+        {value.toLowerCase()}
+      </span>
+      <div className='hidden items-center gap-1 border-l border-zinc-200 pl-1.5 2xl:flex'>
+        {presets.map((preset) => (
+          <button
+            aria-label={`Set ${label} to ${preset}`}
+            className={`h-3.5 w-3.5 cursor-pointer rounded-full border transition-transform hover:scale-115 ${
+              value.toLowerCase() === preset
+                ? 'border-zinc-900 ring-1 ring-zinc-900 ring-offset-1'
+                : 'border-black/15'
+            }`}
+            key={preset}
+            onClick={() => onChange(preset)}
+            style={{ backgroundColor: preset }}
+            title={preset}
+            type='button'
+          />
+        ))}
       </div>
-    </section>
+    </div>
   )
 }
 
@@ -221,17 +721,15 @@ function PreserveStrokeWidthControl({
 }) {
   return (
     <label
-      className={cx(
-        'grid min-h-10 items-center gap-2 rounded-lg border border-[#deded7] bg-[#efefe8] px-2 py-[5px]',
-        'max-[880px]:min-w-0 max-[880px]:flex-1 max-[880px]:basis-[calc(50%-5px)]',
-        'max-[560px]:basis-full max-[560px]:grid-cols-[auto_1fr_auto]',
-        'min-w-max flex-none cursor-pointer grid-cols-[auto_auto_auto]',
-      )}
+      className={`flex h-9 cursor-pointer items-center gap-2 rounded-lg border px-2.5 transition-colors select-none ${
+        checked
+          ? 'border-emerald-200 bg-emerald-50/80 text-emerald-900'
+          : 'border-zinc-200 bg-zinc-50/70 text-zinc-700 hover:border-zinc-300'
+      }`}
       title='Apply preserveStrokeWidth to every icon preview using its 16 × 16 baseline.'
     >
-      <span className='text-[0.78rem] font-medium text-[#706f67]'>Preserve stroke width</span>
+      <span className='text-xs font-medium'>Preserve stroke</span>
       <input
-        aria-describedby='preserve-stroke-width-description'
         aria-checked={checked}
         checked={checked}
         className='peer sr-only'
@@ -240,359 +738,350 @@ function PreserveStrokeWidthControl({
         type='checkbox'
       />
       <span
-        className={cx(
-          'relative h-6 w-10 flex-none rounded-full border transition-colors',
-          'peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#1f6f5b]',
-          checked ? 'border-[#1f6f5b] bg-[#1f6f5b]' : 'border-[#c8c8c0] bg-[#dcdcd4]',
-        )}
         aria-hidden='true'
+        className={`relative h-5 w-9 shrink-0 rounded-full transition-colors peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-indigo-600 ${
+          checked ? 'bg-emerald-600' : 'bg-zinc-300'
+        }`}
       >
         <span
-          className={cx(
-            'absolute top-[3px] left-[3px] h-4 w-4 rounded-full bg-[#fffffb] shadow-sm transition-transform',
-            checked && 'translate-x-4',
-          )}
+          className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow-xs transition-transform ${
+            checked ? 'translate-x-4' : ''
+          }`}
         />
       </span>
-      <span className='min-w-5 text-[0.78rem] font-medium text-[#706f67]'>
-        {checked ? 'On' : 'Off'}
-      </span>
-      <span className='sr-only' id='preserve-stroke-width-description'>
-        Apply preserveStrokeWidth to every icon preview using its 16 × 16 baseline.
-      </span>
     </label>
   )
 }
 
-function SearchControl({
-  matchCount,
-  onSearchTermChange,
-  searchTerm,
-  totalCount,
+function ActiveFilterPills({
+  onClearAll,
+  onUpdate,
+  state,
 }: {
-  matchCount: number
-  onSearchTermChange: (value: string) => void
-  searchTerm: string
-  totalCount: number
+  onClearAll: () => void
+  onUpdate: (patch: Partial<DemoState>) => void
+  state: DemoState
 }) {
-  return (
-    <label
-      className={cx(
-        'grid min-h-10 items-center gap-2 rounded-lg border border-[#deded7] bg-[#efefe8] px-2 py-[5px]',
-        'max-[880px]:min-w-0 max-[880px]:flex-1 max-[880px]:basis-[calc(50%-5px)]',
-        'max-[560px]:basis-full max-[560px]:grid-cols-[auto_1fr_auto]',
-        'min-w-[min(100%,250px)] flex-1 basis-[250px] grid-cols-[auto_minmax(120px,1fr)_auto]',
-        'max-[880px]:basis-full',
-      )}
-    >
-      <span className='text-[0.78rem] font-medium text-[#706f67]'>Search</span>
-      <input
-        className='h-7 min-w-0 appearance-none rounded-md border border-[#deded7] bg-[#fffffb] px-[9px] text-[#181713] placeholder:text-[#706f67] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f6f5b]'
-        autoCapitalize='none'
-        autoComplete='off'
-        onInput={(event) => onSearchTermChange(event.currentTarget.value)}
-        placeholder='Icon name'
-        spellCheck={false}
-        type='search'
-        value={searchTerm}
-      />
-      <span className='min-w-[58px] text-right text-[0.78rem] font-medium text-[#706f67]'>
-        {matchCount}/{totalCount}
-      </span>
-    </label>
-  )
-}
-
-function ColorControl({
-  value,
-  label,
-  onChange,
-}: {
-  value: string
-  label: string
-  onChange: (value: string) => void
-}) {
-  return (
-    <label
-      className={cx(
-        'grid min-h-10 min-w-max items-center gap-2 rounded-lg border border-[#deded7] bg-[#efefe8] px-2 py-[5px]',
-        'grid-cols-[auto_auto_auto] max-[880px]:min-w-0 max-[880px]:flex-1 max-[880px]:basis-[calc(50%-5px)]',
-        'max-[560px]:basis-full max-[560px]:grid-cols-[auto_1fr_auto]',
-      )}
-    >
-      <span className='text-[0.78rem] font-medium text-[#706f67]'>{label}</span>
-      <input
-        className='h-[26px] w-7 cursor-pointer appearance-none border-0 bg-transparent p-0'
-        value={value}
-        onInput={(event) => onChange(event.currentTarget.value)}
-        type='color'
-      />
-      <span className='min-w-[58px] text-[0.78rem] font-medium text-[#706f67]'>{value}</span>
-    </label>
-  )
-}
-
-function SizeControl({ value, onChange }: { value: number; onChange: (value: number) => void }) {
-  return (
-    <label
-      className={cx(
-        'grid min-h-10 items-center gap-2 rounded-lg border border-[#deded7] bg-[#efefe8] px-2 py-[5px]',
-        'max-[880px]:min-w-0 max-[880px]:flex-1 max-[880px]:basis-[calc(50%-5px)]',
-        'max-[560px]:basis-full max-[560px]:grid-cols-[auto_1fr_auto]',
-        'min-w-[214px] flex-1 basis-[214px] grid-cols-[auto_96px_auto]',
-      )}
-    >
-      <span className='text-[0.78rem] font-medium text-[#706f67]'>Size</span>
-      <input
-        className='min-w-0 accent-[#1f6f5b]'
-        value={value}
-        max={96}
-        min={16}
-        onInput={(event) => onChange(event.currentTarget.valueAsNumber)}
-        type='range'
-      />
-      <span className='min-w-[58px] text-[0.78rem] font-medium text-[#706f67]'>{value}px</span>
-    </label>
-  )
-}
-
-function FamilyComparison({
-  familyId,
-  onFamilyChange,
-}: {
-  familyId: string
-  onFamilyChange: (id: string) => void
-}) {
-  const family = comparisonFamilies.find((item) => item.id === familyId)
-  if (!family) {
-    throw new Error(`Unknown icon family: ${familyId}`)
+  if (!hasActiveFilters(state)) {
+    return null
   }
-  const icons = getFamilyIcons(groups, family.icons)
-  const [dropdownIcon] = getFamilyIcons(groups, ['MoreDownIcon'])
+
+  const groupLabel = groupMeta.find((item) => item.id === state.group)?.title
 
   return (
-    <section className='mx-auto mt-8 max-w-[1180px]' aria-labelledby='family-comparison-title'>
-      <div className='mb-4 flex flex-wrap items-end justify-between gap-4'>
+    <div className='flex flex-wrap items-center gap-1.5'>
+      {state.searchTerm.trim() && (
+        <FilterChip
+          label={`Search: "${state.searchTerm.trim()}"`}
+          onRemove={() => updateOrClear(onUpdate, { searchTerm: '' })}
+        />
+      )}
+      {state.group !== 'all' && (
+        <FilterChip
+          label={`Mode: ${groupLabel ?? state.group}`}
+          onRemove={() => updateOrClear(onUpdate, { group: 'all' })}
+        />
+      )}
+      {state.subgroup !== 'all' && (
+        <FilterChip
+          label={`Category: ${subgroupMeta[state.subgroup].title}`}
+          onRemove={() => updateOrClear(onUpdate, { subgroup: 'all' })}
+        />
+      )}
+      {state.product !== 'all' && (
+        <FilterChip
+          label={`Product: ${productLabels[state.product] ?? state.product}`}
+          onRemove={() => updateOrClear(onUpdate, { product: 'all' })}
+        />
+      )}
+      {state.strokeSupport !== 'all' && (
+        <FilterChip
+          label={state.strokeSupport === 'full' ? 'Stroke: Full support' : 'Stroke: Filled / fixed'}
+          onRemove={() => updateOrClear(onUpdate, { strokeSupport: 'all' })}
+        />
+      )}
+      {state.recentOnly && (
+        <FilterChip
+          label='Recently updated'
+          onRemove={() => updateOrClear(onUpdate, { recentOnly: false })}
+        />
+      )}
+      <button
+        className='ml-1 cursor-pointer text-xs font-medium text-zinc-500 transition-colors hover:text-zinc-900'
+        onClick={onClearAll}
+        type='button'
+      >
+        Clear filters
+      </button>
+    </div>
+  )
+}
+
+function updateOrClear(onUpdate: (patch: Partial<DemoState>) => void, patch: Partial<DemoState>) {
+  onUpdate(patch)
+}
+
+function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
+  return (
+    <span className='inline-flex items-center gap-1 rounded-full border border-indigo-200 bg-indigo-50/80 py-0.5 pr-1.5 pl-2.5 text-xs font-medium text-indigo-700'>
+      <span>{label}</span>
+      <button
+        aria-label={`Remove ${label}`}
+        className='inline-flex h-4 w-4 cursor-pointer items-center justify-center rounded-full text-indigo-500 transition-colors hover:bg-indigo-200/70 hover:text-indigo-900'
+        onClick={onRemove}
+        type='button'
+      >
+        <CloseGlyph className='h-2.5 w-2.5' />
+      </button>
+    </span>
+  )
+}
+
+function IconGroupSection({
+  copiedKey,
+  group,
+  onCopy,
+  onSelectIcon,
+  selectedIconName,
+  size,
+  surface,
+}: {
+  copiedKey: string | null
+  group: IconGroup
+  onCopy: (key: string, text: string, label: string) => void
+  onSelectIcon: (icon: IconEntry) => void
+  selectedIconName: string | null
+  size: number
+  surface: SurfaceMode
+}) {
+  return (
+    <section className='space-y-5' id={`group-${group.id}`}>
+      <div className='flex items-end justify-between gap-4 border-b border-zinc-200/80 pb-3'>
         <div>
-          <h2 className='text-[1.35rem] leading-tight font-[650]' id='family-comparison-title'>
-            Compare families
-          </h2>
-          <p className='mt-2 max-w-[640px] text-sm text-[#706f67]'>
-            Check weight, spacing, and detail at toolbar sizes. Standard light and dark colors; the
-            stroke width switch applies here too.
-          </p>
-        </div>
-        <label className='flex items-center gap-2 text-sm font-medium'>
-          Family
-          <span className='relative inline-flex items-center'>
-            <select
-              className='min-h-10 appearance-none rounded-md border border-[#deded7] bg-[#fffffb] py-2 pr-10 pl-3 hover:border-[#c8c8c0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f6f5b]'
-              value={familyId}
-              onChange={(event) => onFamilyChange(event.currentTarget.value)}
-            >
-              {comparisonFamilies.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.title}
-                </option>
-              ))}
-            </select>
-            <span
-              className='pointer-events-none absolute right-3 inline-flex text-[#706f67]'
-              aria-hidden='true'
-            >
-              <IconPreview icon={dropdownIcon} size={16} />
+          <div className='flex items-center gap-2'>
+            <h2 className='text-lg font-semibold tracking-tight text-zinc-950'>{group.title}</h2>
+            <span className='rounded-full bg-zinc-200/70 px-2 py-0.5 text-xs font-medium text-zinc-600 tabular-nums'>
+              {getGroupIconCount(group)}
             </span>
-          </span>
-        </label>
-      </div>
-      <div className='grid gap-4 min-[1000px]:grid-cols-2'>
-        {['Light', 'Dark'].map((theme) => (
-          <div
-            className={cx(
-              'min-w-0 overflow-x-auto rounded-lg border p-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f6f5b]',
-              theme === 'Light'
-                ? 'border-[#deded7] bg-[#fffffb] text-[#18181b]'
-                : 'border-[#3f444c] bg-[#20242a] text-[#f4f4f5]',
-            )}
-            aria-label={`${theme} ${family.title} comparison`}
-            role='region'
-            tabIndex={0}
-            key={theme}
-          >
-            <table
-              className='w-full table-fixed border-collapse text-center'
-              style={{ minWidth: 48 + icons.length * 64 }}
-            >
-              <caption className='pb-4 text-left text-sm font-semibold'>
-                {theme} · {family.title}
-              </caption>
-              <thead>
-                <tr>
-                  <th className='w-12 pb-2 text-left text-xs font-medium' scope='col'>
-                    Size
-                  </th>
-                  {icons.map((icon) => (
-                    <th
-                      className='px-1 pb-2 text-[0.68rem] font-medium wrap-anywhere'
-                      scope='col'
-                      key={icon.name}
-                    >
-                      {icon.name.replace(/Icon$/, '')}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {[16, 20, 24, 32].map((size) => (
-                  <tr className='border-t border-current/15' key={size}>
-                    <th className='py-4 text-left text-xs font-medium' scope='row'>
-                      {size} px
-                    </th>
-                    {icons.map((icon) => (
-                      <td className='py-3 align-middle' key={icon.name}>
-                        <IconPreview icon={icon} size={size} />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
+          <p className='mt-0.5 text-xs text-zinc-500'>{group.description}</p>
+        </div>
+      </div>
+
+      <div className='space-y-6'>
+        {group.subgroups.map((subgroup) => (
+          <IconSubgroupSection
+            copiedKey={copiedKey}
+            key={subgroup.id}
+            onCopy={onCopy}
+            onSelectIcon={onSelectIcon}
+            selectedIconName={selectedIconName}
+            showHeading={group.subgroups.length > 1}
+            size={size}
+            subgroup={subgroup}
+            surface={surface}
+          />
         ))}
       </div>
-    </section>
-  )
-}
-
-function IconPreview({ icon, size }: { icon: IconEntry; size?: number }) {
-  const id = useId()
-
-  return (
-    <span
-      aria-label={icon.name}
-      className='inline-flex leading-none [&_svg]:block [&_svg]:h-[1em] [&_svg]:w-[1em]'
-      dangerouslySetInnerHTML={{ __html: scopeSvgIds(icon.svg, id) }}
-      role='img'
-      style={{ fontSize: size ?? 'var(--icon-size)' }}
-    />
-  )
-}
-
-function IconGroupSection({ group }: { group: IconGroup }) {
-  return (
-    <section className='grid scroll-mt-28 gap-[18px]' id={`group-${group.id}`}>
-      <div className='flex items-end justify-between gap-4'>
-        <div>
-          <p className='mb-2.5 text-[0.78rem] font-medium text-[#706f67]'>{group.id} icons</p>
-          <h2 className='m-0 text-[1.35rem] leading-[1.1] font-[650] text-[#181713]'>
-            {group.title}
-          </h2>
-          <p className='mt-[7px] max-w-[640px] text-[0.92rem] text-[#706f67]'>
-            {group.description}
-          </p>
-        </div>
-        <span className='inline-flex h-[30px] min-w-12 items-center justify-center rounded-full border border-[#deded7] bg-[#efefe8] px-3 text-[0.82rem] font-semibold text-[#706f67]'>
-          {getGroupIconCount(group)}
-        </span>
-      </div>
-      {group.subgroups.map((subgroup) => (
-        <IconSubgroupSection
-          key={subgroup.id}
-          showHeading={group.subgroups.length > 1}
-          subgroup={subgroup}
-        />
-      ))}
     </section>
   )
 }
 
 function IconSubgroupSection({
+  copiedKey,
+  onCopy,
+  onSelectIcon,
+  selectedIconName,
   showHeading,
+  size,
   subgroup,
+  surface,
 }: {
+  copiedKey: string | null
+  onCopy: (key: string, text: string, label: string) => void
+  onSelectIcon: (icon: IconEntry) => void
+  selectedIconName: string | null
   showHeading: boolean
+  size: number
   subgroup: IconSubgroup
+  surface: SurfaceMode
 }) {
+  const minCardWidth = size > 64 ? 156 : 132
+
   return (
-    <section className='grid gap-3'>
+    <section className='space-y-3'>
       {showHeading && (
-        <div className='flex items-center justify-between gap-4 border-t border-[#deded7] pt-3.5'>
-          <div>
-            <h3 className='m-0 text-[0.98rem] leading-[1.2] font-semibold text-[#181713]'>
-              {subgroup.title}
-            </h3>
-            <p className='mt-[5px] text-[0.84rem] text-[#706f67]'>{subgroup.description}</p>
+        <div className='flex items-baseline justify-between gap-3'>
+          <div className='flex flex-wrap items-baseline gap-2'>
+            <h3 className='text-sm font-semibold text-zinc-800'>{subgroup.title}</h3>
+            <span className='text-xs text-zinc-400'>{subgroup.description}</span>
           </div>
-          <span className='inline-flex h-[30px] min-w-12 items-center justify-center rounded-full border border-[#deded7] bg-[#efefe8] px-3 text-[0.82rem] font-semibold text-[#706f67]'>
+          <span className='shrink-0 text-xs font-medium text-zinc-400 tabular-nums'>
             {subgroup.items.length}
           </span>
         </div>
       )}
-      <div className='grid grid-cols-[repeat(auto-fill,minmax(148px,1fr))] gap-2.5 max-[560px]:grid-cols-[repeat(auto-fill,minmax(136px,1fr))]'>
+      <div
+        className='grid gap-2.5'
+        style={{
+          gridTemplateColumns: `repeat(auto-fill, minmax(${minCardWidth}px, 1fr))`,
+        }}
+      >
         {subgroup.items.map((icon) => (
-          <IconCard icon={icon} subgroupId={subgroup.id} key={icon.name} />
+          <IconCard
+            copiedKey={copiedKey}
+            icon={icon}
+            key={icon.name}
+            onCopy={onCopy}
+            onSelect={() => onSelectIcon(icon)}
+            selected={selectedIconName === icon.name}
+            size={size}
+            surface={surface}
+          />
         ))}
       </div>
     </section>
   )
 }
 
-function IconCard({ icon, subgroupId }: { icon: IconEntry; subgroupId: IconSubgroupId }) {
+function IconCard({
+  copiedKey,
+  icon,
+  onCopy,
+  onSelect,
+  selected,
+  size,
+  surface,
+}: {
+  copiedKey: string | null
+  icon: IconEntry
+  onCopy: (key: string, text: string, label: string) => void
+  onSelect: () => void
+  selected: boolean
+  size: number
+  surface: SurfaceMode
+}) {
   const isRecent = isRecentIconVersion(icon, recentVersions)
-  const hasFullPreserveStrokeWidthSupport = icon.preserveStrokeWidthSupport === 'full'
+  const hasFullStrokeSupport = icon.preserveStrokeWidthSupport === 'full'
+  const copyId = `card:${icon.name}`
+  const isCopied = copiedKey === copyId
+  const isDark = surface === 'dark'
+  const stageMinHeight = Math.max(76, size + 36)
 
   return (
     <article
-      className={cx(
-        'grid min-h-[158px] grid-rows-[96px_1fr] overflow-hidden rounded-lg border text-[#181713]',
-        'shadow-[0_1px_2px_rgb(0_0_0/0.04)]',
-        isRecent
-          ? 'border-[#1f6f5b] bg-[#fbfff9] ring-2 ring-[#d7eadf]'
-          : 'border-[#deded7] bg-[#fffffb]',
-      )}
+      className={`group relative flex flex-col overflow-hidden rounded-xl border transition-all ${
+        isDark ? 'bg-[#181b20]' : 'bg-white'
+      } ${
+        selected
+          ? 'border-indigo-500 ring-2 ring-indigo-500/25'
+          : isDark
+            ? 'border-zinc-800 hover:border-zinc-600'
+            : 'border-zinc-200/80 hover:border-zinc-300 hover:shadow-sm'
+      }`}
       data-preserve-stroke-width-support={icon.preserveStrokeWidthSupport}
       data-recent-version={isRecent ? icon.updatedVer : undefined}
-      key={icon.name}
     >
-      <div
-        className={cx(
-          'relative flex items-center justify-center border-b bg-[linear-gradient(90deg,var(--stage-grid)_1px,transparent_1px),linear-gradient(0deg,var(--stage-grid)_1px,transparent_1px)] bg-size-[20px_20px] text-(--icon-color)',
-          isRecent ? 'border-[#b7d7c4] bg-[#eef7ee]' : 'border-[#deded7] bg-[#efefe8]',
-        )}
+      <button
+        aria-label={`Inspect ${icon.name}`}
+        className={`relative flex w-full flex-1 cursor-pointer items-center justify-center text-(--icon-color) transition-colors focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-indigo-600 ${
+          surface === 'grid'
+            ? 'icon-stage-grid bg-zinc-50/70'
+            : isDark
+              ? 'bg-[#181b20] group-hover:bg-white/[0.03]'
+              : 'bg-zinc-50/40 group-hover:bg-zinc-50/90'
+        }`}
+        onClick={onSelect}
+        style={{ minHeight: stageMinHeight }}
+        type='button'
       >
+        {/* Subtle stroke preservation indicator */}
+        {hasFullStrokeSupport && (
+          <span
+            className='absolute top-2 left-2 h-1.5 w-1.5 rounded-full bg-emerald-500'
+            title='Fully supports preserveStrokeWidth'
+          />
+        )}
+
+        {/* Recent version micro badge */}
         {isRecent && (
-          <span className='absolute top-2 right-2 inline-flex h-5 items-center rounded-full bg-[#1f6f5b] px-2 text-[0.68rem] leading-none font-semibold text-[#f8f8f5]'>
+          <span
+            className={`absolute top-1.5 right-1.5 rounded-full px-1.5 py-0.5 font-mono text-[9px] leading-none font-semibold ${
+              isDark
+                ? 'bg-indigo-500/20 text-indigo-300'
+                : 'bg-indigo-50 text-indigo-600 ring-1 ring-indigo-200/80'
+            }`}
+          >
             {icon.updatedVer}
           </span>
         )}
+
         <IconPreview icon={icon} />
-      </div>
-      <div className='min-w-0 p-2.5'>
-        <h3 className='m-0 text-[0.8rem] leading-tight font-semibold wrap-anywhere text-[#181713]'>
-          {icon.name}
-        </h3>
-        <p className='mt-1.5 text-xs text-[#706f67]'>{subgroupId}</p>
-        {hasFullPreserveStrokeWidthSupport && (
-          <span
-            aria-label='Fully supports preserveStrokeWidth'
-            className='mt-2 inline-flex min-h-5 max-w-full items-center rounded-full border border-[#b7d7c4] bg-[#eef7ee] px-2 text-[0.68rem] leading-none font-semibold wrap-anywhere text-[#1f6f5b]'
-            title='All visible SVG strokes can preserve their 16 × 16 baseline line width when scaling.'
-          >
-            Preserve stroke width
-          </span>
-        )}
+      </button>
+
+      {/* Name Footer + dedicated non-overlapping quick-copy button */}
+      <div
+        className={`flex min-w-0 items-center justify-between gap-1 border-t px-2 py-1.5 ${
+          isDark ? 'border-zinc-800/90 bg-[#181b20]' : 'border-zinc-100 bg-white'
+        }`}
+      >
+        <button
+          className={`min-w-0 flex-1 cursor-pointer truncate text-left font-mono text-[11px] font-medium focus-visible:outline-2 focus-visible:outline-indigo-600 ${
+            isDark ? 'text-zinc-300 hover:text-white' : 'text-zinc-700 hover:text-zinc-950'
+          }`}
+          onClick={onSelect}
+          title={icon.name}
+          type='button'
+        >
+          {icon.name.replace(/Icon$/, '')}
+        </button>
+
+        <button
+          aria-label={`Copy ${icon.name}`}
+          className={`inline-flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded transition-all focus-visible:opacity-100 ${
+            isCopied
+              ? 'bg-emerald-600 text-white opacity-100'
+              : isDark
+                ? 'text-zinc-500 opacity-0 group-hover:opacity-100 hover:bg-zinc-800 hover:text-zinc-100'
+                : 'text-zinc-400 opacity-0 group-hover:opacity-100 hover:bg-zinc-100 hover:text-zinc-900'
+          }`}
+          onClick={() => onCopy(copyId, `<${icon.name} />`, `Copied <${icon.name} />`)}
+          title={`Copy <${icon.name} />`}
+          type='button'
+        >
+          {isCopied ? <CheckGlyph className='h-3 w-3' /> : <CopyGlyph className='h-3 w-3' />}
+        </button>
       </div>
     </article>
   )
 }
 
-function EmptyState({ searchTerm }: { searchTerm: string }) {
+function EmptyState({
+  onClearFilters,
+  searchTerm,
+}: {
+  onClearFilters: () => void
+  searchTerm: string
+}) {
   return (
-    <div className='rounded-lg border border-[#deded7] bg-[#fffffb] p-6 shadow-[0_1px_2px_rgb(0_0_0/0.04)]'>
-      <h2 className='m-0 text-base font-semibold text-[#181713]'>No icons found</h2>
-      <p className='mt-1.5 text-[0.86rem] wrap-anywhere text-[#706f67]'>
-        {searchTerm.trim() || 'Search'}
+    <div className='flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-300 bg-white px-6 py-16 text-center'>
+      <div className='flex h-11 w-11 items-center justify-center rounded-xl bg-zinc-100 text-zinc-400'>
+        <SearchGlyph className='h-5 w-5' />
+      </div>
+      <h2 className='mt-4 text-sm font-semibold text-zinc-900'>No matching icons</h2>
+      <p className='mt-1 max-w-sm text-xs text-zinc-500'>
+        {searchTerm.trim()
+          ? `No icons matched "${searchTerm.trim()}" with the current filters.`
+          : 'No icons match the active filter combination.'}
       </p>
+      <button
+        className='mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-zinc-900 px-3.5 py-2 text-xs font-medium text-white transition-colors hover:bg-zinc-800'
+        onClick={onClearFilters}
+        type='button'
+      >
+        <RotateCcwGlyph className='h-3.5 w-3.5' />
+        <span>Clear all filters</span>
+      </button>
     </div>
   )
 }

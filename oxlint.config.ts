@@ -27,7 +27,7 @@ export default amamo(
         rules: { 'react/refs': 'off' },
       },
       {
-        files: ['packages/app/src/main.tsx'],
+        files: ['packages/app/src/main.tsx', 'packages/app/src/components/IconPreview.tsx'],
         rules: {
           'jsx-a11y/prefer-tag-over-role': 'off',
           'jsx-a11y/no-noninteractive-tabindex': ['error', { roles: ['tabpanel', 'region'] }],
