@@ -1,6 +1,6 @@
 {
   "name": "@univerjs/icons-workspace",
-  "version": "1.50.2",
+  "version": "1.50.3",
   "private": true,
   "packageManager": "pnpm@12.23.0",
   "description": "Icons used by Univer",
