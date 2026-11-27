@@ -38,9 +38,28 @@ export type IconSubgroupId =
   | 'shape'
   | 'stroke-size'
 
+export type StrokeFilter = 'all' | 'full' | 'none'
+
+export type IconFilterOptions = {
+  group: IconGroupId | 'all'
+  product: string | 'all'
+  recentOnly: boolean
+  searchTerm: string
+  strokeSupport: StrokeFilter
+  subgroup: IconSubgroupId | 'all'
+}
+
 export type IconSearchResult = {
   groups: IconGroup[]
   matchCount: number
+}
+
+export type CatalogueFacetCounts = {
+  groups: Record<IconGroupId | 'all', number>
+  products: Record<string, number>
+  recent: number
+  strokeSupport: Record<StrokeFilter, number>
+  subgroups: Record<IconSubgroupId | 'all', number>
 }
 
 export const groupMeta: Array<Omit<IconGroup, 'subgroups'>> = [
@@ -118,6 +137,31 @@ export const subgroupMeta = {
     description: 'Stroke, brush, and pen size preset icons.',
   },
 } satisfies Record<IconSubgroupId, Omit<IconSubgroup, 'items'>>
+
+export const subgroupOrder: IconSubgroupId[] = [
+  'general',
+  'shape',
+  'diagram',
+  'chart',
+  'formula',
+  'function',
+  'currency',
+  'stroke-size',
+  'brand',
+  'double',
+  'multi',
+]
+
+export const productLabels: Record<string, string> = {
+  bases: 'Bases',
+  boards: 'Boards',
+  common: 'Common',
+  docs: 'Docs',
+  pdf: 'PDF',
+  sheets: 'Sheets',
+  slides: 'Slides',
+  univer: 'Univer',
+}
 
 export const comparisonFamilies = [
   { id: 'search', title: 'Search & zoom', icons: ['SearchIcon', 'ZoomInIcon', 'ZoomOutIcon'] },
@@ -229,6 +273,34 @@ export const comparisonFamilies = [
   },
 ]
 
+export function getAllIcons(groups: IconGroup[]): IconEntry[] {
+  return groups.flatMap((group) => group.subgroups.flatMap((subgroup) => subgroup.items))
+}
+
+export function getIconFileName(icon: IconEntry): string {
+  const match = /([^/]+)\.svg$/.exec(icon.sourcePath)
+  return match?.[1] ?? icon.name
+}
+
+export function getIconManifestPath(icon: IconEntry): string {
+  const match = /(double|other|single)\/([^/]+\.svg)$/.exec(icon.sourcePath)
+  return match ? `${match[1]}/${match[2]}` : icon.sourcePath
+}
+
+export function getAvailableProducts(groups: IconGroup[]): string[] {
+  const counts = new Map<string, number>()
+
+  for (const icon of getAllIcons(groups)) {
+    for (const product of icon.products) {
+      counts.set(product, (counts.get(product) ?? 0) + 1)
+    }
+  }
+
+  return Array.from(counts.entries())
+    .toSorted(([nameA, countA], [nameB, countB]) => countB - countA || nameA.localeCompare(nameB))
+    .map(([name]) => name)
+}
+
 export function getFamilyIcons(groups: IconGroup[], names: string[]): IconEntry[] {
   const icons = new Map(
     groups.flatMap((group) =>
@@ -259,7 +331,7 @@ export function filterIconGroups(groups: IconGroup[], searchTerm: string): IconS
 
   const filteredGroups = groups.flatMap((group) => {
     const subgroups = group.subgroups.flatMap((subgroup) => {
-      const items = subgroup.items.filter((icon) => matchesIcon(icon, terms))
+      const items = subgroup.items.filter((icon) => matchesIconTerms(icon, terms))
 
       if (items.length === 0) {
         return []
@@ -278,6 +350,129 @@ export function filterIconGroups(groups: IconGroup[], searchTerm: string): IconS
   return {
     groups: filteredGroups,
     matchCount: getTotalIconCount(filteredGroups),
+  }
+}
+
+export function filterIconCatalogue(
+  groups: IconGroup[],
+  filters: IconFilterOptions,
+  recentVersions: ReadonlySet<string>,
+): IconSearchResult {
+  const terms = normalizeSearchTerm(filters.searchTerm)
+
+  const filteredGroups = groups.flatMap((group) => {
+    if (filters.group !== 'all' && group.id !== filters.group) {
+      return []
+    }
+
+    const subgroups = group.subgroups.flatMap((subgroup) => {
+      if (filters.subgroup !== 'all' && subgroup.id !== filters.subgroup) {
+        return []
+      }
+
+      const items = subgroup.items.filter((icon) =>
+        matchesFilters(icon, filters, terms, recentVersions),
+      )
+
+      if (items.length === 0) {
+        return []
+      }
+
+      return [{ ...subgroup, items }]
+    })
+
+    if (subgroups.length === 0) {
+      return []
+    }
+
+    return [{ ...group, subgroups }]
+  })
+
+  return {
+    groups: filteredGroups,
+    matchCount: getTotalIconCount(filteredGroups),
+  }
+}
+
+export function getCatalogueFacetCounts(
+  groups: IconGroup[],
+  filters: IconFilterOptions,
+  recentVersions: ReadonlySet<string>,
+): CatalogueFacetCounts {
+  const terms = normalizeSearchTerm(filters.searchTerm)
+
+  const groupCounts: Record<IconGroupId | 'all', number> = {
+    all: 0,
+    double: 0,
+    multi: 0,
+    single: 0,
+  }
+  const subgroupCounts = Object.fromEntries([
+    ['all', 0],
+    ...subgroupOrder.map((id) => [id, 0]),
+  ]) as Record<IconSubgroupId | 'all', number>
+  const productCounts: Record<string, number> = { all: 0 }
+  const strokeCounts: Record<StrokeFilter, number> = {
+    all: 0,
+    full: 0,
+    none: 0,
+  }
+  let recentCount = 0
+
+  for (const group of groups) {
+    for (const subgroup of group.subgroups) {
+      for (const icon of subgroup.items) {
+        if (terms.length > 0 && !matchesIconTerms(icon, terms)) {
+          continue
+        }
+
+        const matchesGroup = filters.group === 'all' || group.id === filters.group
+        const matchesSubgroup = filters.subgroup === 'all' || subgroup.id === filters.subgroup
+        const matchesProduct =
+          filters.product === 'all' || icon.products.includes(filters.product as never)
+        const matchesStroke = matchesStrokeSupport(icon, filters.strokeSupport)
+        const isRecent = isRecentIconVersion(icon, recentVersions)
+        const matchesRecent = !filters.recentOnly || isRecent
+
+        if (matchesSubgroup && matchesProduct && matchesStroke && matchesRecent) {
+          groupCounts.all += 1
+          groupCounts[group.id] += 1
+        }
+
+        if (matchesGroup && matchesProduct && matchesStroke && matchesRecent) {
+          subgroupCounts.all += 1
+          subgroupCounts[subgroup.id] += 1
+        }
+
+        if (matchesGroup && matchesSubgroup && matchesStroke && matchesRecent) {
+          productCounts.all += 1
+          for (const product of icon.products) {
+            productCounts[product] = (productCounts[product] ?? 0) + 1
+          }
+        }
+
+        if (matchesGroup && matchesSubgroup && matchesProduct && matchesRecent) {
+          strokeCounts.all += 1
+          if (icon.preserveStrokeWidthSupport === 'full') {
+            strokeCounts.full += 1
+          } else {
+            strokeCounts.none += 1
+          }
+        }
+
+        if (matchesGroup && matchesSubgroup && matchesProduct && matchesStroke && isRecent) {
+          recentCount += 1
+        }
+      }
+    }
+  }
+
+  return {
+    groups: groupCounts,
+    products: productCounts,
+    recent: recentCount,
+    strokeSupport: strokeCounts,
+    subgroups: subgroupCounts,
   }
 }
 
@@ -313,9 +508,47 @@ function normalizeSearchTerm(searchTerm: string) {
   return searchTerm.trim().toLowerCase().split(/\s+/).filter(Boolean)
 }
 
-function matchesIcon(icon: IconEntry, terms: string[]) {
+function matchesFilters(
+  icon: IconEntry,
+  filters: IconFilterOptions,
+  terms: string[],
+  recentVersions: ReadonlySet<string>,
+) {
+  if (filters.product !== 'all' && !icon.products.includes(filters.product as never)) {
+    return false
+  }
+
+  if (!matchesStrokeSupport(icon, filters.strokeSupport)) {
+    return false
+  }
+
+  if (filters.recentOnly && !isRecentIconVersion(icon, recentVersions)) {
+    return false
+  }
+
+  if (terms.length > 0 && !matchesIconTerms(icon, terms)) {
+    return false
+  }
+
+  return true
+}
+
+function matchesStrokeSupport(icon: IconEntry, strokeSupport: StrokeFilter) {
+  if (strokeSupport === 'all') {
+    return true
+  }
+
+  if (strokeSupport === 'full') {
+    return icon.preserveStrokeWidthSupport === 'full'
+  }
+
+  return icon.preserveStrokeWidthSupport !== 'full'
+}
+
+function matchesIconTerms(icon: IconEntry, terms: string[]) {
   const searchableText = [
     icon.name,
+    getIconFileName(icon),
     icon.category,
     icon.description,
     icon.group,
